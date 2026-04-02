@@ -1,0 +1,24 @@
+# Gradle
+.gradle/
+build/
+out/
+
+# ID
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Runtime / logs
+logs/
+*.log
+
+# Env files
+.env
+ keeep!.env.example
+
+# Java
+*.class

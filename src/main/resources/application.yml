@@ -1,0 +1,70 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: authlyn
+
+  datasource:
+ye    url: ${AUTHLYN_DB_URL}
+    username: ${AUTHLYN_DB_USERNAME}
+    password: ${AUTHLYN_DB_PASSWORD}
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  data:
+    redis:
+      host: ${AUTHLYN_REDIS_HOST:localhost}
+      port: ${AUTHLYN_REDIS_PORT:6379}
+      password: ${AUTHLYN_REDIS_PASSWORD:}
+      timeout: 3s
+
+  mail:
+    host: ${AUTHLYN_MAIL_HOST:localhost}
+    port: ${AUTHLYN_MAIL_PORT:1025}
+    username: ${AUTHLYN_MAIL_USERNAME:}
+    password: ${AUTHLYN_MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: ${AUTHLYN_MAIL_SMTP_AUTH:false}
+          starttls:
+            enable: ${AUTHLYN_MAIL_STARTTLS:false}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${AUTHLYN_JWK_SET_URI:http://localhost:8080/.well-known/jwks.json}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+authlyn:
+  jwt:
+    issuer: ${AUTHLYN_JWT_ISSUER:http://localhost:8080}
+    access-token-minutes: ${AUTHLYN_ACCESS_TOKEN_MINUTES:15}
+    refresh-token-days: ${AUTHLYN_REFRESH_TOKEN_DAYS:30}
+  security:
+    bcrypt-strength: ${AUTHLYN_BCRYPT_STRENGTH:12}
+    trusted-proxy-cidrs: ${AUTHLYN_TRUSTED_PROXY_CIDRS:}
+  feature-flags:
+    source: ${AUTHLYN_FEATURE_FLAG_SOURCE:local}
