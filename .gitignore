@@ -22,3 +22,7 @@ logs/
 
 # Java
 *.class
+
+#Agents
+.agents
+.claude
