@@ -60,6 +60,12 @@ The public JWKS is exposed at:
 http://localhost:8080/.well-known/jwks.json
 ```
 
+Architecture details, sequence flow, and key rotation guidance:
+
+- [`docs/architecture/jwt-jwks-flow.md`](docs/architecture/jwt-jwks-flow.md)
+- [`docs/architecture/current-implemented-flows.md`](docs/architecture/current-implemented-flows.md)
+- [`docs/architecture/diagram-roadmap.md`](docs/architecture/diagram-roadmap.md)
+
 ## Local setup
 
 1. Copy the environment template:
