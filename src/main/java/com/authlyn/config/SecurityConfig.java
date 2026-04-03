@@ -1,9 +1,5 @@
 package com.authlyn.config;
 
-import com.authlyn.security.jwt.AuthlynJwtProperties;
-import com.authlyn.security.jwt.RsaKeyService;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -15,7 +11,13 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.authlyn.security.jwt.AuthlynJwtProperties;
+import com.authlyn.security.jwt.RsaKeyService;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+
 @Configuration
+@SuppressWarnings("unused")
 public class SecurityConfig {
 
     @Bean

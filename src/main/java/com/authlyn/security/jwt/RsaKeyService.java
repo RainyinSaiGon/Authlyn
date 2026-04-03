@@ -1,16 +1,10 @@
 package com.authlyn.security.jwt;
 
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.jwk.KeyUse;
-import com.nimbusds.jose.jwk.RSAKey;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -18,10 +12,19 @@ import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
+
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.KeyUse;
+import com.nimbusds.jose.jwk.RSAKey;
 
 @Service
 public class RsaKeyService {
@@ -68,17 +71,17 @@ public class RsaKeyService {
             return generateEphemeralKey();
         }
 
-        RSAPrivateKey privateKey = parsePrivateKey(readKeyMaterial(privateKeySource));
-        RSAPublicKey publicKey = publicKeySource == null
-                ? derivePublicKey(privateKey)
+        RSAPrivateKey loadedPrivateKey = parsePrivateKey(readKeyMaterial(privateKeySource));
+        RSAPublicKey loadedPublicKey = publicKeySource == null
+            ? derivePublicKey(loadedPrivateKey)
                 : parsePublicKey(readKeyMaterial(publicKeySource));
 
-        RSAPublicKey derivedPublicKey = derivePublicKey(privateKey);
-        if (!publicKeysMatch(publicKey, derivedPublicKey)) {
+        RSAPublicKey derivedPublicKey = derivePublicKey(loadedPrivateKey);
+        if (!publicKeysMatch(loadedPublicKey, derivedPublicKey)) {
             throw new IllegalStateException("Configured public key does not match the configured private key.");
         }
 
-        return buildKeyPair(privateKey, publicKey);
+        return buildKeyPair(loadedPrivateKey, loadedPublicKey);
     }
 
     private LoadedKeyPair generateEphemeralKey() {
@@ -94,20 +97,20 @@ public class RsaKeyService {
 
     private LoadedKeyPair buildKeyPair(RSAPrivateKey privateKey, RSAPublicKey publicKey) {
         String kid = hasText(properties.getKid()) ? properties.getKid() : defaultKid(publicKey);
-        RSAKey signingKey = new RSAKey.Builder(publicKey)
+        RSAKey signingRsaKey = new RSAKey.Builder(publicKey)
                 .privateKey(privateKey)
                 .keyUse(KeyUse.SIGNATURE)
                 .algorithm(JWSAlgorithm.RS256)
                 .keyID(kid)
                 .build();
 
-        RSAKey publicJwk = new RSAKey.Builder(publicKey)
+        RSAKey publicRsaJwk = new RSAKey.Builder(publicKey)
                 .keyUse(KeyUse.SIGNATURE)
                 .algorithm(JWSAlgorithm.RS256)
                 .keyID(kid)
                 .build();
 
-        return new LoadedKeyPair(signingKey, publicJwk, publicKey, privateKey);
+        return new LoadedKeyPair(signingRsaKey, publicRsaJwk, publicKey, privateKey);
     }
 
     private String defaultKid(RSAPublicKey publicKey) {
@@ -118,7 +121,7 @@ public class RsaKeyService {
         try {
             byte[] decoded = decodePem(pemOrPathContents, "PRIVATE KEY");
             return (RSAPrivateKey) KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(decoded));
-        } catch (Exception ex) {
+        } catch (GeneralSecurityException | IllegalArgumentException ex) {
             throw new IllegalStateException("Unable to load the configured RSA private key.", ex);
         }
     }
@@ -127,7 +130,7 @@ public class RsaKeyService {
         try {
             byte[] decoded = decodePem(pemOrPathContents, "PUBLIC KEY");
             return (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(decoded));
-        } catch (Exception ex) {
+        } catch (GeneralSecurityException | IllegalArgumentException ex) {
             throw new IllegalStateException("Unable to load the configured RSA public key.", ex);
         }
     }
@@ -187,13 +190,14 @@ public class RsaKeyService {
     }
 
     private RSAPublicKey derivePublicKey(RSAPrivateKey privateKey) {
+        if (!(privateKey instanceof RSAPrivateCrtKey crtKey)) {
+            throw new IllegalStateException("Configured RSA private key does not expose CRT parameters required to derive the public key.");
+        }
+
         try {
             KeyFactory factory = KeyFactory.getInstance("RSA");
-            if (privateKey instanceof RSAPrivateCrtKey crtKey) {
-                return (RSAPublicKey) factory.generatePublic(new RSAPublicKeySpec(crtKey.getModulus(), crtKey.getPublicExponent()));
-            }
-            throw new IllegalStateException("Configured RSA private key does not expose CRT parameters required to derive the public key.");
-        } catch (Exception ex) {
+            return (RSAPublicKey) factory.generatePublic(new RSAPublicKeySpec(crtKey.getModulus(), crtKey.getPublicExponent()));
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
             throw new IllegalStateException("Unable to derive the public key from the configured private key.", ex);
         }
     }

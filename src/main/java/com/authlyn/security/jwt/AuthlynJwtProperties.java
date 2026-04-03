@@ -1,37 +1,35 @@
 package com.authlyn.security.jwt;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 @Component
-@SuppressWarnings("unused")
+@Validated
+@ConfigurationProperties(prefix = "authlyn.jwt")
 public class AuthlynJwtProperties {
 
-    @Value("${authlyn.jwt.issuer:http://localhost:8080}")
-    private String issuer;
+    @NotBlank
+    private String issuer = "http://localhost:8080";
 
-    @Value("${authlyn.jwt.kid:authlyn-rsa-1}")
-    private String kid;
+    @NotBlank
+    private String kid = "authlyn-rsa-1";
 
-    @Value("${authlyn.jwt.jwks-path:/.well-known/jwks.json}")
-    private String jwksPath;
+    @NotBlank
+    private String jwksPath = "/.well-known/jwks.json";
 
-    @Value("${authlyn.jwt.access-token-minutes:15}")
-    private long accessTokenMinutes;
+    @Min(1)
+    private long accessTokenMinutes = 15;
 
-    @Value("${authlyn.jwt.refresh-token-days:30}")
-    private long refreshTokenDays;
+    @Min(1)
+    private long refreshTokenDays = 30;
 
-    @Value("${authlyn.jwt.private-key:}")
     private String privateKey;
-
-    @Value("${authlyn.jwt.private-key-path:}")
     private String privateKeyPath;
-
-    @Value("${authlyn.jwt.public-key:}")
     private String publicKey;
-
-    @Value("${authlyn.jwt.public-key-path:}")
     private String publicKeyPath;
 
     public String getIssuer() {

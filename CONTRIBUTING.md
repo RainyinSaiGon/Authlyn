@@ -36,4 +36,3 @@ If you find a bug or missing feature, open an issue with:
 - relevant logs or screenshots if available
 
 When possible, use the issue templates in `.github/ISSUE_TEMPLATE/`.
-
