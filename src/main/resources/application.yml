@@ -6,7 +6,7 @@ spring:
     name: authlyn
 
   datasource:
-ye    url: ${AUTHLYN_DB_URL}
+    url: ${AUTHLYN_DB_URL}
     username: ${AUTHLYN_DB_USERNAME}
     password: ${AUTHLYN_DB_PASSWORD}
 
@@ -42,12 +42,6 @@ ye    url: ${AUTHLYN_DB_URL}
           starttls:
             enable: ${AUTHLYN_MAIL_STARTTLS:false}
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: ${AUTHLYN_JWK_SET_URI:http://localhost:8080/.well-known/jwks.json}
-
 management:
   endpoints:
     web:
@@ -61,8 +55,14 @@ management:
 authlyn:
   jwt:
     issuer: ${AUTHLYN_JWT_ISSUER:http://localhost:8080}
+    jwks-path: ${AUTHLYN_JWT_JWKS_PATH:/.well-known/jwks.json}
+    kid: ${AUTHLYN_JWT_KID:authlyn-rsa-1}
     access-token-minutes: ${AUTHLYN_ACCESS_TOKEN_MINUTES:15}
     refresh-token-days: ${AUTHLYN_REFRESH_TOKEN_DAYS:30}
+    private-key-path: ${AUTHLYN_JWT_PRIVATE_KEY_PATH:}
+    public-key-path: ${AUTHLYN_JWT_PUBLIC_KEY_PATH:}
+    private-key: ${AUTHLYN_JWT_PRIVATE_KEY:}
+    public-key: ${AUTHLYN_JWT_PUBLIC_KEY:}
   security:
     bcrypt-strength: ${AUTHLYN_BCRYPT_STRENGTH:12}
     trusted-proxy-cidrs: ${AUTHLYN_TRUSTED_PROXY_CIDRS:}

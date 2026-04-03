@@ -18,7 +18,7 @@ logs/
 
 # Env files
 .env
- keeep!.env.example
+!.env.example
 
 # Java
 *.class
