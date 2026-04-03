@@ -128,7 +128,7 @@ sequenceDiagram
 - Monitor 401/invalid-signature spikes during rollout.
 - Roll out verifier services before removing old keys.
 
-## Key rotation runbook (copy/paste template)
+## Key rotation runbook 
 
 Use this timeline as an operational checklist during rotation.
 
