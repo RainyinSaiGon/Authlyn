@@ -1,5 +1,3 @@
-# Authlyn
-
 <p align="center">
   <img src="./assets/Logo-transparent.png" alt="Authlyn logo" width="280" />
 </p>
