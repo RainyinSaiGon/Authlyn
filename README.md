@@ -1,9 +1,15 @@
 # Authlyn
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Java](https://img.shields.io/badge/Java-25-orange.svg)](https://www.oracle.com/java/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.5-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![Gradle](https://img.shields.io/badge/Build-Gradle-02303A.svg)](https://gradle.org/)
+<p align="center">
+  <img src="./assets/Logo-transparent.png" alt="Authlyn logo" width="280" />
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT" /></a>
+  <a href="https://www.oracle.com/java/"><img src="https://img.shields.io/badge/Java-25-orange.svg" alt="Java" /></a>
+  <a href="https://spring.io/projects/spring-boot"><img src="https://img.shields.io/badge/Spring%20Boot-4.0.5-brightgreen.svg" alt="Spring Boot" /></a>
+  <a href="https://gradle.org/"><img src="https://img.shields.io/badge/Build-Gradle-02303A.svg" alt="Gradle" /></a>
+</p>
 
 Authlyn is an open-source Spring Boot IAM platform scaffold built with Gradle. It is designed to evolve into a production-ready identity and access management service with PostgreSQL, Redis, Flyway, RSA-signed JWTs, a public JWKS endpoint, OAuth2 Resource Server support, and actuator health endpoints.
 
