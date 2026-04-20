@@ -1,139 +1,101 @@
-<p align="center">
-  <img src="./assets/Logo-transparent.png" alt="Authlyn logo" width="280" />
-</p>
+# Authlyn
 
-<p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT" /></a>
-  <a href="https://www.oracle.com/java/"><img src="https://img.shields.io/badge/Java-25-orange.svg" alt="Java" /></a>
-  <a href="https://spring.io/projects/spring-boot"><img src="https://img.shields.io/badge/Spring%20Boot-4.0.5-brightgreen.svg" alt="Spring Boot" /></a>
-  <a href="https://gradle.org/"><img src="https://img.shields.io/badge/Build-Gradle-02303A.svg" alt="Gradle" /></a>
-</p>
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+![Java 25](https://img.shields.io/badge/Java-25-orange.svg)
+![Spring Boot 4.0.5](https://img.shields.io/badge/Spring%20Boot-4.0.5-brightgreen.svg)
+![Gradle](https://img.shields.io/badge/Build-Gradle-02303A.svg)
 
-Authlyn is an open-source Spring Boot IAM platform scaffold built with Gradle. It is designed to evolve into a production-ready identity and access management service with PostgreSQL, Redis, Flyway, RSA-signed JWTs, a public JWKS endpoint, OAuth2 Resource Server support, and actuator health endpoints.
+Authlyn is a full-stack IAM platform scaffold with a Spring Boot backend and a React + Vite frontend.
 
-[License](LICENSE) · [Contributing](CONTRIBUTING.md) · [Code of Conduct](.github/CODE_OF_CONDUCT.md) · [Security](SECURITY.md) · [Issues](https://github.com/RainyinSaiGon/Authlyn/issues)
+- Backend: JWT/JWKS baseline, OAuth2 resource-server setup, Flyway, PostgreSQL, Redis
+- Frontend: typed API client baseline and health/meta integration
+- Docs: architecture, phased tasks, and lightweight planning docs
+
+[License](LICENSE) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Issues](https://github.com/RainyinSaiGon/Authlyn/issues)
 
 ## Project status
 
-This repository currently contains the core application bootstrap, security baseline, database migration foundation, and local development infrastructure. It is still a scaffold, not a finished IAM platform.
+Authlyn is currently in scaffold/build-out mode. The repository contains foundational auth/security and project structure, not a complete IAM product yet.
 
-The repository now follows a full-stack monorepo layout:
+## Repository layout
 
-- Spring Boot backend at the repository root
-- React + Vite frontend in [`frontend/`](frontend/)
-- architecture guidance in [`ARCHITECTURE.md`](ARCHITECTURE.md)
+```text
+Authlyn/
+|- README.md
+|- ARCHITECTURE.md
+|- Specs.md
+|- docs/
+|  |- architecture/
+|  |- tasks/
+|  |- features/
+|  |- design/
+|  |- tests/
+|  |- runbooks/
+|  |- status/
+|  |- user-manual/
+|  |- workflows/
+|  `- UC/
+|- frontend/
+|- src/
+|- docker-compose.yml
+`- build.gradle
+```
 
 ## Tech stack
 
 - Java `25`
 - Spring Boot `4.0.5`
-- Gradle wrapper (`./gradlew`)
-- PostgreSQL for persistent storage
-- Redis for local caching / session-related workflows
-- Flyway for schema migrations
-- Spring Security OAuth2 Resource Server
-
-## What is already set up
-
-- Spring Boot application entry point in `src/main/java/com/authlyn/AuthlynApplication.java`
-- Security baseline in `src/main/java/com/authlyn/shared/config/SecurityConfig.java`
-- RSA key management and JWKS support in `src/main/java/com/authlyn/shared/security/jwt/`
-- Identity/API module layout in `src/main/java/com/authlyn/modules/`
-- Database migration folder under `src/main/resources/db/migration`
-- Local Redis container via `docker-compose.yml`
-- Environment template in `.env.example`
-- React frontend scaffold in `frontend/`
-- Public frontend bootstrap endpoint at `GET /api/public/meta`
+- Gradle wrapper
+- PostgreSQL
+- Redis
+- Flyway
+- React + Vite + TypeScript
 
 ## Prerequisites
 
-- Java `25`
-- Docker Desktop or another Docker-compatible runtime
-- A PostgreSQL database you can connect to during development
-
-> Note: the current setup expects PostgreSQL access through Neon. Local Redis runs in Docker.
-
-## JWT signing keys
-
-Authlyn can start with an ephemeral RSA signing key if you do not provide one, which is useful for local development and tests. For stable tokens across restarts, provide your own key material through the environment.
-
-Recommended setup:
-
-- `AUTHLYN_JWT_PRIVATE_KEY_PATH` for a PEM-encoded PKCS#8 private key file
-- `AUTHLYN_JWT_PUBLIC_KEY_PATH` for the matching PEM-encoded public key file, if you want to supply one explicitly
-- or `AUTHLYN_JWT_PRIVATE_KEY` / `AUTHLYN_JWT_PUBLIC_KEY` for inline PEM content
-
-The public JWKS is exposed at:
-
-```text
-http://localhost:8080/.well-known/jwks.json
-```
-
-Architecture details, sequence flow, and key rotation guidance:
-
-- [`docs/architecture/jwt-jwks-flow.md`](docs/architecture/jwt-jwks-flow.md)
-- [`docs/architecture/current-implemented-flows.md`](docs/architecture/current-implemented-flows.md)
-- [`docs/architecture/diagram-roadmap.md`](docs/architecture/diagram-roadmap.md)
+- Java 25
+- Node.js 20+ and npm
+- Docker runtime (for local Redis)
+- PostgreSQL access (Neon is the current team baseline)
 
 ## Local setup
 
-1. Copy the environment template:
+1. Copy environment template.
+2. Fill database credentials.
+3. Start Redis with Docker Compose.
+4. Run backend.
+5. Run frontend.
 
-   ```powershell
-   Copy-Item .env.example .env
-   ```
+### Backend
 
-2. Fill in your database values in `.env`:
-   - `AUTHLYN_DB_URL`
-   - `AUTHLYN_DB_USERNAME`
-   - `AUTHLYN_DB_PASSWORD`
+```powershell
+Copy-Item .env.example .env
+docker compose up -d
+.\gradlew.bat bootRun
+```
 
-3. Optionally configure RSA signing keys in `.env`:
-   - `AUTHLYN_JWT_PRIVATE_KEY_PATH`
-   - `AUTHLYN_JWT_PUBLIC_KEY_PATH`
-   - or `AUTHLYN_JWT_PRIVATE_KEY` / `AUTHLYN_JWT_PUBLIC_KEY`
+### Frontend
 
-4. Start Redis locally:
+```powershell
+Set-Location frontend
+npm install
+npm run dev
+```
 
-   ```powershell
-   docker compose up -d
-   ```
+Frontend default URL: `http://localhost:5173`  
+Backend default URL: `http://localhost:8080`
 
-5. Run the app with Gradle:
+## Public endpoints (current)
 
-   ```powershell
-   .\gradlew.bat bootRun
-   ```
-
-6. Check the health endpoint:
-
-   ```powershell
-   Invoke-WebRequest http://localhost:8080/actuator/health | Select-Object -ExpandProperty Content
-   ```
-
-7. Check the JWKS endpoint:
-
-   ```powershell
-   Invoke-WebRequest http://localhost:8080/.well-known/jwks.json | Select-Object -ExpandProperty Content
-   ```
-
-8. Start the React frontend:
-
-   ```powershell
-   Set-Location frontend
-   npm install
-   npm run dev
-   ```
-
-9. Open the frontend:
-
-   ```text
-   http://localhost:5173
-   ```
+- `GET /actuator/health`
+- `GET /actuator/info`
+- `GET /actuator/prometheus`
+- `GET /.well-known/jwks.json`
+- `GET /api/public/meta`
 
 ## Environment variables
 
-The main variables are documented in `.env.example`.
+Main variables are documented in [`.env.example`](.env.example). Key values include:
 
 - `SERVER_PORT`
 - `AUTHLYN_DB_URL`
@@ -141,54 +103,28 @@ The main variables are documented in `.env.example`.
 - `AUTHLYN_DB_PASSWORD`
 - `AUTHLYN_REDIS_HOST`
 - `AUTHLYN_REDIS_PORT`
+- `AUTHLYN_REDIS_PASSWORD`
 - `AUTHLYN_JWT_ISSUER`
-- `AUTHLYN_JWT_JWKS_PATH`
-- `AUTHLYN_JWT_KID`
-- `AUTHLYN_JWT_PRIVATE_KEY_PATH`
-- `AUTHLYN_JWT_PUBLIC_KEY_PATH`
-- `AUTHLYN_JWT_PRIVATE_KEY`
-- `AUTHLYN_JWT_PUBLIC_KEY`
+- `AUTHLYN_JWK_SET_URI`
 - `AUTHLYN_ACCESS_TOKEN_MINUTES`
 - `AUTHLYN_REFRESH_TOKEN_DAYS`
 - `AUTHLYN_BCRYPT_STRENGTH`
 - `AUTHLYN_ALLOWED_ORIGINS`
 
-## Repository structure
+## Docs
 
-- `ARCHITECTURE.md` - target repository and codebase structure
-- `frontend/` - React frontend workspace
-- `src/main/java` - backend application source code
-- `src/main/resources` - configuration and Flyway migrations
-- `docker-compose.yml` - local Redis container
-- `.env.example` - sample local environment variables
-- `build.gradle` - Gradle build definition
-- `.github/` - issue templates, pull request template, and code of conduct
-
-## API notes
-
-- `GET /.well-known/jwks.json` publishes the public signing key set.
-- `GET /actuator/health` remains public for local checks.
-- `GET /api/public/meta` exposes a minimal public contract for the frontend shell.
-- JWTs issued by Authlyn should use `AUTHLYN_JWT_ISSUER` as the `iss` claim.
+- Root architecture overview: [`ARCHITECTURE.md`](ARCHITECTURE.md)
+- Docs index: [`docs/README.md`](docs/README.md)
+- Implementation roadmap/tasks: [`docs/tasks/README.md`](docs/tasks/README.md)
 
 ## Contributing
 
-Contributions are welcome. If you plan to submit changes, please:
+Please read:
 
-1. Fork the repository
-2. Create a feature branch
-3. Keep changes focused
-4. Run the Gradle test suite before opening a pull request
-5. Read [`.github/CODE_OF_CONDUCT.md`](.github/CODE_OF_CONDUCT.md) before participating
-
-## Roadmap
-
-- Add RSA key management and JWKS endpoint
-- Implement signup, login, logout, and refresh token rotation
-- Add Redis-backed session and rate-limiting support
-- Add immutable audit logging
-- Add MFA and OIDC provider metadata endpoints
+- [`CONTRIBUTING.md`](CONTRIBUTING.md)
+- [`.github/CODE_OF_CONDUCT.md`](.github/CODE_OF_CONDUCT.md)
+- [`SECURITY.md`](SECURITY.md)
 
 ## License
 
-This repository is licensed under the MIT License. See [`LICENSE`](LICENSE) for the full text.
+MIT — see [`LICENSE`](LICENSE).
