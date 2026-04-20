@@ -1,4 +1,4 @@
-    package com.authlyn.auth.api;
+package com.authlyn.modules.identity.api;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -10,4 +10,3 @@ public record SignupRequest(
         @Size(max = 120) String displayName
 ) {
 }
-

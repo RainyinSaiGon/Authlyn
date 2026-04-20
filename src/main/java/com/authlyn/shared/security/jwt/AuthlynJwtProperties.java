@@ -1,4 +1,4 @@
-package com.authlyn.security.jwt;
+package com.authlyn.shared.security.jwt;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

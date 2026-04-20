@@ -10,6 +10,7 @@ Implemented today:
 - Security filter behavior (public vs protected endpoints)
 - RSA key loading / generation and JWKS exposure
 - JWT verification for protected requests (resource server mode)
+- Frontend bootstrap metadata endpoint
 
 Not yet implemented:
 
@@ -51,6 +52,7 @@ Public endpoints are permitted by `SecurityConfig`:
 - `/actuator/info`
 - `/actuator/prometheus`
 - `${authlyn.jwt.jwks-path}` (default `/.well-known/jwks.json`)
+- `/api/public/meta`
 
 ```mermaid
 sequenceDiagram
@@ -72,6 +74,11 @@ sequenceDiagram
     JC->>RS: getPublicJwk()
     RS-->>JC: Public JWK
     JC-->>U: JWKS JSON
+
+    U->>SF: GET /api/public/meta
+    SF->>SF: Match permitAll paths
+    SF-->>JC: Allow without JWT
+    JC-->>U: Public metadata JSON
 ```
 
 ## Flow 3: Protected endpoint request (JWT verification)
@@ -104,5 +111,6 @@ sequenceDiagram
 
 - JWT issuance endpoint flow is not implemented yet in controllers/services, but encoder wiring is already present.
 - If RSA keys are not configured, generated keys are ephemeral and will change on restart.
+- React development is expected to run from `http://localhost:5173`, which is allowed by default via CORS.
 - Detailed key-management and rotation guidance is in:
   - [`jwt-jwks-flow.md`](./jwt-jwks-flow.md)

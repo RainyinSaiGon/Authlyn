@@ -1,4 +1,4 @@
-package com.authlyn.security.jwt;
+package com.authlyn.shared.security.jwt;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.KeyUse;

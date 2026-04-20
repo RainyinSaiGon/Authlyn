@@ -1,4 +1,4 @@
-package com.authlyn.security.jwt;
+package com.authlyn.shared.security.jwt;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

@@ -17,6 +17,12 @@ Authlyn is an open-source Spring Boot IAM platform scaffold built with Gradle. I
 
 This repository currently contains the core application bootstrap, security baseline, database migration foundation, and local development infrastructure. It is still a scaffold, not a finished IAM platform.
 
+The repository now follows a full-stack monorepo layout:
+
+- Spring Boot backend at the repository root
+- React + Vite frontend in [`frontend/`](frontend/)
+- architecture guidance in [`ARCHITECTURE.md`](ARCHITECTURE.md)
+
 ## Tech stack
 
 - Java `25`
@@ -30,11 +36,14 @@ This repository currently contains the core application bootstrap, security base
 ## What is already set up
 
 - Spring Boot application entry point in `src/main/java/com/authlyn/AuthlynApplication.java`
-- Security baseline in `src/main/java/com/authlyn/config/SecurityConfig.java`
-- RSA key management and JWKS support in `src/main/java/com/authlyn/security/jwt/`
+- Security baseline in `src/main/java/com/authlyn/shared/config/SecurityConfig.java`
+- RSA key management and JWKS support in `src/main/java/com/authlyn/shared/security/jwt/`
+- Identity/API module layout in `src/main/java/com/authlyn/modules/`
 - Database migration folder under `src/main/resources/db/migration`
 - Local Redis container via `docker-compose.yml`
 - Environment template in `.env.example`
+- React frontend scaffold in `frontend/`
+- Public frontend bootstrap endpoint at `GET /api/public/meta`
 
 ## Prerequisites
 
@@ -108,6 +117,20 @@ Architecture details, sequence flow, and key rotation guidance:
    Invoke-WebRequest http://localhost:8080/.well-known/jwks.json | Select-Object -ExpandProperty Content
    ```
 
+8. Start the React frontend:
+
+   ```powershell
+   Set-Location frontend
+   npm install
+   npm run dev
+   ```
+
+9. Open the frontend:
+
+   ```text
+   http://localhost:5173
+   ```
+
 ## Environment variables
 
 The main variables are documented in `.env.example`.
@@ -128,10 +151,13 @@ The main variables are documented in `.env.example`.
 - `AUTHLYN_ACCESS_TOKEN_MINUTES`
 - `AUTHLYN_REFRESH_TOKEN_DAYS`
 - `AUTHLYN_BCRYPT_STRENGTH`
+- `AUTHLYN_ALLOWED_ORIGINS`
 
 ## Repository structure
 
-- `src/main/java` - application source code
+- `ARCHITECTURE.md` - target repository and codebase structure
+- `frontend/` - React frontend workspace
+- `src/main/java` - backend application source code
 - `src/main/resources` - configuration and Flyway migrations
 - `docker-compose.yml` - local Redis container
 - `.env.example` - sample local environment variables
@@ -142,6 +168,7 @@ The main variables are documented in `.env.example`.
 
 - `GET /.well-known/jwks.json` publishes the public signing key set.
 - `GET /actuator/health` remains public for local checks.
+- `GET /api/public/meta` exposes a minimal public contract for the frontend shell.
 - JWTs issued by Authlyn should use `AUTHLYN_JWT_ISSUER` as the `iss` claim.
 
 ## Contributing
