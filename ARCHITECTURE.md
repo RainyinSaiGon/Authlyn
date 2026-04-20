@@ -2,27 +2,34 @@
 
 ## Overview
 
-Authlyn should be developed as a full-stack monorepo with a Spring Boot backend and a React frontend.
+Authlyn should be treated as a full-stack monorepo with a Spring Boot backend and a React frontend.
 
-The current repository state is intentionally reset to a lightweight backend scaffold so the system can be rebuilt feature-by-feature from the task documents.
+The repository currently contains a backend scaffold. This document defines the target structure we should build toward so the codebase stays understandable as the product grows.
 
 ## Architectural Goals
 
-- Keep backend code domain-oriented instead of organizing everything by technical layer.
-- Keep frontend code feature-oriented so UI, API calls, and state evolve together.
-- Separate cross-cutting infrastructure from product modules.
-- Make local development simple with one backend, one database, and one Redis instance.
-- Keep public API contracts explicit so the frontend does not couple to backend internals.
+- Keep backend code domain-oriented instead of grouping everything by technical layer.
+- Keep frontend code feature-oriented so UI, API calls, and view models evolve together.
+- Separate cross-cutting concerns from product modules.
+- Make local development simple: one backend, one frontend, one database, one Redis instance.
+- Use explicit public API boundaries so the frontend does not couple to backend internals.
 
 ## Repository Layout
 
 ```text
 Authlyn/
 |- ARCHITECTURE.md
+|- README.md
 |- Specs.md
-|- docs/
-|  |- architecture/
-|  `- tasks/
+|- docker-compose.yml
+|- frontend/
+|  |- package.json
+|  |- vite.config.ts
+|  |- src/
+|  |  |- app/
+|  |  |- features/
+|  |  |- shared/
+|  |  `- styles/
 |- src/
 |  |- main/
 |  |  |- java/com/authlyn/
@@ -32,21 +39,21 @@ Authlyn/
 |  |  `- resources/
 |  `- test/
 |     `- java/com/authlyn/
-|- frontend/              # to be rebuilt from tasks
-|- docker-compose.yml
+|- docs/
+|  `- architecture/
 `- gradle/
 ```
 
 ## Backend Structure
 
-Backend code should live under `src/main/java/com/authlyn`.
+Backend code lives under `src/main/java/com/authlyn`.
 
 ### Rules
 
 - `modules/` contains product domains and business-facing APIs.
-- `shared/` contains reusable cross-cutting infrastructure.
-- Controllers, DTOs, services, repositories, and domain models should live inside their owning module.
-- Configuration belongs in `shared` unless it is truly module-specific.
+- `shared/` contains cross-cutting concerns reused by multiple modules.
+- `config/` should stay under `shared/` unless the configuration is module-specific.
+- DTOs, controllers, services, and repositories should live inside the module they belong to.
 
 ### Target Backend Shape
 
@@ -59,28 +66,52 @@ com.authlyn
 |  |  |- application
 |  |  |- domain
 |  |  `- infrastructure
-|  |- organization
-|  |- platform
 |  `- system
+|     `- api
 `- shared
-   |- config
-   |- security
-   |- persistence
-   `- messaging
+	 |- config
+	 `- security
+			`- jwt
 ```
+
+### Current Backend Mapping
+
+- `shared.config`
+	- Spring Security and runtime configuration.
+- `shared.security.jwt`
+	- JWT key loading, JWKS publishing, JWT encoder/decoder support.
+- `modules.identity.api`
+	- Request/response contracts for identity endpoints.
+- `modules.system.api`
+	- Public system metadata endpoints useful for health and frontend bootstrapping.
 
 ## Frontend Structure
 
-The frontend should live in `frontend/` and use React with a feature-oriented structure.
+Frontend code lives in `frontend/` and uses React with Vite and TypeScript.
+
+### Rules
+
+- `app/` contains app shell composition and root-level orchestration.
+- `features/` contains user-facing slices with their own components and API access.
+- `shared/` contains common utilities, typed API helpers, config readers, and reusable UI primitives.
+- `styles/` contains global styling and design tokens.
 
 ### Target Frontend Shape
 
 ```text
 frontend/src
 |- app
+|  `- App.tsx
 |- features
+|  `- overview
+|     |- api
+|     `- components
 |- shared
+|  |- api
+|  |- config
+|  `- types
 `- styles
+	 `- global.css
 ```
 
 ## Runtime Boundaries
@@ -89,32 +120,41 @@ frontend/src
 
 - Runs on `http://localhost:8080` by default.
 - Owns authentication, token issuance, persistence, and public key exposure.
-- Publishes public endpoints such as `/.well-known/*` and selected `/api/public/*` routes.
+- Exposes public endpoints under `/.well-known/*`, `/actuator/*`, and selected `/api/public/*` routes.
 
 ### Frontend
 
-- Runs separately in development.
+- Runs on `http://localhost:5173` in development.
 - Talks only to backend HTTP endpoints.
-- Must not read database or secret material directly.
+- Never reads database or secret material directly.
+
+### Development Integration
+
+- Vite proxies `/api`, `/actuator`, and `/.well-known` to the backend during local development.
+- Spring Security must allow CORS for the frontend dev origin.
+- The frontend should consume typed JSON contracts instead of embedding endpoint logic directly in components.
 
 ## Refactor Direction
 
-Rebuild the system in this order:
+The current codebase should evolve in this order:
 
-1. Lock design contracts and shared infrastructure rules.
-2. Implement the identity module end-to-end.
-3. Add session, security, and recovery flows.
-4. Add organizations, RBAC, and enterprise capabilities.
-5. Rebuild the frontend on top of explicit backend contracts.
+1. Stabilize repository layout and naming.
+2. Keep JWT/security code in `shared`.
+3. Move auth-facing DTOs and endpoints into `modules.identity`.
+4. Add system/public endpoints for frontend bootstrapping.
+5. Add service, repository, and domain layers inside modules only when the feature needs them.
 
 ## Naming Conventions
 
-- Prefer `modules.<domain>` for product code.
+- Prefer `modules.<domain>` for feature code.
 - Prefer `shared.<capability>` for reusable infrastructure.
-- Use explicit class names such as `AuthController`, `RefreshTokenService`, and `PublicMetaController`.
+- Prefer singular module names when describing a product capability: `identity`, `system`, `audit`.
+- Keep classes explicit: `PublicMetaController`, `SignupRequest`, `RsaKeyService`.
 
-## Build Strategy
+## Near-Term Milestones
 
-- Rebuild from the task documents under `docs/tasks/`.
-- Update architecture docs whenever interfaces, endpoints, database schema, or lifecycle rules change.
-- Keep each implementation slice small enough to test end-to-end.
+- Build signup and login APIs in `modules.identity`.
+- Add persistent user/session services and repositories.
+- Add frontend routes for sign in, sign up, and account management.
+- Add OpenAPI or contract documentation for frontend/backend integration.
+- Split generated artifacts and handwritten code clearly as the system grows.

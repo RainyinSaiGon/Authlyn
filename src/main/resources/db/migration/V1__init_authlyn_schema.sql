@@ -1,3 +1,5 @@
+-- Authlyn targets PostgreSQL 18+, where gen_random_uuid() is available natively.
+
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) NOT NULL,

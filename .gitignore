@@ -1,6 +1,7 @@
 # Gradle
 .gradle/
 build/
+bin/
 out/
 
 # ID
@@ -19,9 +20,17 @@ logs/
 # Env files
 .env
 !.env.example
+frontend/.env
 
 # Java
 *.class
+
+# Frontend
+node_modules/
+dist/
+frontend/node_modules/
+frontend/dist/
+*.tsbuildinfo
 
 #Agents
 .agents/
