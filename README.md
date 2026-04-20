@@ -1,9 +1,15 @@
-# Authlyn
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-![Java 25](https://img.shields.io/badge/Java-25-orange.svg)
-![Spring Boot 4.0.5](https://img.shields.io/badge/Spring%20Boot-4.0.5-brightgreen.svg)
-![Gradle](https://img.shields.io/badge/Build-Gradle-02303A.svg)
+
+![Authlyn logo](./assets/Logo-transparent.png)
+
+<!-- markdownlint-disable MD033 -->
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT" /></a>
+  <img src="https://img.shields.io/badge/Java-25-orange.svg" alt="Java 25" />
+  <img src="https://img.shields.io/badge/Spring%20Boot-4.0.5-brightgreen.svg" alt="Spring Boot 4.0.5" />
+  <img src="https://img.shields.io/badge/Build-Gradle-02303A.svg" alt="Gradle" />
+</p>
+<!-- markdownlint-enable MD033 -->
 
 Authlyn is a full-stack IAM platform scaffold with a Spring Boot backend and a React + Vite frontend.
 
