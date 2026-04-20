@@ -1,8 +1,9 @@
 
-
-![Authlyn logo](./assets/Logo-transparent.png)
-
 <!-- markdownlint-disable MD033 -->
+<p align="center">
+  <img src="./assets/Logo-transparent.png" alt="Authlyn logo" width="180" />
+</p>
+
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT" /></a>
   <img src="https://img.shields.io/badge/Java-25-orange.svg" alt="Java 25" />
