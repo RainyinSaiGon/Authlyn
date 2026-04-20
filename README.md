@@ -1,7 +1,7 @@
 
 <!-- markdownlint-disable MD033 -->
 <p align="center">
-  <img src="./assets/Logo-transparent.png" alt="Authlyn logo" width="180" />
+  <img src="./assets/Logo-transparent.png" alt="Authlyn logo" width="280" />
 </p>
 
 <p align="center">
