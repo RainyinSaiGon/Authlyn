@@ -6,7 +6,7 @@
 > 3. Do not add feature logic in this task beyond what is needed for the baseline.
 
 ## GitHub Issue
-- Link: TBD
+- Link: https://github.com/RainyinSaiGon/Authlyn/issues/3
 
 ---
 
