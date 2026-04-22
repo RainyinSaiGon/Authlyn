@@ -1,6 +1,6 @@
 # Testing Strategy
 
-This document outlines the testing approach for the Authlyn project. For detailed test structure, naming conventions, and setup, see [Testing Baseline](../dev/testing-baseline.md).
+This document outlines the testing approach for the Authlyn project. For detailed test structure, naming conventions, and setup, see [Testing Baseline](./testing-baseline.md).
 
 ## Test Pyramid
 

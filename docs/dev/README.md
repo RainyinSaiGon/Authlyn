@@ -1,23 +1,13 @@
-# Developer Guides
+# Developer Guidelines
 
-This folder contains guides for developers working on the Authlyn project.
+This folder contains core development principles and contracts governance.
 
-## Core Guides
+## Essential Reading
 
-1. **[Testing Baseline](./testing-baseline.md)** – Test structure, naming conventions, when to use each test type
-2. **[Contract Governance](./contract-governance.md)** – What counts as source of truth, how contracts evolve
-3. **[Local Development Setup](../runbooks/local-development.md)** – Getting started with backend/frontend locally
+- **[Contract Governance](./contract-governance.md)** – What documentation is source of truth and how to change contracts
 
-## Quick Links
+## Related Documentation
 
-- **First time?** → Start with [Local Development Setup](../runbooks/local-development.md)
-- **Writing tests?** → See [Testing Baseline](./testing-baseline.md)
-- **Modifying contracts?** → See [Contract Governance](./contract-governance.md)
-- **Understanding architecture?** → See [Architecture Docs](../architecture/README.md)
-
-## Key Principles
-
-- **Contracts first**: Architecture docs are the source of truth
-- **Tests validate**: Code must match contracts; tests validate compliance
-- **Keep it simple**: Local workflow is straightforward; complexity hides bugs
-- **Document conventions**: New team members should understand project structure quickly
+- **Testing**: See [Testing Baseline](../tests/testing-baseline.md) and [Test Strategy](../tests/strategy.md)
+- **Setup**: See [Local Development Setup](../runbooks/local-development.md)
+- **Architecture**: See [Architecture Overview](../architecture/index.md)

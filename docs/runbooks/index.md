@@ -1,14 +1,19 @@
-# Runbooks Index
+# Runbooks
 
-Runbooks capture operational procedures.
+Runbooks capture step-by-step operational procedures.
 
-## Documents
+## First Time Setup
 
-- [Local Development Setup](./local-development.md) – Set up backend/frontend for local development
-- [Release Runbook](./release.md)
-- [Incident Response](./incident-response.md)
+- **[Local Development Setup](./local-development.md)** – Get the app running locally
+  - For new developers, start here
+  - Then read [Testing Baseline](../tests/testing-baseline.md) to understand test conventions
 
-## Notes
+## Operations
 
-- Keep steps short and executable.
-- Link to commands/scripts once available.
+- [Release Runbook](./release.md) – Deploy to production
+- [Incident Response](./incident-response.md) – Handle issues in production
+
+## Quick Reference
+
+- See [Developer Guides](../dev/README.md) for architecture and contract rules
+- See [Testing Docs](../tests/index.md) for test structure and strategy
