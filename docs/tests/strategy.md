@@ -77,7 +77,7 @@ Tests are organized by type and execution speed:
 | Platform (API keys/webhooks) | **Tier 3** | >50% | Admin feature; less critical initially |
 | Shared (utils/errors) | **Tier 2** | >80% | Cross-cutting; used by all modules |
 
-**Overall project target**: >70% line coverage (enforced in CI).
+**Overall project target**: >70% line coverage (CI enforcement planned in a future phase).
 
 ## Test Environment Matrix
 
@@ -114,6 +114,6 @@ Tests are organized by type and execution speed:
 
 ## References
 
-- [Testing Baseline](../dev/testing-baseline.md) – Test structure, naming, setup
-- [Local Development](./local-development.md) – How to run tests locally
-- [Architecture](../architecture/README.md) – Module contracts and boundaries
+- [Testing Baseline](./testing-baseline.md) – Test structure, naming, setup
+- [Local Development](../runbooks/local-development.md) – How to run tests locally
+- [Architecture](../architecture/index.md) – Module contracts and boundaries

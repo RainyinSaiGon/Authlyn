@@ -191,6 +191,6 @@ Contracts exist to prevent accidental breakage and enable safe refactoring.
 
 ## References
 
-- [Architecture Docs](../architecture/README.md)
+- [Architecture Docs](../architecture/index.md)
 - [Module Structure](../../ARCHITECTURE.md)
 - [Phase Roadmap](../tasks/README.md)

@@ -197,13 +197,13 @@ npm run preview
 
 ### Backend Integration Tests (with Testcontainers)
 
-Tests marked with `@Integration` or using Testcontainers will automatically spin up containerized dependencies (PostgreSQL, Redis) and clean them up after.
+Tests using integration-test setup such as `@SpringBootTest` and `@Testcontainers` will automatically spin up containerized dependencies (PostgreSQL, Redis) and clean them up after.
 
-For details on test structure and naming conventions, see [Testing Baseline](./testing-baseline.md).
+For details on test structure and naming conventions, see [Testing Baseline](../tests/testing-baseline.md).
 
 ### Frontend Unit Tests (Future)
 
-Frontend testing strategy is documented in [Testing Baseline](./testing-baseline.md). Test runners and configuration will be added during phase 01-02.
+Frontend testing strategy is documented in [Testing Baseline](../tests/testing-baseline.md). Test runners and configuration will be added during phase 01-02.
 
 ## Debugging
 
@@ -352,6 +352,6 @@ docker compose up -d
 
 ## Next Steps
 
-- Review [Testing Baseline](./testing-baseline.md) to understand test structure and conventions
-- Review [Architecture](../architecture/README.md) to understand module contracts
+- Review [Testing Baseline](../tests/testing-baseline.md) to understand test structure and conventions
+- Review [Architecture](../architecture/index.md) to understand module contracts
 - Check [Repository Layout](../README.md) for documentation organization

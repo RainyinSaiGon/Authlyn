@@ -8,7 +8,7 @@ This folder contains living documentation for Authlyn.
    - Install: Java 25, Node.js 20+, Docker
    - Run: `docker compose up -d`, `./gradlew bootRun`, `cd frontend && npm run dev`
 
-2. **Understand the code**: [Architecture Overview](./architecture/README.md) and [Module Structure](../ARCHITECTURE.md)
+2. **Understand the code**: [Architecture Overview](./architecture/index.md) and [Module Structure](../ARCHITECTURE.md)
 
 3. **Learn testing**: [Testing Baseline](./tests/testing-baseline.md) and [Test Strategy](./tests/strategy.md)
 

@@ -48,11 +48,11 @@ src/
 
 - **Unit test class**: `{ClassName}Test.java`
   - Example: `User.java` → `UserTest.java`
-  - Annotated with `@UnitTest` or `@DisplayName("User")`
+  - Plain JUnit 5 test class; use `@DisplayName("User")` only when a clearer test label helps readability
 
 - **Integration test class**: `{ClassName}IntegrationTest.java`
   - Example: `AuthController.java` → `AuthControllerIntegrationTest.java`
-  - Annotated with `@Integration` or `@SpringBootTest`
+  - Use `@SpringBootTest` when the test loads the Spring context or exercises infrastructure boundaries
 
 - **Test method naming**: `test{Scenario}{ExpectedOutcome}`
   - Example: `testLoginWithValidCredentialsReturnsToken()`
@@ -286,11 +286,12 @@ setupServer(...handlers);
 # All tests
 ./gradlew test
 
-# Only unit tests (fast)
-./gradlew test -DexcludeIntegration
+# Integration tests by naming convention
+./gradlew test --tests '*IntegrationTest'
 
-# Only integration tests
-./gradlew test -Dinclude=IntegrationTest
+# No dedicated "unit tests only" filter is currently configured.
+# Run specific unit test classes with --tests, for example:
+./gradlew test --tests AuthServiceTest
 
 # Specific test class
 ./gradlew test --tests AuthServiceTest
@@ -339,5 +340,5 @@ Test results gate PR merges (no failures allowed).
 ## Next Steps
 
 - See [Local Development Setup](../runbooks/local-development.md) to run tests locally
-- See [Architecture Docs](../architecture/README.md) to understand modules and contracts
+- See [Architecture Docs](../architecture/index.md) to understand modules and contracts
 - Phase 01-01 will add JWT/JWKS tests and expand identity module tests
