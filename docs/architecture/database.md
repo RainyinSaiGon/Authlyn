@@ -6,7 +6,9 @@ Migration SQL files remain the implementation source of truth. This document des
 
 ## 0. Baseline and Conventions
 
-- Current baseline migration: `src/main/resources/db/migration/V1__init_authlyn_schema.sql`
+- Current migrations:
+  - `src/main/resources/db/migration/V1__init_authlyn_schema.sql`
+  - `src/main/resources/db/migration/V2__sessions_expiry_and_revoke_reason.sql`
 - Target database: PostgreSQL 18+
 - Primary key strategy: `UUID` with `gen_random_uuid()`
 - Timestamp strategy: `TIMESTAMPTZ` in UTC
@@ -84,7 +86,7 @@ From the baseline migration:
 
 ### 4.1 Identity-critical indexes
 
-- `idx_sessions_user_id`, `idx_sessions_org_id`, `idx_sessions_last_seen_at`
+- `idx_sessions_user_id`, `idx_sessions_org_id`, `idx_sessions_last_seen_at`, `idx_sessions_expires_at`
 - `idx_refresh_tokens_user_id`, `idx_refresh_tokens_session_id`, `idx_refresh_tokens_expires_at`
 - `uq_users_email_ci`
 
@@ -124,6 +126,7 @@ Expected hot reads:
 ### 5.1 Sessions and refresh tokens
 
 - Session lifecycle details are defined in `docs/architecture/state-machine.md`.
+- `sessions.expires_at` and `sessions.revoke_reason` are available for explicit expiry/revocation persistence.
 - Refresh token lifecycle and reuse detection rules are defined in `docs/architecture/state-machine.md`.
 - `refresh_tokens.replaced_by_token_id`, `revoked_at`, and `reuse_detected` support rotation chain and abuse detection.
 
@@ -156,4 +159,4 @@ Each addition must define ownership, constraints, and indexes in this document w
 
 ## 8. Status
 
-The database baseline now documents current tables, intended ownership, key constraints, and lifecycle expectations for task `00-01`.
+The database baseline now documents current tables, intended ownership, key constraints, and lifecycle expectations for task `00-01`, including session expiry/revocation persistence alignment.

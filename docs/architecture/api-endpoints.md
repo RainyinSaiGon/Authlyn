@@ -8,9 +8,10 @@ It is the API-side counterpart of `docs/architecture/interfaces.md` and should b
 
 ### 0.1 Base and Versioning
 
-- Base path: `/api`
-- Public unauthenticated paths start with `/api/public/*`
-- Protected user paths use `/api/*`
+- Application API base path: `/api`
+- Public unauthenticated application endpoints start with `/api/public/*`
+- Protected user application endpoints use `/api/*`
+- Explicit exceptions may exist outside `/api` for standards-based or operational endpoints documented here, such as `/.well-known/*` and `/actuator/*`.
 - First contract generation is treated as `v1` behavior, even if path versioning is not yet enabled.
 
 ### 0.2 Authentication Modes

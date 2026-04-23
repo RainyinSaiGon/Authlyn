@@ -377,7 +377,7 @@ interface MembershipRepository {
 
 ### 5.1 API Key Management
 
-```Java
+```java
 interface ApiKeyService {
   CreatedApiKey create(CreateApiKeyCommand command)
   void revoke(RevokeApiKeyCommand command)
@@ -385,12 +385,12 @@ interface ApiKeyService {
   List<ApiKeyView> listByOrganization(OrganizationId organizationId)
 }
 
-record CreatedApiKey(ApiKeyView key, String rawSecret)  # rawSecret returned only once
+record CreatedApiKey(ApiKeyView key, String rawSecret)  // rawSecret returned only once
 ```
 
 ### 5.2 Webhooks
 
-```Java 
+```java
 interface WebhookService {
   WebhookView create(CreateWebhookCommand command)
   void delete(DeleteWebhookCommand command)
@@ -406,7 +406,7 @@ interface WebhookDeliveryService {
 
 ### 5.3 Audit and Admin APIs
 
-```Java
+```java
 interface AuditLogQueryService {
   Page<AuditEventView> search(AuditQuery query)
 }
@@ -423,40 +423,40 @@ interface AdminAuthService {
 
 ### 6.1 Auth Client
 
-```Java
+```typescript
 interface AuthApiClient {
-  Promise<SignupResponse> signup(SignupRequest request)
-  Promise<LoginResponse> login(LoginRequest request)
-  Promise<RefreshResponse> refresh(RefreshRequest request)
-  Promise<void> logout(LogoutRequest request)
-  Promise<void> logoutAll()
-  Promise<CurrentUserResponse> me()
+  signup(request: SignupRequest): Promise<SignupResponse>
+  login(request: LoginRequest): Promise<LoginResponse>
+  refresh(request: RefreshRequest): Promise<RefreshResponse>
+  logout(request: LogoutRequest): Promise<void>
+  logoutAll(): Promise<void>
+  me(): Promise<CurrentUserResponse>
 }
 ```
 
 ### 6.2 Session Bootstrap
 
-```Java
+```typescript
 interface SystemApiClient {
-  Promise<PublicMetaResponse> getPublicMeta()
+  getPublicMeta(): Promise<PublicMetaResponse>
 }
 
-record PublicMetaResponse(
-  String appName,
-  String status,
-  String jwksPath,
-  String architectureDoc
-)
+interface PublicMetaResponse {
+  appName: string
+  status: string
+  jwksPath: string
+  architectureDoc: string
+}
 ```
 
 ### 6.3 Self-Service Portal Contracts
 
-```Java
+```typescript
 interface ProfileApiClient {
-  Promise<ProfileResponse> getProfile()
-  Promise<ProfileResponse> updateProfile(UpdateProfileRequest request)
-  Promise<void> requestEmailChange(RequestEmailChangeRequest request)
-  Promise<void> requestPhoneChange(RequestPhoneChangeRequest request)
+  getProfile(): Promise<ProfileResponse>
+  updateProfile(request: UpdateProfileRequest): Promise<ProfileResponse>
+  requestEmailChange(request: RequestEmailChangeRequest): Promise<void>
+  requestPhoneChange(request: RequestPhoneChangeRequest): Promise<void>
 }
 ```
 
@@ -475,4 +475,4 @@ interface ProfileApiClient {
 
 ## 8. Status
 
-This file now defines Option B (full detailed baseline contracts). Each implementation task must refine these pseudo-signatures into concrete code contracts without violating section-level invariants.
+This file is the baseline detailed contract set for task `00-01`. Each implementation task must refine these pseudo-signatures into concrete code contracts without violating section-level invariants.
