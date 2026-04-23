@@ -14,8 +14,8 @@
 
 Authlyn is a full-stack IAM platform scaffold with a Spring Boot backend and a React + Vite frontend.
 
-- Backend: JWT/JWKS baseline, OAuth2 resource-server setup, Flyway, PostgreSQL, Redis
-- Frontend: typed API client baseline and health/meta integration
+- Backend: clean Spring Boot scaffold baseline, security config, Flyway, PostgreSQL, Redis
+- Frontend: typed API client baseline and health integration
 - Docs: architecture, phased tasks, and lightweight planning docs
 
 [License](LICENSE) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Issues](https://github.com/RainyinSaiGon/Authlyn/issues)
@@ -97,8 +97,6 @@ Backend default URL: `http://localhost:8080`
 - `GET /actuator/health`
 - `GET /actuator/info`
 - `GET /actuator/prometheus`
-- `GET /.well-known/jwks.json`
-- `GET /api/public/meta`
 
 ## Environment variables
 
@@ -111,10 +109,6 @@ Main variables are documented in [`.env.example`](.env.example). Key values incl
 - `AUTHLYN_REDIS_HOST`
 - `AUTHLYN_REDIS_PORT`
 - `AUTHLYN_REDIS_PASSWORD`
-- `AUTHLYN_JWT_ISSUER`
-- `AUTHLYN_JWK_SET_URI`
-- `AUTHLYN_ACCESS_TOKEN_MINUTES`
-- `AUTHLYN_REFRESH_TOKEN_DAYS`
 - `AUTHLYN_BCRYPT_STRENGTH`
 - `AUTHLYN_ALLOWED_ORIGINS`
 
