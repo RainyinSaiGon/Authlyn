@@ -22,7 +22,7 @@ Rebuild the backend from the reset Spring Boot scaffold, using the smaller Phase
 
 - [x] Confirm the scaffold includes only app entry point, security config, application config, migration, and context test
 - [x] Confirm JWT/JWKS implementation has been removed
-- [ ] Confirm the database is empty and ready for migrations
+- [x] Confirm the database is empty and ready for migrations — verified via local Testcontainers context test; Flyway runs V1+V2 from scratch on each clean boot
 
 ### Planning
 
