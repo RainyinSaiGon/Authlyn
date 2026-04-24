@@ -20,21 +20,21 @@ Rebuild the backend from the reset Spring Boot scaffold, using the smaller Phase
 
 ### Starting State
 
-- [ ] Confirm the scaffold includes only app entry point, security config, application config, migration, and context test
-- [ ] Confirm JWT/JWKS implementation has been removed
-- [ ] Confirm the database is empty and ready for migrations
+- [x] Confirm the scaffold includes only app entry point, security config, application config, migration, and context test
+- [x] Confirm JWT/JWKS implementation has been removed
+- [x] Confirm the database is empty and ready for migrations — verified via local Testcontainers context test; Flyway runs V1+V2 from scratch on each clean boot
 
 ### Planning
 
-- [ ] Restore shared backend infrastructure in small slices
-- [ ] Rebuild the identity module before session and security enhancements
+- [x] Restore shared backend infrastructure in small slices
+- [x] Rebuild the identity module before session and security enhancements
 
 ---
 
 ## Completion Criteria
 
-- [ ] The scaffold is confirmed as the practice baseline
-- [ ] Follow-up tasks are ordered clearly for backend rebuilding
+- [x] The scaffold is confirmed as the practice baseline
+- [x] Follow-up tasks are ordered clearly for backend rebuilding
 
 ---
 
