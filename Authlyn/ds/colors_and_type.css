@@ -1,0 +1,205 @@
+/* ============================================================
+   Authlyn Design System — Colors & Type
+   Source of truth: frontend/src/styles/global.css from the
+   Authlyn repo (RainyinSaiGon/Authlyn).
+   ============================================================ */
+
+/* ------- Fonts ------------------------------------------- */
+/* Google Sans Code — official brand font.
+   - Monospaced (for code, endpoints, keys)
+   - Proportional (for UI body / headings — replaces Space Grotesk)
+   Instrument Serif — italic display accent (one-liner only), kept
+   from the Authlyn codebase.
+*/
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap");
+
+/* --- Google Sans Code — monospaced --- */
+@font-face { font-family: "Google Sans Code"; font-style: normal; font-weight: 300; src: url("fonts/GoogleSansCode-Light.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code"; font-style: italic; font-weight: 300; src: url("fonts/GoogleSansCode-LightItalic.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code"; font-style: normal; font-weight: 400; src: url("fonts/GoogleSansCode-Regular.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code"; font-style: italic; font-weight: 400; src: url("fonts/GoogleSansCode-Italic.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code"; font-style: normal; font-weight: 500; src: url("fonts/GoogleSansCode-Medium.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code"; font-style: italic; font-weight: 500; src: url("fonts/GoogleSansCode-MediumItalic.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code"; font-style: normal; font-weight: 600; src: url("fonts/GoogleSansCode-SemiBold.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code"; font-style: italic; font-weight: 600; src: url("fonts/GoogleSansCode-SemiBoldItalic.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code"; font-style: normal; font-weight: 700; src: url("fonts/GoogleSansCode-Bold.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code"; font-style: italic; font-weight: 700; src: url("fonts/GoogleSansCode-BoldItalic.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code"; font-style: normal; font-weight: 800; src: url("fonts/GoogleSansCode-ExtraBold.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code"; font-style: italic; font-weight: 800; src: url("fonts/GoogleSansCode-ExtraBoldItalic.ttf") format("truetype"); font-display: swap; }
+
+/* --- Google Sans Code Proportional — for body / UI --- */
+@font-face { font-family: "Google Sans Code Proportional"; font-style: normal; font-weight: 300; src: url("fonts/GoogleSansCode_Proportional-Light.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code Proportional"; font-style: italic; font-weight: 300; src: url("fonts/GoogleSansCode_Proportional-LightItalic.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code Proportional"; font-style: normal; font-weight: 400; src: url("fonts/GoogleSansCode_Proportional-Regular.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code Proportional"; font-style: italic; font-weight: 400; src: url("fonts/GoogleSansCode_Proportional-Italic.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code Proportional"; font-style: normal; font-weight: 500; src: url("fonts/GoogleSansCode_Proportional-Medium.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code Proportional"; font-style: italic; font-weight: 500; src: url("fonts/GoogleSansCode_Proportional-MediumItalic.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code Proportional"; font-style: normal; font-weight: 600; src: url("fonts/GoogleSansCode_Proportional-SemiBold.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code Proportional"; font-style: italic; font-weight: 600; src: url("fonts/GoogleSansCode_Proportional-SemiBoldItalic.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code Proportional"; font-style: normal; font-weight: 700; src: url("fonts/GoogleSansCode_Proportional-Bold.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code Proportional"; font-style: italic; font-weight: 700; src: url("fonts/GoogleSansCode_Proportional-BoldItalic.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code Proportional"; font-style: normal; font-weight: 800; src: url("fonts/GoogleSansCode_Proportional-ExtraBold.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Google Sans Code Proportional"; font-style: italic; font-weight: 800; src: url("fonts/GoogleSansCode_Proportional-ExtraBoldItalic.ttf") format("truetype"); font-display: swap; }
+
+:root {
+  /* ---- Brand core (from codebase) ---- */
+  --brand-accent:        #f87d49;   /* soft orange — primary actions, focus */
+  --brand-accent-soft:   #ffd8c7;   /* peach — eyebrows, labels on dark */
+  --brand-mint:          #6cd0b0;   /* mint — shield/key mark, success, display italic */
+  --brand-danger:        #f15d78;   /* coral — destructive / error */
+
+  /* ---- Foreground / Background (dark theme — primary) ---- */
+  --bg-0:                #09131d;   /* deepest — page bg bottom */
+  --bg-1:                #102230;   /* page bg top */
+  --bg-glow-warm:        rgba(248, 125, 73, 0.24);  /* top-left radial */
+  --bg-glow-cool:        rgba(108, 208, 176, 0.16); /* top-right radial */
+
+  --surface:             rgba(10, 24, 35, 0.78);    /* glass panel */
+  --surface-strong:      rgba(15, 31, 44, 0.94);    /* solid panel */
+  --surface-accent:      linear-gradient(160deg, rgba(248,125,73,0.14), rgba(248,125,73,0.02));
+
+  --border:              rgba(255, 255, 255, 0.10);
+  --border-strong:       rgba(255, 255, 255, 0.18);
+  --border-mint:         rgba(108, 208, 176, 0.24);
+
+  --fg-1:                #f8f2e8;                    /* primary text (warm cream) */
+  --fg-2:                rgba(248, 242, 232, 0.72);  /* muted */
+  --fg-3:                rgba(248, 242, 232, 0.48);  /* dim / captions */
+  --fg-bright:           #fff7ee;                    /* emphasized values */
+
+  /* ---- Status ---- */
+  --success:             #6cd0b0;
+  --danger:              #f15d78;
+  --danger-soft:         #ffd0d8;
+  --warning:             #f0b84a;
+
+  /* ---- Optional light/docs palette (user-provided notes) ----
+     Use for admin console, documentation, printed materials —
+     NOT the primary product surface. */
+  --docs-fg:             #212737;  /* slate body text */
+  --docs-accent:         #AB4B08;  /* burnt orange — links, accents */
+  --docs-bg:             #ffffff;
+
+  /* ---- Radii ---- */
+  --r-xs:   6px;
+  --r-sm:   12px;
+  --r-md:   18px;
+  --r-lg:   22px;
+  --r-xl:   28px;
+  --r-pill: 999px;
+
+  /* ---- Spacing (Tailwind-ish rhythm) ---- */
+  --s-1: 0.25rem;   /* 4  */
+  --s-2: 0.5rem;    /* 8  */
+  --s-3: 0.75rem;   /* 12 */
+  --s-4: 1rem;      /* 16 */
+  --s-5: 1.25rem;   /* 20 */
+  --s-6: 1.5rem;    /* 24 */
+  --s-8: 2rem;      /* 32 */
+  --s-10: 2.5rem;   /* 40 */
+  --s-12: 3rem;     /* 48 */
+  --s-16: 4rem;     /* 64 */
+
+  /* ---- Elevation ---- */
+  --shadow-panel:   0 24px 80px rgba(0, 0, 0, 0.20);
+  --shadow-raise:   0 12px 36px rgba(0, 0, 0, 0.28);
+  --shadow-inset:   inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+  /* ---- Blur ---- */
+  --blur-panel:  blur(18px);
+  --blur-pill:   blur(14px);
+
+  /* ---- Motion ---- */
+  --ease-standard: cubic-bezier(0.2, 0.0, 0.0, 1.0);
+  --ease-emphasis: cubic-bezier(0.2, 0.8, 0.2, 1.0);
+  --dur-fast:   120ms;
+  --dur-med:    200ms;
+  --dur-slow:   320ms;
+
+  /* ---- Type scale (based on 16px body) ---- */
+  --font-sans:    "Google Sans Code Proportional", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-mono:    "Google Sans Code", ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  --fs-xs:   0.78rem;  /* 12.5 — eyebrows / caps */
+  --fs-sm:   0.85rem;  /* 13.6 — pill labels */
+  --fs-base: 1rem;     /* 16   — body */
+  --fs-md:   1.08rem;  /* 17   — lead */
+  --fs-lg:   1.25rem;  /* 20 */
+  --fs-xl:   1.5rem;   /* 24 */
+  --fs-2xl:  2rem;     /* 32 — h2 */
+  --fs-hero: clamp(3.4rem, 8vw, 6.8rem);   /* responsive hero */
+
+  --lh-tight:   0.92;
+  --lh-snug:    1.2;
+  --lh-normal:  1.5;
+  --lh-relaxed: 1.7;
+
+  --tracking-caps: 0.18em;
+  --tracking-label: 0.08em;
+}
+
+/* ------- Semantic element styles ------------------------- */
+html, body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+  color: var(--fg-1);
+  background:
+    radial-gradient(circle at top left,  var(--bg-glow-warm), transparent 28%),
+    radial-gradient(circle at top right, var(--bg-glow-cool), transparent 32%),
+    linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 100%);
+}
+
+.h-hero {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: var(--fs-hero);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.h-hero .accent {
+  display: block;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--brand-mint);
+  letter-spacing: 0;
+}
+
+.h1 { font-size: var(--fs-2xl); font-weight: 600; line-height: var(--lh-snug); margin: 0; }
+.h2 { font-size: var(--fs-xl);  font-weight: 600; line-height: var(--lh-snug); margin: 0; }
+.h3 { font-size: var(--fs-lg);  font-weight: 600; line-height: var(--lh-snug); margin: 0; }
+
+.eyebrow, .kicker {
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+  font-size: var(--fs-xs);
+  color: var(--brand-accent-soft);
+  margin: 0 0 var(--s-3);
+}
+
+.p       { color: var(--fg-2); line-height: var(--lh-relaxed); }
+.lead    { color: var(--fg-2); font-size: var(--fs-md); line-height: var(--lh-relaxed); max-width: 62rem; }
+.caption { color: var(--fg-3); font-size: var(--fs-sm); }
+
+.code, code, kbd, pre {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+.code { color: var(--brand-accent-soft); }
+
+.label-caps {
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  font-size: var(--fs-sm);
+  color: var(--brand-accent-soft);
+}
+
+/* Focus — visible on dark surfaces */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}

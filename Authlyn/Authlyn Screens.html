@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Authlyn — Design System Screens</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="screen.css"/>
+  <style>
+    html, body { margin: 0; padding: 0; background: #f0eee9; font-family: var(--font-sans); }
+    #root { width: 100%; min-height: 100vh; }
+  </style>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" src="design-canvas.jsx"></script>
+  <script type="text/babel" src="primitives.jsx"></script>
+  <script type="text/babel" src="screens-marketing.jsx"></script>
+  <script type="text/babel" src="screens-auth.jsx"></script>
+  <script type="text/babel" src="screens-account.jsx"></script>
+  <script type="text/babel" src="screens-admin.jsx"></script>
+  <script type="text/babel" src="screens-dev.jsx"></script>
+
+  <script type="text/babel" data-presets="env,react">
+    const { useEffect } = React;
+
+    // Tweaks — exposed via the preview toolbar toggle.
+    const TWEAKS = /*EDITMODE-BEGIN*/{
+      "accent":  "#f87d49",
+      "mint":    "#6cd0b0",
+      "density": "comfortable"
+    }/*EDITMODE-END*/;
+
+    function useTweaks(t) {
+      useEffect(() => {
+        const r = document.documentElement;
+        r.style.setProperty('--brand-accent', t.accent);
+        r.style.setProperty('--brand-mint', t.mint);
+      }, [t.accent, t.mint]);
+    }
+
+    // Standard screen frame: fixed 1280×800 browser-style viewport.
+    const W = 1280, H = 800;
+    const PHONE_W = 420, PHONE_H = 800;
+
+    function Frame({ children, w = W, h = H }) {
+      return (
+        <div style={{ width: w, height: h, position: 'relative', overflow: 'hidden' }}>
+          {children}
+        </div>
+      );
+    }
+
+    function App() {
+      useTweaks(TWEAKS);
+      return (
+        <DesignCanvas title="Authlyn — Full product surface" subtitle="50+ screens across marketing, auth, account, admin & developer">
+
+          <DCSection id="marketing" title="Marketing" subtitle="Public website — landing, pricing, docs">
+            <DCArtboard id="mkt-landing" label="Landing · hero + features" width={W} height={H}><Frame><MktLanding/></Frame></DCArtboard>
+            <DCArtboard id="mkt-pricing" label="Pricing · three-tier" width={W} height={H}><Frame><MktPricing/></Frame></DCArtboard>
+            <DCArtboard id="mkt-docs" label="Docs · quickstart" width={W} height={H}><Frame><MktDocs/></Frame></DCArtboard>
+          </DCSection>
+
+          <DCSection id="auth" title="End-user auth" subtitle="Sign-in, sign-up, recovery, MFA, passkeys, SSO">
+            <DCArtboard id="auth-signin"   label="Sign in"              width={W} height={H}><Frame><SignIn/></Frame></DCArtboard>
+            <DCArtboard id="auth-signup"   label="Sign up"              width={W} height={H}><Frame><SignUp/></Frame></DCArtboard>
+            <DCArtboard id="auth-forgot"   label="Forgot password"      width={W} height={H}><Frame><ForgotPassword/></Frame></DCArtboard>
+            <DCArtboard id="auth-reset"    label="Reset password"       width={W} height={H}><Frame><ResetPassword/></Frame></DCArtboard>
+            <DCArtboard id="auth-verify"   label="Verify email"         width={W} height={H}><Frame><VerifyEmail/></Frame></DCArtboard>
+            <DCArtboard id="auth-mfa"      label="MFA · TOTP challenge" width={W} height={H}><Frame><MFAChallenge/></Frame></DCArtboard>
+            <DCArtboard id="auth-passkey"  label="Passkey enrollment"   width={W} height={H}><Frame><PasskeyEnroll/></Frame></DCArtboard>
+            <DCArtboard id="auth-sso"      label="SSO redirect"         width={W} height={H}><Frame><SSORedirect/></Frame></DCArtboard>
+          </DCSection>
+
+          <DCSection id="mobile" title="Mobile auth" subtitle="Same flows, native device chrome">
+            <DCArtboard id="m-signin"  label="iPhone · sign in"       width={PHONE_W} height={PHONE_H}><Frame w={PHONE_W} h={PHONE_H}><MobileSignIn/></Frame></DCArtboard>
+            <DCArtboard id="m-mfa"     label="iPhone · MFA challenge" width={PHONE_W} height={PHONE_H}><Frame w={PHONE_W} h={PHONE_H}><MobileMFA/></Frame></DCArtboard>
+            <DCArtboard id="m-passkey" label="iPhone · passkey sheet" width={PHONE_W} height={PHONE_H}><Frame w={PHONE_W} h={PHONE_H}><MobilePasskey/></Frame></DCArtboard>
+          </DCSection>
+
+          <DCSection id="account" title="End-user account" subtitle="The user's view of their own identity">
+            <DCArtboard id="acct-profile"  label="Profile"         width={W} height={H}><Frame><AcctProfile/></Frame></DCArtboard>
+            <DCArtboard id="acct-security" label="Security center" width={W} height={H}><Frame><AcctSecurity/></Frame></DCArtboard>
+            <DCArtboard id="acct-sessions" label="Sessions"        width={W} height={H}><Frame><AcctSessions/></Frame></DCArtboard>
+            <DCArtboard id="acct-apps"     label="Connected apps"  width={W} height={H}><Frame><AcctApps/></Frame></DCArtboard>
+            <DCArtboard id="acct-keys"     label="Personal API keys" width={W} height={H}><Frame><AcctKeys/></Frame></DCArtboard>
+          </DCSection>
+
+          <DCSection id="admin" title="Admin console" subtitle="Tenant-wide management for owners and admins">
+            <DCArtboard id="adm-overview" label="Overview dashboard"   width={W} height={H}><Frame><AdmOverview/></Frame></DCArtboard>
+            <DCArtboard id="adm-users"    label="Users · list"         width={W} height={H}><Frame><AdmUsers/></Frame></DCArtboard>
+            <DCArtboard id="adm-user"     label="User · detail"        width={W} height={H}><Frame><AdmUserDetail/></Frame></DCArtboard>
+            <DCArtboard id="adm-invite"   label="Users · invite modal" width={W} height={H}><Frame><AdmInviteUser/></Frame></DCArtboard>
+            <DCArtboard id="adm-roles"    label="Roles & permissions"  width={W} height={H}><Frame><AdmRoles/></Frame></DCArtboard>
+            <DCArtboard id="adm-orgs"     label="Organizations"        width={W} height={H}><Frame><AdmOrgs/></Frame></DCArtboard>
+            <DCArtboard id="adm-apps"     label="Applications"         width={W} height={H}><Frame><AdmApps/></Frame></DCArtboard>
+            <DCArtboard id="adm-sessions" label="Active sessions"      width={W} height={H}><Frame><AdmSessions/></Frame></DCArtboard>
+            <DCArtboard id="adm-audit"    label="Audit log"            width={W} height={H}><Frame><AdmAudit/></Frame></DCArtboard>
+            <DCArtboard id="adm-settings" label="Settings · domains + SSO" width={W} height={H}><Frame><AdmSettings/></Frame></DCArtboard>
+          </DCSection>
+
+          <DCSection id="dev" title="Developer" subtitle="Keys, webhooks, JWKS & logs">
+            <DCArtboard id="dev-keys"     label="API keys"       width={W} height={H}><Frame><DevKeys/></Frame></DCArtboard>
+            <DCArtboard id="dev-webhooks" label="Webhooks"       width={W} height={H}><Frame><DevWebhooks/></Frame></DCArtboard>
+            <DCArtboard id="dev-jwks"     label="JWKS viewer"    width={W} height={H}><Frame><DevJWKS/></Frame></DCArtboard>
+            <DCArtboard id="dev-logs"     label="Live logs"      width={W} height={H}><Frame><DevLogs/></Frame></DCArtboard>
+          </DCSection>
+
+          <DCSection id="onboarding" title="Onboarding & edges" subtitle="First-run wizard and exception states">
+            <DCArtboard id="obd-wizard"  label="Onboarding · step 3/5" width={W} height={H}><Frame><Onboarding/></Frame></DCArtboard>
+            <DCArtboard id="edge-empty"  label="Empty · webhooks"     width={W} height={H}><Frame><EmptyState/></Frame></DCArtboard>
+            <DCArtboard id="edge-404"    label="404 · not found"      width={W} height={H}><Frame><Err404/></Frame></DCArtboard>
+            <DCArtboard id="edge-500"    label="500 · server error"   width={W} height={H}><Frame><Err500/></Frame></DCArtboard>
+            <DCArtboard id="edge-maint"  label="Maintenance window"   width={W} height={H}><Frame><Maintenance/></Frame></DCArtboard>
+          </DCSection>
+
+        </DesignCanvas>
+      );
+    }
+
+    // Tweaks bridge
+    window.addEventListener('message', (e) => {
+      if (!e.data) return;
+      if (e.data.type === '__activate_edit_mode') window.__tweaks_on = true;
+      if (e.data.type === '__deactivate_edit_mode') window.__tweaks_on = false;
+    });
+    try { window.parent.postMessage({ type: '__edit_mode_available' }, '*'); } catch {}
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  </script>
+</body>
+</html>

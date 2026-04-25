@@ -69,27 +69,27 @@ com.authlyn
 |  `- system
 |     `- api
 `- shared
-	 |- config
-	 `- security
-			`- jwt
+   |- config
+   `- security
+      `- jwt
 ```
 
 ### Current Backend Mapping
 
 - `shared.config`
-	- Spring Security and runtime configuration.
+  - Spring Security and runtime configuration.
 - `shared.security.jwt`
-	- JWT key loading, JWKS publishing, JWT encoder/decoder support.
+  - JWT key loading, JWKS publishing, JWT encoder/decoder support.
 - `modules.identity.api`
-	- Request/response contracts for identity endpoints.
+  - Request/response contracts for identity endpoints.
 - `modules.system.api`
-	- Public system metadata endpoints useful for health and frontend bootstrapping.
+  - Public system metadata endpoints useful for health and frontend bootstrapping.
 
 ## Frontend Structure
 
 Frontend code lives in `frontend/` and uses React with Vite and TypeScript.
 
-### Rules
+### Frontend Rules
 
 - `app/` contains app shell composition and root-level orchestration.
 - `features/` contains user-facing slices with their own components and API access.
@@ -101,17 +101,47 @@ Frontend code lives in `frontend/` and uses React with Vite and TypeScript.
 ```text
 frontend/src
 |- app
-|  `- App.tsx
+|  |- App.tsx
+|  `- router.tsx
 |- features
-|  `- overview
-|     |- api
-|     `- components
+|  |- auth
+|  |  `- screens/
+|  |- marketing
+|  |  `- screens/
+|  |- account
+|  |  `- screens/
+|  |- admin
+|  |  `- screens/
+|  `- onboarding
+|     `- screens/
+|- components
+|  |- ui
+|  |  |- Button.tsx
+|  |  |- InputField.tsx
+|  |  |- Icon.tsx
+|  |  |- Avatar.tsx
+|  |  |- StatusPill.tsx
+|  |  |- Toggle.tsx
+|  |  |- Segmented.tsx
+|  |  |- Tabs.tsx
+|  |  `- Modal.tsx
+|  `- layout
+|     |- AuthShell.tsx
+|     |- AccountShell.tsx
+|     |- AdminShell.tsx
+|     |- Sidebar.tsx
+|     |- AppBar.tsx
+|     |- BrowserChrome.tsx
+|     |- NotFound.tsx
+|     |- ServerError.tsx
+|     `- Maintenance.tsx
 |- shared
 |  |- api
 |  |- config
 |  `- types
 `- styles
-	 `- global.css
+   |- global.css
+   `- utilities.css
 ```
 
 ## Runtime Boundaries
