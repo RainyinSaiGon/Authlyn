@@ -220,15 +220,18 @@ Frontend testing is deferred to later phases but will follow these conventions:
 frontend/
 ├── src/
 │   ├── components/
-│   │   ├── LoginForm.tsx
-│   │   └── LoginForm.test.tsx
-│   ├── hooks/
-│   │   ├── useAuth.ts
-│   │   └── useAuth.test.ts
-│   ├── services/
-│   │   ├── api.ts
-│   │   └── api.test.ts
-│   └── ...
+│   │   └── ui/
+│   │       ├── Button.tsx
+│   │       └── Button.test.tsx
+│   ├── features/
+│   │   └── auth/
+│   │       └── screens/
+│   │           ├── SignIn.tsx
+│   │           └── SignIn.test.tsx
+│   └── shared/
+│       └── api/
+│           ├── client.ts
+│           └── client.test.ts
 └── e2e/
     ├── auth.spec.ts
     ├── organization.spec.ts
@@ -341,4 +344,4 @@ Test results gate PR merges (no failures allowed).
 
 - See [Local Development Setup](../runbooks/local-development.md) to run tests locally
 - See [Architecture Docs](../architecture/index.md) to understand modules and contracts
-- Phase 01-01 will add JWT/JWKS tests and expand identity module tests
+- Phase 01-01 JWT/JWKS tests are implemented: `RsaKeyServiceTest` (ephemeral key generation, inline PEM round-trip) and `JwksControllerTest` (public JWKS response) live in `src/test/java/com/authlyn/shared/security/jwt/`

@@ -9,6 +9,10 @@ This directory contains the implementation tasks derived from [Specs.md](../../S
 | [00-01](./00-01-architecture-contracts-and-docs.md) | Architecture Contracts and Docs Baseline | Cross-cutting infrastructure |
 | [00-02](./00-02-local-dev-and-testing-baseline.md) | Local Development and Testing Baseline | Cross-cutting infrastructure |
 | [00-03](./00-03-backend-rebuild-from-clean-scaffold.md) | Backend Rebuild from Clean Scaffold | Practice rebuild task |
+| [00-04](./00-04-frontend-design-system-foundation.md) | Frontend Design System Foundation | Cross-cutting frontend |
+| [00-05](./00-05-auth-screens.md) | Auth Screens | Cross-cutting frontend |
+| [00-06](./00-06-marketing-and-account-screens.md) | Marketing and Account Screens | Cross-cutting frontend |
+| [00-07](./00-07-admin-and-developer-screens.md) | Admin Console and Developer Screens | Cross-cutting frontend |
 | [01-01](./01-01-jwt-and-jwks-foundation.md) | JWT and JWKS Foundation | Phase 1 |
 | [01-02](./01-02-user-persistence-and-password-hashing.md) | User Persistence and Password Hashing | Phase 1 |
 | [01-03](./01-03-signup-endpoint.md) | Signup Endpoint | Phase 1 |
@@ -46,4 +50,3 @@ This directory contains the implementation tasks derived from [Specs.md](../../S
 - The list is intentionally broken into smaller implementation steps.
 - Every task should update the architecture documents it touches before completion.
 - Use GitHub Issues for tracking.
-

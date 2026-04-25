@@ -1,5 +1,4 @@
-
-<!-- markdownlint-disable MD033 -->
+<!-- markdownlint-disable MD033 MD041 -->
 <p align="center">
   <img src="./assets/Logo-transparent.png" alt="Authlyn logo" width="280" />
 </p>
@@ -97,6 +96,7 @@ Backend default URL: `http://localhost:8080`
 - `GET /actuator/health`
 - `GET /actuator/info`
 - `GET /actuator/prometheus`
+- `GET /.well-known/jwks.json`
 
 ## Environment variables
 
@@ -111,6 +111,9 @@ Main variables are documented in [`.env.example`](.env.example). Key values incl
 - `AUTHLYN_REDIS_PASSWORD`
 - `AUTHLYN_BCRYPT_STRENGTH`
 - `AUTHLYN_ALLOWED_ORIGINS`
+- `AUTHLYN_JWT_ISSUER` (default: `http://localhost:8080`)
+- `AUTHLYN_ACCESS_TOKEN_MINUTES` (default: `15`)
+- `AUTHLYN_REFRESH_TOKEN_DAYS` (default: `30`)
 
 ## Docs
 
