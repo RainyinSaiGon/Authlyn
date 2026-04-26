@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 
 interface InputFieldProps {
   label?: string;
@@ -23,11 +23,13 @@ export function InputField({
   placeholder,
   onChange,
 }: InputFieldProps) {
+  const id = useId();
   return (
     <div className="field">
-      {label && <label>{label}</label>}
+      {label && <label htmlFor={id}>{label}</label>}
       <div className="relative">
         <input
+          id={id}
           type={type}
           value={value ?? ''}
           placeholder={placeholder}

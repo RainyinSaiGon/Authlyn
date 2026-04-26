@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { Icon } from '@/components/ui/Icon';
+import type { IconName } from '@/components/ui/Icon';
 
 export type AccountNavId = 'profile' | 'security' | 'sessions' | 'apps' | 'keys' | 'notifications';
 
@@ -8,13 +10,13 @@ interface AccountShellProps {
   children: ReactNode;
 }
 
-const NAV: { id: AccountNavId; label: string; path: string }[] = [
-  { id: 'profile',       label: 'Profile',        path: '/account/profile' },
-  { id: 'security',      label: 'Security',        path: '/account/security' },
-  { id: 'sessions',      label: 'Sessions',        path: '/account/sessions' },
-  { id: 'apps',          label: 'Connected apps',  path: '/account/apps' },
-  { id: 'keys',          label: 'API keys',        path: '/account/keys' },
-  { id: 'notifications', label: 'Notifications',   path: '/account/notifications' },
+const NAV: { id: AccountNavId; label: string; path: string; icon: IconName }[] = [
+  { id: 'profile',       label: 'Profile',        path: '/account/profile',       icon: 'user'     },
+  { id: 'security',      label: 'Security',        path: '/account/security',      icon: 'shield'   },
+  { id: 'sessions',      label: 'Sessions',        path: '/account/sessions',      icon: 'activity' },
+  { id: 'apps',          label: 'Connected apps',  path: '/account/apps',          icon: 'app'      },
+  { id: 'keys',          label: 'API keys',        path: '/account/keys',          icon: 'key'      },
+  { id: 'notifications', label: 'Notifications',   path: '/account/notifications', icon: 'bell'     },
 ];
 
 export function AccountShell({ active, children }: AccountShellProps) {
@@ -50,12 +52,17 @@ export function AccountShell({ active, children }: AccountShellProps) {
             <Link
               key={item.id}
               to={item.path}
-              className={`block py-[9px] px-3 rounded-[10px] no-underline text-[13.5px] transition-all duration-fast border ${
+              className={`flex items-center gap-[10px] py-[9px] px-3 rounded-[10px] no-underline text-[13.5px] transition-all duration-fast border ${
                 active === item.id
                   ? 'text-fg-bright bg-[linear-gradient(160deg,rgba(248,125,73,0.18),rgba(248,125,73,0.03))] border-[rgba(248,125,73,0.28)] font-medium'
                   : 'text-fg-2 bg-transparent border-transparent font-normal'
               }`}
             >
+              <Icon
+                name={item.icon}
+                size={15}
+                className={active === item.id ? 'text-accent' : 'text-fg-3'}
+              />
               {item.label}
             </Link>
           ))}
