@@ -19,6 +19,30 @@ import { Sessions }      from '@/features/account/screens/Sessions';
 import { ConnectedApps } from '@/features/account/screens/ConnectedApps';
 import { ApiKeys }       from '@/features/account/screens/ApiKeys';
 
+import { Overview }        from '@/features/admin/screens/Overview';
+import { Users }           from '@/features/admin/screens/Users';
+import { UserDetail }      from '@/features/admin/screens/UserDetail';
+import { Roles }           from '@/features/admin/screens/Roles';
+import { Organizations }   from '@/features/admin/screens/Organizations';
+import { Applications }    from '@/features/admin/screens/Applications';
+import { AdminSessions }   from '@/features/admin/screens/AdminSessions';
+import { AuditLog }        from '@/features/admin/screens/AuditLog';
+import { Settings }        from '@/features/admin/screens/Settings';
+import { DevApiKeys }      from '@/features/admin/screens/DevApiKeys';
+import { Webhooks }        from '@/features/admin/screens/Webhooks';
+import { JWKS }            from '@/features/admin/screens/JWKS';
+import { Logs }            from '@/features/admin/screens/Logs';
+
+import { NotFound }    from '@/features/errors/screens/NotFound';
+import { ServerError } from '@/features/errors/screens/ServerError';
+import { Maintenance } from '@/features/errors/screens/Maintenance';
+
+import { Onboarding } from '@/features/onboarding/screens/Onboarding';
+
+import { MobileSignIn } from '@/features/mobile/screens/MobileSignIn';
+import { MobileMFA }    from '@/features/mobile/screens/MobileMFA';
+import { MobilePasskey } from '@/features/mobile/screens/MobilePasskey';
+
 import { RequireAuth } from '@/components/auth/RequireAuth';
 
 export const router = createBrowserRouter([
@@ -44,27 +68,35 @@ export const router = createBrowserRouter([
   { path: '/account/apps',     element: <RequireAuth><ConnectedApps /></RequireAuth> },
   { path: '/account/keys',     element: <RequireAuth><ApiKeys /></RequireAuth> },
 
-  // Admin console (placeholders)
-  { path: '/admin',           element: <div>AdminOverview</div> },
-  { path: '/admin/users',     element: <div>Users</div> },
-  { path: '/admin/users/:id', element: <div>UserDetail</div> },
-  { path: '/admin/roles',     element: <div>Roles</div> },
-  { path: '/admin/orgs',      element: <div>Organizations</div> },
-  { path: '/admin/apps',      element: <div>Applications</div> },
-  { path: '/admin/sessions',  element: <div>AdminSessions</div> },
-  { path: '/admin/audit',     element: <div>AuditLog</div> },
-  { path: '/admin/settings',  element: <div>Settings</div> },
+  // Admin console
+  { path: '/admin',           element: <Overview /> },
+  { path: '/admin/users',     element: <Users /> },
+  { path: '/admin/users/:id', element: <UserDetail /> },
+  { path: '/admin/roles',     element: <Roles /> },
+  { path: '/admin/orgs',      element: <Organizations /> },
+  { path: '/admin/apps',      element: <Applications /> },
+  { path: '/admin/sessions',  element: <AdminSessions /> },
+  { path: '/admin/audit',     element: <AuditLog /> },
+  { path: '/admin/settings',  element: <Settings /> },
 
-  // Developer tools (placeholders)
-  { path: '/admin/keys',     element: <div>ApiKeys (Developer)</div> },
-  { path: '/admin/webhooks', element: <div>Webhooks</div> },
-  { path: '/admin/jwks',     element: <div>Jwks</div> },
-  { path: '/admin/logs',     element: <div>Logs</div> },
+  // Developer tools
+  { path: '/admin/keys',     element: <DevApiKeys /> },
+  { path: '/admin/webhooks', element: <Webhooks /> },
+  { path: '/admin/jwks',     element: <JWKS /> },
+  { path: '/admin/logs',     element: <Logs /> },
 
-  // Other
-  { path: '/onboarding',  element: <div>Onboarding</div> },
-  { path: '/maintenance', element: <div>Maintenance</div> },
+  // Onboarding
+  { path: '/onboarding', element: <Onboarding /> },
+
+  // Mobile previews
+  { path: '/mobile/sign-in', element: <MobileSignIn /> },
+  { path: '/mobile/mfa',     element: <MobileMFA /> },
+  { path: '/mobile/passkey', element: <MobilePasskey /> },
+
+  // Error pages
+  { path: '/500',         element: <ServerError /> },
+  { path: '/maintenance', element: <Maintenance /> },
 
   // 404
-  { path: '*', element: <div>NotFound</div> },
+  { path: '*', element: <NotFound /> },
 ]);
