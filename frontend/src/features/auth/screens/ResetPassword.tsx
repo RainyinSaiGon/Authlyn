@@ -21,7 +21,7 @@ export function ResetPassword() {
         label="New password"
         type="password"
         value="··············"
-        hint="12+ chars. Mix upper, lower, number, symbol."
+        hint="8+ characters"
         onChange={() => {}}
       />
       <InputField label="Confirm password" type="password" value="··············" onChange={() => {}} />

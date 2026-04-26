@@ -6,14 +6,9 @@ import { Icon } from '@/components/ui/Icon';
 
 export function SignIn() {
   return (
-    <AuthShell
-      subhead="SIGN IN"
-      head={
-        <>Sign in to <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', color: 'var(--color-mint)', fontWeight: 400 }}>Authlyn</span></>
-      }
-    >
+    <AuthShell head="Sign in" centered>
       <InputField label="Email" value="maya.tran@pagoda.dev" mono onChange={() => {}} />
-      <InputField label="Password" type="password" value="············" hint="12+ characters · BCrypt cost 12" onChange={() => {}} />
+      <InputField label="Password" type="password" value="············" onChange={() => {}} />
 
       <div className="flex items-center justify-between text-[12.5px]">
         <label className="flex items-center gap-[7px] text-fg-2 cursor-pointer">
