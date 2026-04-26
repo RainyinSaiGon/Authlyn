@@ -11,10 +11,9 @@ const FEATURES = [
 export function PasskeyEnroll() {
   return (
     <AuthShell
-      subhead="PASSKEY"
       head={
         <>Register a <span className="font-display italic text-mint font-normal">passkey</span></>
-      }
+      } centered
       className="w-[460px]"
     >
       <div className="p-7 text-center rounded-md bg-[radial-gradient(circle_at_center,rgba(108,208,176,0.12),transparent_60%)]">
@@ -23,9 +22,6 @@ export function PasskeyEnroll() {
         </div>
         <div className="mt-[18px] text-[15px] text-fg-1">
           Use <b>Touch ID</b> or a security key
-        </div>
-        <div className="mt-1 text-[12.5px] text-fg-3 font-mono">
-          rp: authlyn.dev · uv: required
         </div>
       </div>
 

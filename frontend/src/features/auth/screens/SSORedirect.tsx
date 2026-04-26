@@ -2,7 +2,7 @@ import { AuthShell } from '@/components/layout/AuthShell';
 
 export function SSORedirect() {
   return (
-    <AuthShell subhead="SSO" head="Signing you in…" className="w-[440px]">
+    <AuthShell head="Signing you in…" centered className="w-[440px]">
       <div className="p-7 text-center">
         <div className="inline-flex items-center justify-center w-[68px] h-[68px] text-[28px] font-bold rounded-[14px] bg-[linear-gradient(135deg,#f87d49,#ffb089)] text-[#1a0f08]">
           P
