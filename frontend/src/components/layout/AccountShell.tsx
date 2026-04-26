@@ -45,33 +45,16 @@ export function AccountShell({ active, children }: AccountShellProps) {
       </nav>
 
       <div className="flex flex-1">
-        <aside
-          className="w-[220px] shrink-0 flex flex-col gap-[2px] p-[24px_12px]"
-          style={{
-            borderRight: '1px solid var(--color-border)',
-            background: 'rgba(9,19,29,0.5)',
-          }}
-        >
+        <aside className="w-[220px] shrink-0 flex flex-col gap-[2px] p-[24px_12px] border-r border-border bg-[rgba(9,19,29,0.5)]">
           {NAV.map((item) => (
             <Link
               key={item.id}
               to={item.path}
-              style={{
-                display: 'block',
-                padding: '9px 12px',
-                borderRadius: 10,
-                color: active === item.id ? 'var(--color-fg-bright)' : 'var(--color-fg-2)',
-                background: active === item.id
-                  ? 'linear-gradient(160deg, rgba(248,125,73,0.18), rgba(248,125,73,0.03))'
-                  : 'transparent',
-                border: active === item.id
-                  ? '1px solid rgba(248,125,73,0.28)'
-                  : '1px solid transparent',
-                textDecoration: 'none',
-                fontSize: 13.5,
-                fontWeight: active === item.id ? 500 : 400,
-                transition: 'all var(--duration-fast)',
-              }}
+              className={`block py-[9px] px-3 rounded-[10px] no-underline text-[13.5px] transition-all duration-fast border ${
+                active === item.id
+                  ? 'text-fg-bright bg-[linear-gradient(160deg,rgba(248,125,73,0.18),rgba(248,125,73,0.03))] border-[rgba(248,125,73,0.28)] font-medium'
+                  : 'text-fg-2 bg-transparent border-transparent font-normal'
+              }`}
             >
               {item.label}
             </Link>

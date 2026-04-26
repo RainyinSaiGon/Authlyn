@@ -13,19 +13,13 @@ export function PasskeyEnroll() {
     <AuthShell
       subhead="PASSKEY"
       head={
-        <>Register a <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', color: 'var(--color-mint)', fontWeight: 400 }}>passkey</span></>
+        <>Register a <span className="font-display italic text-mint font-normal">passkey</span></>
       }
-      width={460}
+      className="w-[460px]"
     >
-      <div
-        className="p-7 text-center rounded-md"
-        style={{ background: 'radial-gradient(circle at center, rgba(108,208,176,0.12), transparent 60%)' }}
-      >
-        <div
-          className="inline-flex items-center justify-center w-[88px] h-[88px] rounded-full"
-          style={{ background: 'rgba(108,208,176,0.1)', border: '1px solid rgba(108,208,176,0.3)' }}
-        >
-          <Icon name="passkey" size={44} style={{ color: 'var(--color-mint)' }} />
+      <div className="p-7 text-center rounded-md bg-[radial-gradient(circle_at_center,rgba(108,208,176,0.12),transparent_60%)]">
+        <div className="inline-flex items-center justify-center w-[88px] h-[88px] rounded-full bg-mint/10 border border-mint/30">
+          <Icon name="passkey" size={44} className="text-mint" />
         </div>
         <div className="mt-[18px] text-[15px] text-fg-1">
           Use <b>Touch ID</b> or a security key
@@ -38,13 +32,13 @@ export function PasskeyEnroll() {
       <ul className="m-0 p-0 list-none flex flex-col gap-[10px]">
         {FEATURES.map((feature) => (
           <li key={feature} className="flex items-center gap-[10px] text-[13px] text-fg-2">
-            <Icon name="check" size={14} style={{ color: 'var(--color-mint)', flexShrink: 0 }} />
+            <Icon name="check" size={14} className="text-mint shrink-0" />
             {feature}
           </li>
         ))}
       </ul>
 
-      <Button style={{ justifyContent: 'center', width: '100%' }} onClick={() => {}}>
+      <Button className="justify-center w-full" onClick={() => {}}>
         Continue
       </Button>
 

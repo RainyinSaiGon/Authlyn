@@ -14,8 +14,7 @@ export function SignUp() {
         {[1, 1, 1, 1, 0].map((filled, i) => (
           <div
             key={i}
-            className="flex-1 h-[3px] rounded-pill"
-            style={{ background: filled ? 'var(--color-mint)' : 'rgba(255,255,255,0.1)' }}
+            className={`flex-1 h-[3px] rounded-pill ${filled ? 'bg-mint' : 'bg-white/10'}`}
           />
         ))}
       </div>
@@ -26,13 +25,13 @@ export function SignUp() {
         <a href="#" className="text-accent no-underline">Privacy</a>.
       </p>
 
-      <Button style={{ justifyContent: 'center', width: '100%' }} onClick={() => {}}>
+      <Button className="justify-center w-full" onClick={() => {}}>
         Create account
       </Button>
 
       <div className="divider">OR</div>
 
-      <Button variant="ghost" icon="passkey" style={{ justifyContent: 'center', width: '100%' }}>
+      <Button variant="ghost" icon="passkey" className="justify-center w-full">
         Sign up with a passkey
       </Button>
 

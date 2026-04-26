@@ -13,7 +13,7 @@ export function ForgotPassword() {
 
       <InputField label="Email" value="maya@pagoda.dev" mono onChange={() => {}} />
 
-      <Button style={{ justifyContent: 'center', width: '100%' }} onClick={() => {}}>
+      <Button className="justify-center w-full" onClick={() => {}}>
         Send reset link
       </Button>
 

@@ -15,15 +15,11 @@ export function MFAChallenge() {
         {OTP_DIGITS.map((digit, i) => (
           <div
             key={i}
-            className="flex items-center justify-center font-mono text-[24px] text-fg-bright font-medium"
-            style={{
-              width: 48,
-              height: 56,
-              borderRadius: 14,
-              border: `1px solid ${i === 5 ? 'var(--color-accent)' : 'var(--color-border)'}`,
-              background: 'rgba(0,0,0,0.25)',
-              boxShadow: i === 5 ? '0 0 0 3px rgba(248,125,73,0.2)' : 'none',
-            }}
+            className={`flex items-center justify-center font-mono text-[24px] text-fg-bright font-medium w-[48px] h-[56px] rounded-[14px] bg-black/25 border ${
+              i === 5
+                ? 'border-accent shadow-[0_0_0_3px_rgba(248,125,73,0.2)]'
+                : 'border-border'
+            }`}
           >
             {digit}
           </div>
@@ -35,7 +31,7 @@ export function MFAChallenge() {
         <span className="text-fg-3 font-mono">Rotates in 0:22</span>
       </div>
 
-      <Button style={{ justifyContent: 'center', width: '100%' }} onClick={() => {}}>
+      <Button className="justify-center w-full" onClick={() => {}}>
         Verify
       </Button>
     </AuthShell>

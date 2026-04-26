@@ -65,12 +65,7 @@ export function Sidebar({ nav, active, footer }: SidebarProps) {
               <Icon name={item.icon as Parameters<typeof Icon>[0]['name']} size={15} />
               <span>{item.label}</span>
               {item.count != null && (
-                <span style={{
-                  marginLeft: 'auto',
-                  color: 'var(--fg-3)',
-                  fontSize: 11,
-                  fontFamily: 'var(--font-mono)',
-                }}>
+                <span className="ml-auto text-fg-3 text-[11px] font-mono">
                   {item.count}
                 </span>
               )}
@@ -80,15 +75,15 @@ export function Sidebar({ nav, active, footer }: SidebarProps) {
       ))}
       <div className="foot">
         {footer ?? (
-          <div className="row" style={{ gap: 10 }}>
+          <div className="flex items-center gap-[10px]">
             <Avatar name="Maya Tran" size="md" />
-            <div style={{ lineHeight: 1.2 }}>
-              <div style={{ fontSize: 13, fontWeight: 500 }}>Maya Tran</div>
-              <div style={{ fontSize: 11, color: 'var(--fg-3)', fontFamily: 'var(--font-mono)' }}>
+            <div className="leading-[1.2]">
+              <div className="text-[13px] font-medium">Maya Tran</div>
+              <div className="text-[11px] text-fg-3 font-mono">
                 authlyn-eng
               </div>
             </div>
-            <Icon name="chev" size={14} style={{ marginLeft: 'auto', color: 'var(--fg-3)' }} />
+            <Icon name="chev" size={14} className="ml-auto text-fg-3" />
           </div>
         )}
       </div>

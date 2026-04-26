@@ -15,7 +15,7 @@ export function AppBar({ crumbs, title, actions }: AppBarProps) {
             {crumbs.map((c, i) => (
               <span key={i}>
                 {i > 0 && (
-                  <span style={{ opacity: 0.5, margin: '0 6px' }}>/</span>
+                  <span className="opacity-50 mx-[6px]">/</span>
                 )}
                 {i === crumbs.length - 1 ? <b>{c}</b> : c}
               </span>
@@ -23,7 +23,7 @@ export function AppBar({ crumbs, title, actions }: AppBarProps) {
           </div>
         )}
         {title && (
-          <h1 style={{ marginTop: crumbs && crumbs.length > 0 ? 2 : 0 }}>{title}</h1>
+          <h1 className={crumbs && crumbs.length > 0 ? 'mt-[2px]' : 'mt-0'}>{title}</h1>
         )}
       </div>
       {actions && (

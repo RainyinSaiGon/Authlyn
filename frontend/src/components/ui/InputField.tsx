@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface InputFieldProps {
   label?: string;
@@ -10,7 +10,6 @@ interface InputFieldProps {
   suffix?: ReactNode;
   placeholder?: string;
   onChange?: (value: string) => void;
-  style?: CSSProperties;
 }
 
 export function InputField({
@@ -23,18 +22,17 @@ export function InputField({
   suffix,
   placeholder,
   onChange,
-  style,
 }: InputFieldProps) {
   return (
-    <div className="field" style={style}>
+    <div className="field">
       {label && <label>{label}</label>}
-      <div style={{ position: 'relative' }}>
+      <div className="relative">
         <input
           type={type}
           value={value ?? ''}
           placeholder={placeholder}
+          className={mono ? 'font-mono' : ''}
           onChange={(e) => onChange?.(e.target.value)}
-          style={mono ? { fontFamily: 'var(--font-mono)' } : undefined}
         />
         {suffix && (
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-fg-3 text-[12px]">

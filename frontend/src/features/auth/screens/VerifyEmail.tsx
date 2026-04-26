@@ -7,14 +7,11 @@ export function VerifyEmail() {
     <AuthShell
       subhead="VERIFY"
       head={
-        <>Check your <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', color: 'var(--color-mint)', fontWeight: 400 }}>inbox</span></>
+        <>Check your <span className="font-display italic text-mint font-normal">inbox</span></>
       }
     >
-      <div
-        className="p-[18px] rounded-md text-center"
-        style={{ border: '1px dashed var(--color-border)' }}
-      >
-        <Icon name="mail" size={32} style={{ color: 'var(--color-accent)' }} />
+      <div className="p-[18px] rounded-md text-center border border-dashed border-border">
+        <Icon name="mail" size={32} className="text-accent" />
         <div className="mt-3 font-mono text-[13px] text-fg-bright">maya@pagoda.dev</div>
         <div className="mt-[6px] text-fg-3 text-[12px]">Link expires in 30 minutes</div>
       </div>
@@ -25,8 +22,8 @@ export function VerifyEmail() {
       </p>
 
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" style={{ flex: 1, justifyContent: 'center' }}>Resend in 42s</Button>
-        <Button variant="ghost" size="sm" style={{ flex: 1, justifyContent: 'center' }}>Change email</Button>
+        <Button variant="ghost" size="sm" className="flex-1 justify-center">Resend in 42s</Button>
+        <Button variant="ghost" size="sm" className="flex-1 justify-center">Change email</Button>
       </div>
     </AuthShell>
   );

@@ -4,7 +4,7 @@ interface AuthShellProps {
   head: ReactNode;
   subhead?: string;
   centered?: boolean;
-  width?: number;
+  className?: string;
   children: ReactNode;
 }
 
@@ -33,16 +33,15 @@ function LogoShield() {
   );
 }
 
-export function AuthShell({ head, subhead, centered = false, width = 400, children }: AuthShellProps) {
+export function AuthShell({ head, subhead, centered = false, className = 'w-[400px]', children }: AuthShellProps) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center py-12 px-4 gap-7">
       <LogoShield />
-      <div className="glass max-w-full flex flex-col gap-5" style={{ width, padding: '32px 30px 30px' }}>
+      <div className={`glass max-w-full flex flex-col gap-5 p-[32px_30px_30px] ${className}`}>
         <div className={`mb-1${centered ? ' text-center' : ''}`}>
           {subhead && (
             <p
-              className="m-0 mb-[10px] uppercase text-[10px] font-medium tracking-[0.14em] font-mono"
-              style={{ color: 'rgba(255, 210, 180, 0.45)' }}
+              className="m-0 mb-[10px] uppercase text-[10px] font-medium tracking-[0.14em] font-mono text-[rgba(255,210,180,0.45)]"
             >
               {subhead}
             </p>
@@ -51,7 +50,7 @@ export function AuthShell({ head, subhead, centered = false, width = 400, childr
         </div>
         {children}
       </div>
-      <p className="m-0 text-[10.5px] font-mono" style={{ color: 'rgba(248,242,232,0.28)' }}>
+      <p className="m-0 text-[10.5px] font-mono text-[rgba(248,242,232,0.28)]">
         Secured by Authlyn
       </p>
     </div>
