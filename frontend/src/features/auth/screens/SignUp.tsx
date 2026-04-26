@@ -5,7 +5,7 @@ import { InputField } from '@/components/ui/InputField';
 
 export function SignUp() {
   return (
-      <AuthShell head="Sign up" centered>
+    <AuthShell head="Sign up" centered>
       <InputField label="Display name" value="Maya Tran" onChange={() => {}} />
       <InputField label="Email" value="maya@pagoda.dev" mono onChange={() => {}} />
       <InputField label="Password" type="password" value="·············" onChange={() => {}} />
