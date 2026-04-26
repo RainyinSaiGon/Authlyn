@@ -47,7 +47,8 @@ export function Pricing() {
         <p className="eye">PRICING</p>
         <h1 className="text-[56px] font-medium tracking-[-0.01em] m-0 mt-[18px] mb-[14px] leading-none">
           Priced per{' '}
-          <span className="font-display italic text-mint font-normal">active user</span>. Nothing else.
+          <span className="font-display italic text-mint font-normal">active user</span>.{' '}
+          <span className="whitespace-nowrap">Nothing else.</span>
         </h1>
         <p className="lead mx-auto max-w-[560px] m-0">
           No seats, no premium feature paywall on security basics. MFA, passkeys, and audit log
