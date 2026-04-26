@@ -85,19 +85,27 @@ The Authlyn UI was designed using Claude Design and lives in the `Authlyn/` fold
 
 | Task | Status |
 | --- | --- |
-| [00-04](../tasks/00-04-frontend-design-system-foundation.md) Design System Foundation | Planned |
+| [00-04](../tasks/00-04-frontend-design-system-foundation.md) Design System Foundation | Done |
 | [00-05](../tasks/00-05-auth-screens.md) Auth Screens | Planned |
 | [00-06](../tasks/00-06-marketing-and-account-screens.md) Marketing and Account Screens | Planned |
 | [00-07](../tasks/00-07-admin-and-developer-screens.md) Admin and Developer Screens | Planned |
 
 ## Design Token Summary
 
-Key brand tokens from `Authlyn/ds/colors_and_type.css`:
+Source tokens in `Authlyn/ds/colors_and_type.css` and their implementation names in `frontend/src/styles/global.css` (`@theme`):
 
-- `--brand-accent: #f87d49` (orange)
-- `--brand-mint: #6cd0b0` (teal)
-- `--brand-danger: #f15d78` (red)
-- Primary font: Google Sans Code Proportional (UI body)
-- Monospace font: Google Sans Code
-- Display accent: Instrument Serif (italic, loaded from CDN)
+| Source token | Tailwind theme variable | Utility classes generated |
+| --- | --- | --- |
+| `--brand-accent: #f87d49` | `--color-accent` | `bg-accent`, `text-accent`, `border-accent` |
+| `--brand-mint: #6cd0b0` | `--color-mint` | `bg-mint`, `text-mint` |
+| `--brand-danger: #f15d78` | `--color-danger` | `text-danger`, `border-danger` |
+| `--fg-1 / --fg-2 / --fg-3` | `--color-fg-1/2/3` | `text-fg-1`, `text-fg-2`, `text-fg-3` |
+| `--r-pill: 999px` | `--radius-pill` | `rounded-pill` |
+| `--dur-fast: 120ms` | `--duration-fast` | `duration-fast` |
+| `--blur-panel: 18px` | `--backdrop-blur-panel` | `backdrop-blur-panel` |
+
+- Primary font: Google Sans Code Proportional — `font-sans` / `var(--font-sans)`
+- Monospace font: Google Sans Code — `font-mono` / `var(--font-mono)`
+- Display accent: Instrument Serif (italic, CDN) — `font-display` / `var(--font-display)`
 - Base theme: dark (dark backgrounds, light foreground)
+- Complex patterns (`.glass`, `.btn`, `.pill`, `.sidebar`, etc.) live in `@layer components` in `global.css`

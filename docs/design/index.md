@@ -11,23 +11,21 @@ This folder tracks UX and design references for Authlyn.
 
 All design work lives in the `Authlyn/` folder at the repository root. This folder was produced by Claude Design and is the source of truth for tokens, fonts, primitive components, and screen layouts.
 
-Key files:
+Key source files:
 
-- `Authlyn/ds/colors_and_type.css` — design tokens
-- `Authlyn/primitives.jsx` — all primitive components
-- `Authlyn/screen.css` — utility classes
+- `Authlyn/ds/colors_and_type.css` — design tokens (source reference)
+- `Authlyn/primitives.jsx` — all primitive components (source reference)
+- `Authlyn/screen.css` — utility classes (source reference; patterns ported to `frontend/src/styles/global.css` `@layer components`)
 - `Authlyn/screens-*.jsx` — screen designs
 
 ## Migration Tasks
 
-The design is being ported to the React frontend in four tasks:
-
-| Task | Scope |
-| --- | --- |
-| [00-04](../tasks/00-04-frontend-design-system-foundation.md) | Tokens, fonts, primitive components, layout shells, router |
-| [00-05](../tasks/00-05-auth-screens.md) | 8 auth flow screens |
-| [00-06](../tasks/00-06-marketing-and-account-screens.md) | 3 marketing pages + 5 account tabs |
-| [00-07](../tasks/00-07-admin-and-developer-screens.md) | 10 admin screens + developer tools + edge states + mobile variants |
+| Task | Scope | Status |
+| --- | --- | --- |
+| [00-04](../tasks/00-04-frontend-design-system-foundation.md) | Tokens, fonts, primitive components, layout shells, router | Done |
+| [00-05](../tasks/00-05-auth-screens.md) | 8 auth flow screens | Planned |
+| [00-06](../tasks/00-06-marketing-and-account-screens.md) | 3 marketing pages + 5 account tabs | Planned |
+| [00-07](../tasks/00-07-admin-and-developer-screens.md) | 10 admin screens + developer tools + edge states + mobile variants | Planned |
 
 ## Notes
 
