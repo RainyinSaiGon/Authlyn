@@ -25,7 +25,7 @@ Key source files:
 | [00-04](../tasks/00-04-frontend-design-system-foundation.md) | Tokens, fonts, primitive components, layout shells, router | Done |
 | [00-05](../tasks/00-05-auth-screens.md) | 8 auth flow screens | Done |
 | [00-06](../tasks/00-06-marketing-and-account-screens.md) | 3 marketing pages + 5 account tabs | Done |
-| [00-07](../tasks/00-07-admin-and-developer-screens.md) | 10 admin screens + developer tools + edge states + mobile variants | Planned |
+| [00-07](../tasks/00-07-admin-and-developer-screens.md) | 10 admin screens + developer tools + edge states + mobile variants | Done |
 
 ## Notes
 

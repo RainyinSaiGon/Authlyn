@@ -43,7 +43,8 @@ import { MobileSignIn } from '@/features/mobile/screens/MobileSignIn';
 import { MobileMFA }    from '@/features/mobile/screens/MobileMFA';
 import { MobilePasskey } from '@/features/mobile/screens/MobilePasskey';
 
-import { RequireAuth } from '@/components/auth/RequireAuth';
+import { RequireAuth }  from '@/components/auth/RequireAuth';
+import { RequireAdmin } from '@/components/auth/RequireAdmin';
 
 export const router = createBrowserRouter([
   // Marketing
@@ -68,22 +69,22 @@ export const router = createBrowserRouter([
   { path: '/account/apps',     element: <RequireAuth><ConnectedApps /></RequireAuth> },
   { path: '/account/keys',     element: <RequireAuth><ApiKeys /></RequireAuth> },
 
-  // Admin console
-  { path: '/admin',           element: <Overview /> },
-  { path: '/admin/users',     element: <Users /> },
-  { path: '/admin/users/:id', element: <UserDetail /> },
-  { path: '/admin/roles',     element: <Roles /> },
-  { path: '/admin/orgs',      element: <Organizations /> },
-  { path: '/admin/apps',      element: <Applications /> },
-  { path: '/admin/sessions',  element: <AdminSessions /> },
-  { path: '/admin/audit',     element: <AuditLog /> },
-  { path: '/admin/settings',  element: <Settings /> },
+  // Admin console (gated — requires admin role in JWT)
+  { path: '/admin',           element: <RequireAdmin><Overview /></RequireAdmin> },
+  { path: '/admin/users',     element: <RequireAdmin><Users /></RequireAdmin> },
+  { path: '/admin/users/:id', element: <RequireAdmin><UserDetail /></RequireAdmin> },
+  { path: '/admin/roles',     element: <RequireAdmin><Roles /></RequireAdmin> },
+  { path: '/admin/orgs',      element: <RequireAdmin><Organizations /></RequireAdmin> },
+  { path: '/admin/apps',      element: <RequireAdmin><Applications /></RequireAdmin> },
+  { path: '/admin/sessions',  element: <RequireAdmin><AdminSessions /></RequireAdmin> },
+  { path: '/admin/audit',     element: <RequireAdmin><AuditLog /></RequireAdmin> },
+  { path: '/admin/settings',  element: <RequireAdmin><Settings /></RequireAdmin> },
 
-  // Developer tools
-  { path: '/admin/keys',     element: <DevApiKeys /> },
-  { path: '/admin/webhooks', element: <Webhooks /> },
-  { path: '/admin/jwks',     element: <JWKS /> },
-  { path: '/admin/logs',     element: <Logs /> },
+  // Developer tools (gated)
+  { path: '/admin/keys',     element: <RequireAdmin><DevApiKeys /></RequireAdmin> },
+  { path: '/admin/webhooks', element: <RequireAdmin><Webhooks /></RequireAdmin> },
+  { path: '/admin/jwks',     element: <RequireAdmin><JWKS /></RequireAdmin> },
+  { path: '/admin/logs',     element: <RequireAdmin><Logs /></RequireAdmin> },
 
   // Onboarding
   { path: '/onboarding', element: <Onboarding /> },
