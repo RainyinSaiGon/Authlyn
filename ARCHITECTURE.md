@@ -87,14 +87,14 @@ com.authlyn
 
 ## Frontend Structure
 
-Frontend code lives in `frontend/` and uses React with Vite and TypeScript.
+Frontend code lives in `frontend/` and uses React with Vite, TypeScript, and Tailwind CSS v4.
 
 ### Frontend Rules
 
 - `app/` contains app shell composition and root-level orchestration.
 - `features/` contains user-facing slices with their own components and API access.
 - `shared/` contains common utilities, typed API helpers, config readers, and reusable UI primitives.
-- `styles/` contains global styling and design tokens.
+- `styles/` contains the single `global.css` entry point: Tailwind v4 import, `@theme` design tokens, `@layer base` resets, and `@layer components` patterns for complex UI classes (`.glass`, `.btn`, `.pill`, etc.).
 
 ### Target Frontend Shape
 
@@ -140,8 +140,7 @@ frontend/src
 |  |- config
 |  `- types
 `- styles
-   |- global.css
-   `- utilities.css
+   `- global.css
 ```
 
 ## Runtime Boundaries
