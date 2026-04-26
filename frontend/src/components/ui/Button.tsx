@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Icon } from './Icon';
 import type { IconName } from './Icon';
 
@@ -7,7 +7,7 @@ interface ButtonProps {
   size?: 'default' | 'sm' | 'xs';
   icon?: IconName;
   iconRight?: IconName;
-  style?: CSSProperties;
+  className?: string;
   onClick?: () => void;
   children?: ReactNode;
   type?: 'button' | 'submit' | 'reset';
@@ -19,16 +19,16 @@ export function Button({
   size,
   icon,
   iconRight,
-  style,
+  className,
   onClick,
   children,
   type = 'button',
   disabled,
 }: ButtonProps) {
   const iconSize = size === 'xs' ? 12 : 14;
-  const cls = `btn btn-${variant}${size && size !== 'default' ? ` btn-${size}` : ''}`;
+  const cls = `btn btn-${variant}${size && size !== 'default' ? ` btn-${size}` : ''}${className ? ` ${className}` : ''}`;
   return (
-    <button type={type} className={cls} style={style} onClick={onClick} disabled={disabled}>
+    <button type={type} className={cls} onClick={onClick} disabled={disabled}>
       {icon && <Icon name={icon} size={iconSize} />}
       {children}
       {iconRight && <Icon name={iconRight} size={iconSize} />}

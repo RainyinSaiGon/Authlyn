@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react';
 
 interface AuthShellProps {
-  head: string;
+  head: ReactNode;
   subhead?: string;
-  width?: number;
+  centered?: boolean;
+  className?: string;
   children: ReactNode;
 }
 
@@ -32,21 +33,25 @@ function LogoShield() {
   );
 }
 
-export function AuthShell({ head, subhead, width = 400, children }: AuthShellProps) {
+export function AuthShell({ head, subhead, centered = false, className = 'w-[400px]', children }: AuthShellProps) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center py-8 px-4 gap-6">
+    <div className="min-h-screen flex flex-col items-center justify-center py-12 px-4 gap-7">
       <LogoShield />
-      <div className="glass p-8 max-w-full" style={{ width }}>
-        <div className="mb-6">
-          <h1 className="m-0 text-xl font-semibold leading-snug">{head}</h1>
+      <div className={`glass max-w-full flex flex-col gap-5 p-[32px_30px_30px] ${className}`}>
+        <div className={`mb-1${centered ? ' text-center' : ''}`}>
           {subhead && (
-            <p className="mt-2 mb-0 text-fg-2 text-sm leading-relaxed">{subhead}</p>
+            <p
+              className="m-0 mb-[10px] uppercase text-[10px] font-medium tracking-[0.14em] font-mono text-[rgba(255,210,180,0.45)]"
+            >
+              {subhead}
+            </p>
           )}
+          <h1 className="m-0 text-[25px] font-medium leading-[1.18] tracking-[-0.02em]">{head}</h1>
         </div>
         {children}
       </div>
-      <p className="m-0 text-[11px] text-fg-3">
-        Protected by <span className="text-mint">Authlyn</span>
+      <p className="m-0 text-[10.5px] font-mono text-[rgba(248,242,232,0.28)]">
+        Secured by Authlyn
       </p>
     </div>
   );

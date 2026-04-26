@@ -1,4 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom';
+import { SignIn } from '@/features/auth/screens/SignIn';
+import { SignUp } from '@/features/auth/screens/SignUp';
+import { ForgotPassword } from '@/features/auth/screens/ForgotPassword';
+import { ResetPassword } from '@/features/auth/screens/ResetPassword';
+import { VerifyEmail } from '@/features/auth/screens/VerifyEmail';
+import { MFAChallenge } from '@/features/auth/screens/MFAChallenge';
+import { PasskeyEnroll } from '@/features/auth/screens/PasskeyEnroll';
+import { SSORedirect } from '@/features/auth/screens/SSORedirect';
 
 export const router = createBrowserRouter([
   // Marketing
@@ -7,14 +15,14 @@ export const router = createBrowserRouter([
   { path: '/docs',    element: <div>Docs</div> },
 
   // Auth flows
-  { path: '/auth/sign-in',        element: <div>SignIn</div> },
-  { path: '/auth/sign-up',        element: <div>SignUp</div> },
-  { path: '/auth/forgot-password', element: <div>ForgotPassword</div> },
-  { path: '/auth/reset-password', element: <div>ResetPassword</div> },
-  { path: '/auth/verify-email',   element: <div>VerifyEmail</div> },
-  { path: '/auth/mfa',            element: <div>MFAChallenge</div> },
-  { path: '/auth/passkey-enroll', element: <div>PasskeyEnroll</div> },
-  { path: '/auth/sso',            element: <div>SSORedirect</div> },
+  { path: '/auth/sign-in',         element: <SignIn /> },
+  { path: '/auth/sign-up',         element: <SignUp /> },
+  { path: '/auth/forgot-password', element: <ForgotPassword /> },
+  { path: '/auth/reset-password',  element: <ResetPassword /> },
+  { path: '/auth/verify-email',    element: <VerifyEmail /> },
+  { path: '/auth/mfa',             element: <MFAChallenge /> },
+  { path: '/auth/passkey-enroll',  element: <PasskeyEnroll /> },
+  { path: '/auth/sso',             element: <SSORedirect /> },
 
   // Account
   { path: '/account/profile',  element: <div>Profile</div> },
