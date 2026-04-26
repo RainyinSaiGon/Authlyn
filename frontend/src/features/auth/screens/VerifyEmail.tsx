@@ -5,10 +5,9 @@ import { Icon } from '@/components/ui/Icon';
 export function VerifyEmail() {
   return (
     <AuthShell
-      subhead="VERIFY"
       head={
         <>Check your <span className="font-display italic text-mint font-normal">inbox</span></>
-      }
+      } centered
     >
       <div className="p-[18px] rounded-md text-center border border-dashed border-border">
         <Icon name="mail" size={32} className="text-accent" />

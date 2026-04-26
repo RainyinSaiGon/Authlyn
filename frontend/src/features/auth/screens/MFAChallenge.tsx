@@ -5,12 +5,7 @@ const OTP_DIGITS = ['4', '7', '2', '9', '1', '8'];
 
 export function MFAChallenge() {
   return (
-    <AuthShell subhead="TWO-STEP" head="Enter your code">
-      <p className="m-0 text-fg-2 text-[13px] leading-[1.55]">
-        From the authenticator for{' '}
-        <span className="font-mono text-accent-soft">authlyn · pagoda-prod</span>.
-      </p>
-
+    <AuthShell head="Enter your code" centered>
       <div className="flex items-center gap-[10px] justify-center">
         {OTP_DIGITS.map((digit, i) => (
           <div

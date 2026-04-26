@@ -5,7 +5,7 @@ import { InputField } from '@/components/ui/InputField';
 
 export function ForgotPassword() {
   return (
-    <AuthShell subhead="RECOVER" head="Reset your password">
+    <AuthShell head="Reset your password" centered>
       <p className="m-0 text-fg-2 text-[13.5px] leading-[1.6]">
         Enter the email on your account. We'll send a single-use link, signed with the tenant's
         recovery key, that expires in 30 minutes.

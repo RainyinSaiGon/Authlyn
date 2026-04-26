@@ -87,7 +87,7 @@ The Authlyn UI was designed using Claude Design and lives in the `Authlyn/` fold
 | --- | --- |
 | [00-04](../tasks/00-04-frontend-design-system-foundation.md) Design System Foundation | Done |
 | [00-05](../tasks/00-05-auth-screens.md) Auth Screens | Done |
-| [00-06](../tasks/00-06-marketing-and-account-screens.md) Marketing and Account Screens | Planned |
+| [00-06](../tasks/00-06-marketing-and-account-screens.md) Marketing and Account Screens | Done |
 | [00-07](../tasks/00-07-admin-and-developer-screens.md) Admin and Developer Screens | Planned |
 
 ## Design Token Summary

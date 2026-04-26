@@ -1,18 +1,31 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { SignIn } from '@/features/auth/screens/SignIn';
-import { SignUp } from '@/features/auth/screens/SignUp';
-import { ForgotPassword } from '@/features/auth/screens/ForgotPassword';
-import { ResetPassword } from '@/features/auth/screens/ResetPassword';
-import { VerifyEmail } from '@/features/auth/screens/VerifyEmail';
-import { MFAChallenge } from '@/features/auth/screens/MFAChallenge';
-import { PasskeyEnroll } from '@/features/auth/screens/PasskeyEnroll';
-import { SSORedirect } from '@/features/auth/screens/SSORedirect';
+
+import { SignIn }          from '@/features/auth/screens/SignIn';
+import { SignUp }          from '@/features/auth/screens/SignUp';
+import { ForgotPassword }  from '@/features/auth/screens/ForgotPassword';
+import { ResetPassword }   from '@/features/auth/screens/ResetPassword';
+import { VerifyEmail }     from '@/features/auth/screens/VerifyEmail';
+import { MFAChallenge }    from '@/features/auth/screens/MFAChallenge';
+import { PasskeyEnroll }   from '@/features/auth/screens/PasskeyEnroll';
+import { SSORedirect }     from '@/features/auth/screens/SSORedirect';
+
+import { Landing }  from '@/features/marketing/screens/Landing';
+import { Pricing }  from '@/features/marketing/screens/Pricing';
+import { Docs }     from '@/features/marketing/screens/Docs';
+
+import { Profile }       from '@/features/account/screens/Profile';
+import { Security }      from '@/features/account/screens/Security';
+import { Sessions }      from '@/features/account/screens/Sessions';
+import { ConnectedApps } from '@/features/account/screens/ConnectedApps';
+import { ApiKeys }       from '@/features/account/screens/ApiKeys';
+
+import { RequireAuth } from '@/components/auth/RequireAuth';
 
 export const router = createBrowserRouter([
   // Marketing
-  { path: '/',        element: <div>Landing</div> },
-  { path: '/pricing', element: <div>Pricing</div> },
-  { path: '/docs',    element: <div>Docs</div> },
+  { path: '/',        element: <Landing /> },
+  { path: '/pricing', element: <Pricing /> },
+  { path: '/docs',    element: <Docs /> },
 
   // Auth flows
   { path: '/auth/sign-in',         element: <SignIn /> },
@@ -24,14 +37,14 @@ export const router = createBrowserRouter([
   { path: '/auth/passkey-enroll',  element: <PasskeyEnroll /> },
   { path: '/auth/sso',             element: <SSORedirect /> },
 
-  // Account
-  { path: '/account/profile',  element: <div>Profile</div> },
-  { path: '/account/security', element: <div>Security</div> },
-  { path: '/account/sessions', element: <div>Sessions</div> },
-  { path: '/account/apps',     element: <div>ConnectedApps</div> },
-  { path: '/account/keys',     element: <div>ApiKeys</div> },
+  // Account (gated)
+  { path: '/account/profile',  element: <RequireAuth><Profile /></RequireAuth> },
+  { path: '/account/security', element: <RequireAuth><Security /></RequireAuth> },
+  { path: '/account/sessions', element: <RequireAuth><Sessions /></RequireAuth> },
+  { path: '/account/apps',     element: <RequireAuth><ConnectedApps /></RequireAuth> },
+  { path: '/account/keys',     element: <RequireAuth><ApiKeys /></RequireAuth> },
 
-  // Admin console
+  // Admin console (placeholders)
   { path: '/admin',           element: <div>AdminOverview</div> },
   { path: '/admin/users',     element: <div>Users</div> },
   { path: '/admin/users/:id', element: <div>UserDetail</div> },
@@ -42,7 +55,7 @@ export const router = createBrowserRouter([
   { path: '/admin/audit',     element: <div>AuditLog</div> },
   { path: '/admin/settings',  element: <div>Settings</div> },
 
-  // Developer tools
+  // Developer tools (placeholders)
   { path: '/admin/keys',     element: <div>ApiKeys (Developer)</div> },
   { path: '/admin/webhooks', element: <div>Webhooks</div> },
   { path: '/admin/jwks',     element: <div>Jwks</div> },
