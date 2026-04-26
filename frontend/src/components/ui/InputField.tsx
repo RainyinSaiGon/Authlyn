@@ -37,14 +37,7 @@ export function InputField({
           style={mono ? { fontFamily: 'var(--font-mono)' } : undefined}
         />
         {suffix && (
-          <span style={{
-            position: 'absolute',
-            right: 12,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            color: 'var(--fg-3)',
-            fontSize: 12,
-          }}>
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-fg-3 text-[12px]">
             {suffix}
           </span>
         )}

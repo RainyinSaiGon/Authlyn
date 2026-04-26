@@ -9,7 +9,7 @@ interface AuthShellProps {
 
 function LogoShield() {
   return (
-    <div className="logo-shield">
+    <div className="flex items-center gap-[10px]">
       <svg width={28} height={28} viewBox="0 0 48 48" fill="none">
         <path
           d="M24 4 L40 9 V22 C40 32 33 40 24 44 C15 40 8 32 8 22 V9 Z"
@@ -27,48 +27,26 @@ function LogoShield() {
           fill="none"
         />
       </svg>
-      <span className="word">Authlyn</span>
+      <span className="font-semibold tracking-[-0.01em] text-[16px]">Authlyn</span>
     </div>
   );
 }
 
 export function AuthShell({ head, subhead, width = 400, children }: AuthShellProps) {
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '32px 16px',
-      gap: 24,
-    }}>
+    <div className="min-h-screen flex flex-col items-center justify-center py-8 px-4 gap-6">
       <LogoShield />
-      <div className="glass" style={{ width, maxWidth: '100%', padding: 32 }}>
-        <div style={{ marginBottom: 24 }}>
-          <h1 style={{
-            margin: 0,
-            fontSize: 'var(--fs-xl)',
-            fontWeight: 600,
-            lineHeight: 'var(--lh-snug)',
-          }}>
-            {head}
-          </h1>
+      <div className="glass p-8 max-w-full" style={{ width }}>
+        <div className="mb-6">
+          <h1 className="m-0 text-xl font-semibold leading-snug">{head}</h1>
           {subhead && (
-            <p style={{
-              margin: '8px 0 0',
-              color: 'var(--fg-2)',
-              fontSize: 'var(--fs-sm)',
-              lineHeight: 'var(--lh-relaxed)',
-            }}>
-              {subhead}
-            </p>
+            <p className="mt-2 mb-0 text-fg-2 text-sm leading-relaxed">{subhead}</p>
           )}
         </div>
         {children}
       </div>
-      <p style={{ margin: 0, fontSize: 11, color: 'var(--fg-3)' }}>
-        Protected by <span style={{ color: 'var(--brand-mint)' }}>Authlyn</span>
+      <p className="m-0 text-[11px] text-fg-3">
+        Protected by <span className="text-mint">Authlyn</span>
       </p>
     </div>
   );

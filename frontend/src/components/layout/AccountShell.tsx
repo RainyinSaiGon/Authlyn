@@ -19,7 +19,7 @@ const NAV: { id: AccountNavId; label: string; path: string }[] = [
 
 export function AccountShell({ active, children }: AccountShellProps) {
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="min-h-screen flex flex-col">
       <nav className="topnav">
         <div className="brand">
           <svg width={22} height={22} viewBox="0 0 48 48" fill="none">
@@ -41,20 +41,17 @@ export function AccountShell({ active, children }: AccountShellProps) {
           </svg>
           <span className="brand-name">Authlyn</span>
         </div>
-        <span style={{ color: 'var(--fg-2)', fontSize: 13 }}>Account Settings</span>
+        <span className="text-fg-2 text-[13px]">Account Settings</span>
       </nav>
 
-      <div style={{ display: 'flex', flex: 1 }}>
-        <aside style={{
-          width: 220,
-          flexShrink: 0,
-          borderRight: '1px solid var(--border)',
-          background: 'rgba(9,19,29,0.5)',
-          padding: '24px 12px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-        }}>
+      <div className="flex flex-1">
+        <aside
+          className="w-[220px] shrink-0 flex flex-col gap-[2px] p-[24px_12px]"
+          style={{
+            borderRight: '1px solid var(--color-border)',
+            background: 'rgba(9,19,29,0.5)',
+          }}
+        >
           {NAV.map((item) => (
             <Link
               key={item.id}
@@ -63,7 +60,7 @@ export function AccountShell({ active, children }: AccountShellProps) {
                 display: 'block',
                 padding: '9px 12px',
                 borderRadius: 10,
-                color: active === item.id ? 'var(--fg-bright)' : 'var(--fg-2)',
+                color: active === item.id ? 'var(--color-fg-bright)' : 'var(--color-fg-2)',
                 background: active === item.id
                   ? 'linear-gradient(160deg, rgba(248,125,73,0.18), rgba(248,125,73,0.03))'
                   : 'transparent',
@@ -73,7 +70,7 @@ export function AccountShell({ active, children }: AccountShellProps) {
                 textDecoration: 'none',
                 fontSize: 13.5,
                 fontWeight: active === item.id ? 500 : 400,
-                transition: 'all var(--dur-fast)',
+                transition: 'all var(--duration-fast)',
               }}
             >
               {item.label}
@@ -81,7 +78,7 @@ export function AccountShell({ active, children }: AccountShellProps) {
           ))}
         </aside>
 
-        <main style={{ flex: 1, padding: '32px', overflow: 'auto' }}>
+        <main className="flex-1 p-8 overflow-auto">
           {children}
         </main>
       </div>

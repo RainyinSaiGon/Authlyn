@@ -27,7 +27,7 @@ export function AppBar({ crumbs, title, actions }: AppBarProps) {
         )}
       </div>
       {actions && (
-        <div className="row" style={{ gap: 10 }}>{actions}</div>
+        <div className="flex items-center gap-[10px]">{actions}</div>
       )}
     </header>
   );
