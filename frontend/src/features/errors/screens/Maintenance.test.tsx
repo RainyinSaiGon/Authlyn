@@ -14,5 +14,5 @@ test('renders estimated time', () => {
 
 test('renders status link', () => {
   render(<MemoryRouter><Maintenance /></MemoryRouter>);
-  expect(screen.getByText(/status.authlyn.io/)).toBeInTheDocument();
+  expect(screen.getByText(/status\.authlyn\.io/)).toBeInTheDocument();
 });
