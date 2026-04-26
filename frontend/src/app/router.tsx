@@ -19,7 +19,32 @@ import { Sessions }      from '@/features/account/screens/Sessions';
 import { ConnectedApps } from '@/features/account/screens/ConnectedApps';
 import { ApiKeys }       from '@/features/account/screens/ApiKeys';
 
-import { RequireAuth } from '@/components/auth/RequireAuth';
+import { Overview }        from '@/features/admin/screens/Overview';
+import { Users }           from '@/features/admin/screens/Users';
+import { UserDetail }      from '@/features/admin/screens/UserDetail';
+import { Roles }           from '@/features/admin/screens/Roles';
+import { Organizations }   from '@/features/admin/screens/Organizations';
+import { Applications }    from '@/features/admin/screens/Applications';
+import { AdminSessions }   from '@/features/admin/screens/AdminSessions';
+import { AuditLog }        from '@/features/admin/screens/AuditLog';
+import { Settings }        from '@/features/admin/screens/Settings';
+import { DevApiKeys }      from '@/features/admin/screens/DevApiKeys';
+import { Webhooks }        from '@/features/admin/screens/Webhooks';
+import { JWKS }            from '@/features/admin/screens/JWKS';
+import { Logs }            from '@/features/admin/screens/Logs';
+
+import { NotFound }    from '@/features/errors/screens/NotFound';
+import { ServerError } from '@/features/errors/screens/ServerError';
+import { Maintenance } from '@/features/errors/screens/Maintenance';
+
+import { Onboarding } from '@/features/onboarding/screens/Onboarding';
+
+import { MobileSignIn } from '@/features/mobile/screens/MobileSignIn';
+import { MobileMFA }    from '@/features/mobile/screens/MobileMFA';
+import { MobilePasskey } from '@/features/mobile/screens/MobilePasskey';
+
+import { RequireAuth }  from '@/components/auth/RequireAuth';
+import { RequireAdmin } from '@/components/auth/RequireAdmin';
 
 export const router = createBrowserRouter([
   // Marketing
@@ -44,27 +69,35 @@ export const router = createBrowserRouter([
   { path: '/account/apps',     element: <RequireAuth><ConnectedApps /></RequireAuth> },
   { path: '/account/keys',     element: <RequireAuth><ApiKeys /></RequireAuth> },
 
-  // Admin console (placeholders)
-  { path: '/admin',           element: <div>AdminOverview</div> },
-  { path: '/admin/users',     element: <div>Users</div> },
-  { path: '/admin/users/:id', element: <div>UserDetail</div> },
-  { path: '/admin/roles',     element: <div>Roles</div> },
-  { path: '/admin/orgs',      element: <div>Organizations</div> },
-  { path: '/admin/apps',      element: <div>Applications</div> },
-  { path: '/admin/sessions',  element: <div>AdminSessions</div> },
-  { path: '/admin/audit',     element: <div>AuditLog</div> },
-  { path: '/admin/settings',  element: <div>Settings</div> },
+  // Admin console (gated — requires admin role in JWT)
+  { path: '/admin',           element: <RequireAdmin><Overview /></RequireAdmin> },
+  { path: '/admin/users',     element: <RequireAdmin><Users /></RequireAdmin> },
+  { path: '/admin/users/:id', element: <RequireAdmin><UserDetail /></RequireAdmin> },
+  { path: '/admin/roles',     element: <RequireAdmin><Roles /></RequireAdmin> },
+  { path: '/admin/orgs',      element: <RequireAdmin><Organizations /></RequireAdmin> },
+  { path: '/admin/apps',      element: <RequireAdmin><Applications /></RequireAdmin> },
+  { path: '/admin/sessions',  element: <RequireAdmin><AdminSessions /></RequireAdmin> },
+  { path: '/admin/audit',     element: <RequireAdmin><AuditLog /></RequireAdmin> },
+  { path: '/admin/settings',  element: <RequireAdmin><Settings /></RequireAdmin> },
 
-  // Developer tools (placeholders)
-  { path: '/admin/keys',     element: <div>ApiKeys (Developer)</div> },
-  { path: '/admin/webhooks', element: <div>Webhooks</div> },
-  { path: '/admin/jwks',     element: <div>Jwks</div> },
-  { path: '/admin/logs',     element: <div>Logs</div> },
+  // Developer tools (gated)
+  { path: '/admin/keys',     element: <RequireAdmin><DevApiKeys /></RequireAdmin> },
+  { path: '/admin/webhooks', element: <RequireAdmin><Webhooks /></RequireAdmin> },
+  { path: '/admin/jwks',     element: <RequireAdmin><JWKS /></RequireAdmin> },
+  { path: '/admin/logs',     element: <RequireAdmin><Logs /></RequireAdmin> },
 
-  // Other
-  { path: '/onboarding',  element: <div>Onboarding</div> },
-  { path: '/maintenance', element: <div>Maintenance</div> },
+  // Onboarding
+  { path: '/onboarding', element: <Onboarding /> },
+
+  // Mobile previews
+  { path: '/mobile/sign-in', element: <MobileSignIn /> },
+  { path: '/mobile/mfa',     element: <MobileMFA /> },
+  { path: '/mobile/passkey', element: <MobilePasskey /> },
+
+  // Error pages
+  { path: '/500',         element: <ServerError /> },
+  { path: '/maintenance', element: <Maintenance /> },
 
   // 404
-  { path: '*', element: <div>NotFound</div> },
+  { path: '*', element: <NotFound /> },
 ]);

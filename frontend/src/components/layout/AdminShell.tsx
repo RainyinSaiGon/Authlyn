@@ -12,9 +12,9 @@ const ADMIN_NAV: NavGroup[] = [
   {
     title: 'People',
     items: [
-      { id: 'users',  label: 'Users',         icon: 'users',    path: '/admin/users' },
+      { id: 'users',  label: 'Users',         icon: 'users',    path: '/admin/users',  count: '1,247' },
       { id: 'roles',  label: 'Roles',          icon: 'shield',   path: '/admin/roles' },
-      { id: 'orgs',   label: 'Organizations',  icon: 'building', path: '/admin/orgs' },
+      { id: 'orgs',   label: 'Organizations',  icon: 'building', path: '/admin/orgs',   count: '84' },
     ],
   },
   {

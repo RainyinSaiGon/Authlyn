@@ -8,7 +8,7 @@ export interface NavItem {
   label: string;
   icon: string;
   path: string;
-  count?: number;
+  count?: string | number;
 }
 
 export interface NavGroup {
