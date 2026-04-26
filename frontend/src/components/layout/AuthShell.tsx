@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 interface AuthShellProps {
-  head: string;
+  head: ReactNode;
   subhead?: string;
   width?: number;
   children: ReactNode;
@@ -36,17 +36,22 @@ export function AuthShell({ head, subhead, width = 400, children }: AuthShellPro
   return (
     <div className="min-h-screen flex flex-col items-center justify-center py-8 px-4 gap-6">
       <LogoShield />
-      <div className="glass p-8 max-w-full" style={{ width }}>
-        <div className="mb-6">
-          <h1 className="m-0 text-xl font-semibold leading-snug">{head}</h1>
+      <div className="glass p-7 max-w-full flex flex-col gap-4" style={{ width }}>
+        <div>
           {subhead && (
-            <p className="mt-2 mb-0 text-fg-2 text-sm leading-relaxed">{subhead}</p>
+            <p
+              className="m-0 mb-[10px] uppercase text-[11px] font-medium tracking-caps font-mono"
+              style={{ color: 'var(--color-accent-soft)' }}
+            >
+              {subhead}
+            </p>
           )}
+          <h1 className="m-0 text-[26px] font-medium leading-[1.15] tracking-[-0.01em]">{head}</h1>
         </div>
         {children}
       </div>
-      <p className="m-0 text-[11px] text-fg-3">
-        Protected by <span className="text-mint">Authlyn</span>
+      <p className="m-0 text-[11px] text-fg-3 font-mono">
+        Authlyn · signed with RS256 · kid authlyn-01
       </p>
     </div>
   );
