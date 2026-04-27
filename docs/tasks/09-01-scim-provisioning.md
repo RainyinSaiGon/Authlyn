@@ -46,6 +46,10 @@ Start Phase 9 by implementing SCIM provisioning endpoints and synchronization fo
 
 ---
 
+## Related Use Cases
+
+- [UC-54](../UC/UC-54-scim-provision-user.md) — an identity provider provisions or deprovisions a user via SCIM
+
 ## Related Tasks
 
 - Prerequisite: [04-03](./04-03-invites-enterprise-sso-and-jit.md)

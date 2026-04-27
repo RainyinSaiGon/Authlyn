@@ -45,6 +45,10 @@ Start Phase 12 by implementing self-service tenant onboarding and quota enforcem
 
 ---
 
+## Related Use Cases
+
+- [UC-53](../UC/UC-53-tenant-onboarding.md) — operator completes the self-service tenant onboarding flow
+
 ## Related Tasks
 
 - Prerequisite: [04-01](./04-01-organizations-and-memberships.md), [11-01](./11-01-security-analytics-and-dashboard.md)

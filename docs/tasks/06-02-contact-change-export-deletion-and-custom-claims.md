@@ -42,6 +42,13 @@ Complete Phase 6 by implementing secure contact changes, account export and dele
 
 ---
 
+## Related Use Cases
+
+- [UC-21](../UC/UC-21-change-email.md) — user changes their email address with verification
+- [UC-22](../UC/UC-22-change-phone.md) — user changes their phone number with verification
+- [UC-26](../UC/UC-26-export-account-data.md) — user exports a copy of their account data
+- [UC-27](../UC/UC-27-delete-account.md) — user permanently deletes their account
+
 ## Related Tasks
 
 - Prerequisite: [06-01](./06-01-profiles-and-self-service.md)

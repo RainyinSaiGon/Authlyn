@@ -40,6 +40,10 @@ Rebuild the shared JWT and JWKS foundation that was removed from the scaffold.
 
 ---
 
+## Related Use Cases
+
+- [UC-51](../UC/UC-51-fetch-jwks.md) — external client fetches the JWKS endpoint to obtain the platform's public signing keys
+
 ## Related Tasks
 
 - Prerequisite: [00-03](./00-03-backend-rebuild-from-clean-scaffold.md)

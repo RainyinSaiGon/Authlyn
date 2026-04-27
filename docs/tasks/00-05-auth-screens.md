@@ -49,6 +49,21 @@ Each screen is wrapped in `AuthShell` with the correct `head` and `subhead` prop
 
 ---
 
+## Related Use Cases
+
+- [UC-01](../UC/UC-01-sign-up.md) — user registers a new account with email and password
+- [UC-02](../UC/UC-02-sign-in-password.md) — user signs in with email and password
+- [UC-03](../UC/UC-03-sign-in-social.md) — user signs in via a social identity provider
+- [UC-04](../UC/UC-04-verify-email.md) — user verifies their email address after sign-up
+- [UC-05](../UC/UC-05-request-password-reset.md) — user requests a password reset link
+- [UC-06](../UC/UC-06-reset-password.md) — user resets their password using a reset token
+- [UC-11](../UC/UC-11-mfa-challenge.md) — user completes an MFA challenge during sign-in
+- [UC-12](../UC/UC-12-use-recovery-code.md) — user signs in using a backup recovery code
+- [UC-14](../UC/UC-14-enroll-passkey.md) — user enrolls a passkey on the enroll screen
+- [UC-15](../UC/UC-15-sign-in-passkey.md) — user signs in using a registered passkey
+- [UC-33](../UC/UC-33-sso-sign-in.md) — user signs in via enterprise SSO
+- [UC-36](../UC/UC-36-magic-link-sign-in.md) — user signs in via a magic link sent to their email
+
 ## Related Tasks
 
 - Prerequisite: [00-04](./00-04-frontend-design-system-foundation.md)

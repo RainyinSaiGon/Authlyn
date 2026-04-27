@@ -41,6 +41,12 @@ Implement login, access token issuance, refresh token creation, and `GET /api/me
 
 ---
 
+## Related Use Cases
+
+- [UC-02](../UC/UC-02-sign-in-password.md) — user signs in with email and password
+- [UC-07](../UC/UC-07-refresh-access-token.md) — client silently refreshes an expired access token
+- [UC-17](../UC/UC-17-view-sessions.md) — user views their list of active sessions
+
 ## Related Tasks
 
 - Prerequisite: [01-03](./01-03-signup-endpoint.md)

@@ -45,6 +45,11 @@ Complete Phase 8 by adding hardware security key support and adaptive, risk-base
 
 ---
 
+## Related Use Cases
+
+- [UC-19](../UC/UC-19-trust-device.md) — user marks a device as trusted during adaptive authentication
+- [UC-55](../UC/UC-55-anomaly-detection.md) — the platform detects and alerts on anomalous sign-in patterns
+
 ## Related Tasks
 
 - Prerequisite: [08-01](./08-01-webauthn-and-passkeys.md), [02-04](./02-04-anomaly-detection-and-security-notifications.md)

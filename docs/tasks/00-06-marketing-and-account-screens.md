@@ -57,6 +57,20 @@ All account screens are wrapped in `AccountShell` with the correct `active` prop
 
 ---
 
+## Related Use Cases
+
+- [UC-17](../UC/UC-17-view-sessions.md) — user views their list of active sessions
+- [UC-18](../UC/UC-18-revoke-session.md) — user revokes a specific active session
+- [UC-19](../UC/UC-19-trust-device.md) — user marks a device as trusted
+- [UC-20](../UC/UC-20-update-profile.md) — user updates their display name and profile fields
+- [UC-21](../UC/UC-21-change-email.md) — user changes their email address with verification
+- [UC-22](../UC/UC-22-change-phone.md) — user changes their phone number with verification
+- [UC-23](../UC/UC-23-link-identity.md) — user links or unlinks a social identity provider
+- [UC-24](../UC/UC-24-manage-personal-api-keys.md) — user creates and manages personal API keys
+- [UC-25](../UC/UC-25-revoke-app-access.md) — user revokes an application's OAuth access
+- [UC-26](../UC/UC-26-export-account-data.md) — user exports a copy of their account data
+- [UC-27](../UC/UC-27-delete-account.md) — user permanently deletes their account
+
 ## Related Tasks
 
 - Prerequisite: [00-04](./00-04-frontend-design-system-foundation.md)

@@ -42,6 +42,12 @@ Implement the rest of Phase 5: webhook delivery, token introspection, and observ
 
 ---
 
+## Related Use Cases
+
+- [UC-49](../UC/UC-49-manage-webhooks.md) — admin registers and manages webhook endpoints for event delivery
+- [UC-50](../UC/UC-50-introspect-token.md) — resource server introspects a token to verify its validity
+- [UC-52](../UC/UC-52-live-log-stream.md) — developer views the live structured log stream
+
 ## Related Tasks
 
 - Prerequisite: [05-01](./05-01-api-keys-and-admin-auth.md), [02-03](./02-03-rate-limits-and-audit-logs.md)

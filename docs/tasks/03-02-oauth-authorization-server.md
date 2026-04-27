@@ -41,6 +41,12 @@ Implement the core OAuth 2.0 authorization server flow required by the platform.
 
 ---
 
+## Related Use Cases
+
+- [UC-25](../UC/UC-25-revoke-app-access.md) — user revokes an OAuth application's access to their account
+- [UC-34](../UC/UC-34-oauth-consent.md) — user reviews and grants consent to a third-party application
+- [UC-35](../UC/UC-35-exchange-code.md) — client exchanges an authorization code for tokens
+
 ## Related Tasks
 
 - Prerequisite: [03-01](./03-01-totp-mfa-and-recovery-codes.md)

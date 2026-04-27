@@ -41,6 +41,11 @@ Implement RBAC and organization-aware token claims.
 
 ---
 
+## Related Use Cases
+
+- [UC-31](../UC/UC-31-assign-role.md) — admin assigns a role to an organization member
+- [UC-44](../UC/UC-44-manage-roles.md) — admin manages roles and their associated permissions
+
 ## Related Tasks
 
 - Prerequisite: [04-01](./04-01-organizations-and-memberships.md)

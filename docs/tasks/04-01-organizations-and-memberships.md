@@ -41,6 +41,12 @@ Implement organization creation and membership management.
 
 ---
 
+## Related Use Cases
+
+- [UC-28](../UC/UC-28-create-organization.md) — user creates a new organization
+- [UC-29](../UC/UC-29-invite-member.md) — organization admin invites a user to join the organization
+- [UC-30](../UC/UC-30-accept-invitation.md) — invited user accepts an organization membership invitation
+
 ## Related Tasks
 
 - Prerequisite: [03-03](./03-03-social-login-magic-links-and-oidc.md)

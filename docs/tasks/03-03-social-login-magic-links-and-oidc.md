@@ -42,6 +42,12 @@ Add the rest of Phase 3: social login, magic links, and OIDC discovery and useri
 
 ---
 
+## Related Use Cases
+
+- [UC-03](../UC/UC-03-sign-in-social.md) — user signs in via a social identity provider
+- [UC-23](../UC/UC-23-link-identity.md) — user links or unlinks a social identity provider from their account
+- [UC-36](../UC/UC-36-magic-link-sign-in.md) — user signs in via a magic link sent to their email
+
 ## Related Tasks
 
 - Prerequisite: [03-02](./03-02-oauth-authorization-server.md)

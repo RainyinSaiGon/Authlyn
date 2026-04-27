@@ -45,6 +45,10 @@ Start Phase 10 by formalizing public API contracts and establishing official SDK
 
 ---
 
+## Related Use Cases
+
+- [UC-51](../UC/UC-51-fetch-jwks.md) — external client fetches the JWKS endpoint to obtain the platform's public signing keys
+
 ## Related Tasks
 
 - Prerequisite: [06-02](./06-02-contact-change-export-deletion-and-custom-claims.md)
