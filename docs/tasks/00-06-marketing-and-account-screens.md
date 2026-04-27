@@ -6,13 +6,14 @@
 > 3. All data shown in account screens is placeholder/mock until the relevant backend tasks (06-xx) are connected.
 
 ## GitHub Issue
+
 - Link: TBD
 
 ---
 
 ## Overview
 
-Port the 3 public marketing pages from `Authlyn/screens-marketing.jsx` and the 5 end-user account tabs from `Authlyn/screens-account.jsx` into the React frontend as routed TypeScript components.
+Port the 3 public marketing pages from `design/screens-marketing.jsx` and the 5 end-user account tabs from `design/screens-account.jsx` into the React frontend as routed TypeScript components.
 
 ---
 
@@ -40,6 +41,7 @@ All account screens are wrapped in `AccountShell` with the correct `active` prop
 - [ ] `RequireAuth.tsx` — wrapper component that reads the JWT from storage (localStorage key `authlyn.token`); redirects to `/auth/sign-in` if absent; renders `children` otherwise
 
 ### Tests
+
 - [ ] Render test for each of the 3 marketing screens — assert the primary heading and at least one landmark element render
 - [ ] Render test for each of the 5 account screens behind a mocked auth context — assert the section heading renders
 - [ ] `RequireAuth` test — assert redirect to `/auth/sign-in` when no token is present

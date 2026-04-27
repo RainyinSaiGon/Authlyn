@@ -1,6 +1,6 @@
 <!-- markdownlint-disable MD033 MD041 -->
 <p align="center">
-  <img src="./assets/Logo-transparent.png" alt="Authlyn logo" width="280" />
+  <img src="./design/ds/Logo-transparent.png" alt="Authlyn logo" width="280" />
 </p>
 
 <p align="center">
@@ -26,11 +26,11 @@ Authlyn is currently in scaffold/build-out mode. The repository contains foundat
 ## Repository layout
 
 ```text
-Authlyn/
+./
 |- README.md
 |- ARCHITECTURE.md
-|- Specs.md
 |- docs/
+|  |- Specs.md
 |  |- architecture/
 |  |- tasks/
 |  |- features/
@@ -41,6 +41,7 @@ Authlyn/
 |  |- user-manual/
 |  |- workflows/
 |  `- UC/
+|- design/
 |- frontend/
 |- src/
 |- docker-compose.yml

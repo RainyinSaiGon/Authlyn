@@ -6,13 +6,14 @@
 > 3. Edge-state screens (404, 500, maintenance) must be standalone — they must render without any shell or auth dependency.
 
 ## GitHub Issue
+
 - Link: TBD
 
 ---
 
 ## Overview
 
-Port the 10 admin console screens from `Authlyn/screens-admin.jsx`, the 4 developer tool screens and onboarding wizard from `Authlyn/screens-dev.jsx`, 4 edge-state and empty-state screens, and 3 mobile viewport variants into the React frontend as routed TypeScript components.
+Port the 10 admin console screens from `design/screens-admin.jsx`, the 4 developer tool screens and onboarding wizard from `design/screens-dev.jsx`, 4 edge-state and empty-state screens, and 3 mobile viewport variants into the React frontend as routed TypeScript components.
 
 ---
 
@@ -59,11 +60,12 @@ All admin screens are wrapped in `AdminShell` with the correct `active`, `crumbs
 - [x] `MobileMFA.tsx` — `PhoneFrame` wrapper around 6-box OTP input, backup code link, verify button
 - [x] `MobilePasskey.tsx` — `PhoneFrame` wrapper with passkey enroll prompt, feature list, create/skip buttons
 
-**Admin auth guard**
+#### Admin auth guard
 
 - [x] `RequireAdmin.tsx` — reads JWT roles claim; redirects to `/` if `admin` role is absent; all `/admin/*` routes wrapped
 
 ### Tests
+
 - [x] Render test for each admin screen — assert the page title text renders inside `AppBar`
 - [x] Render test for `NotFound`, `ServerError`, `Maintenance` — assert error code or heading is present
 - [x] `RequireAdmin` test — assert redirect to `/` when the token has no `admin` role
