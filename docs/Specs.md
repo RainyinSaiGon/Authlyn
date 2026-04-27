@@ -1,6 +1,6 @@
 # Full Authentication & Identity Platform Specification
 
-Project Name: AuthEngine (or your preferred name)  
+Project Name: Authlyn (or your preferred name)  
 Version: 1.0 (All Phases 1–12)  
 Goal: Production-grade, enterprise-ready, developer-first Identity & Access Management (IAM) platform  
 Stack: Spring Boot 4 + PostgreSQL 18 + Redis 8.6 (as originally suggested)

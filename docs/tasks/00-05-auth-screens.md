@@ -6,13 +6,14 @@
 > 3. Wire routes but leave form submissions as no-ops (`e.preventDefault()`) until the backend identity tasks (01-xx) are ready to connect.
 
 ## GitHub Issue
+
 - Link: TBD
 
 ---
 
 ## Overview
 
-Port the 8 end-user authentication flow screens from `Authlyn/screens-auth.jsx` into the React frontend as real, routed TypeScript components. This is a pure UI task — fidelity to the design is the goal, not API integration.
+Port the 8 end-user authentication flow screens from `design/screens-auth.jsx` into the React frontend as real, routed TypeScript components. This is a pure UI task — fidelity to the design is the goal, not API integration.
 
 ---
 
@@ -34,6 +35,7 @@ All screen components live under `frontend/src/features/auth/screens/`.
 Each screen is wrapped in `AuthShell` with the correct `head` and `subhead` props.
 
 ### Tests
+
 - [ ] Render test for each of the 8 screens — assert the primary heading text and the main action button are present in the DOM
 
 ---
@@ -41,7 +43,7 @@ Each screen is wrapped in `AuthShell` with the correct `head` and `subhead` prop
 ## Completion Criteria
 
 - [ ] All 8 routes under `/auth/*` render the correct screen without runtime errors
-- [ ] Each screen matches the `Authlyn/screens-auth.jsx` layout at first glance — shell, card width, field order, button labels
+- [ ] Each screen matches the `design/screens-auth.jsx` layout at first glance — shell, card width, field order, button labels
 - [ ] Form submissions call `e.preventDefault()` and do nothing else
 - [ ] `npm run typecheck` and `npm run lint` pass clean
 

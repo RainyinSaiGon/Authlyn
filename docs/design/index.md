@@ -9,14 +9,14 @@ This folder tracks UX and design references for Authlyn.
 
 ## Design Source Location
 
-All design work lives in the `Authlyn/` folder at the repository root. This folder was produced by Claude Design and is the source of truth for tokens, fonts, primitive components, and screen layouts.
+All design work lives in the `design/` folder at the repository root. This folder was produced by Claude Design and is the source of truth for tokens, fonts, primitive components, and screen layouts.
 
 Key source files:
 
-- `Authlyn/ds/colors_and_type.css` — design tokens (source reference)
-- `Authlyn/primitives.jsx` — all primitive components (source reference)
-- `Authlyn/screen.css` — utility classes (source reference; patterns ported to `frontend/src/styles/global.css` `@layer components`)
-- `Authlyn/screens-*.jsx` — screen designs
+- `design/ds/colors_and_type.css` — design tokens (source reference)
+- `design/primitives.jsx` — all primitive components (source reference)
+- `design/screen.css` — utility classes (source reference; patterns ported to `frontend/src/styles/global.css` `@layer components`)
+- `design/screens-*.jsx` — screen designs
 
 ## Migration Tasks
 

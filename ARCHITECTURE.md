@@ -17,11 +17,11 @@ The repository currently contains a backend scaffold. This document defines the 
 ## Repository Layout
 
 ```text
-Authlyn/
+./
 |- ARCHITECTURE.md
 |- README.md
-|- Specs.md
 |- docker-compose.yml
+|- design/
 |- frontend/
 |  |- package.json
 |  |- vite.config.ts

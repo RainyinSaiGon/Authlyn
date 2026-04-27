@@ -1,20 +1,20 @@
 # Design Screens
 
-The Authlyn UI was designed using Claude Design and lives in the `Authlyn/` folder at the repository root. All design assets, tokens, fonts, and screen files are in that folder — there is no separate Figma file.
+The Authlyn UI was designed using Claude Design and lives in the `design/` folder at the repository root. All design assets, tokens, fonts, and screen files are in that folder — there is no separate Figma file.
 
 ## Design Source Files
 
 | File | Contents |
 | --- | --- |
-| `Authlyn/ds/colors_and_type.css` | Design tokens — brand colors, foreground/background scale, surface tokens, border, spacing, radius, shadow |
-| `Authlyn/ds/fonts/` | Google Sans Code and Google Sans Code Proportional font files (Regular, Medium, SemiBold, Bold) |
-| `Authlyn/primitives.jsx` | All primitive UI components — Button, Field, Icon, Avatar, StatusPill, Toggle, Segmented, Tabs, Modal |
-| `Authlyn/screen.css` | Utility classes — `.glass`, `.row`, `.col`, `.pill`, `.mono`, `.tbl`, `.codeblock`, etc. |
-| `Authlyn/screens-auth.jsx` | 8 end-user authentication screens |
-| `Authlyn/screens-marketing.jsx` | 3 public marketing pages |
-| `Authlyn/screens-account.jsx` | 5 end-user account management tabs |
-| `Authlyn/screens-admin.jsx` | 10 admin console screens |
-| `Authlyn/screens-dev.jsx` | Developer tools, onboarding wizard, edge states, and mobile variants |
+| `design/ds/colors_and_type.css` | Design tokens — brand colors, foreground/background scale, surface tokens, border, spacing, radius, shadow |
+| `design/ds/fonts/` | Google Sans Code and Google Sans Code Proportional font files (Regular, Medium, SemiBold, Bold) |
+| `design/primitives.jsx` | All primitive UI components — Button, Field, Icon, Avatar, StatusPill, Toggle, Segmented, Tabs, Modal |
+| `design/screen.css` | Utility classes — `.glass`, `.row`, `.col`, `.pill`, `.mono`, `.tbl`, `.codeblock`, etc. |
+| `design/screens-auth.jsx` | 8 end-user authentication screens |
+| `design/screens-marketing.jsx` | 3 public marketing pages |
+| `design/screens-account.jsx` | 5 end-user account management tabs |
+| `design/screens-admin.jsx` | 10 admin console screens |
+| `design/screens-dev.jsx` | Developer tools, onboarding wizard, edge states, and mobile variants |
 
 ## Screen Inventory
 
@@ -92,7 +92,7 @@ The Authlyn UI was designed using Claude Design and lives in the `Authlyn/` fold
 
 ## Design Token Summary
 
-Source tokens in `Authlyn/ds/colors_and_type.css` and their implementation names in `frontend/src/styles/global.css` (`@theme`):
+Source tokens in `design/ds/colors_and_type.css` and their implementation names in `frontend/src/styles/global.css` (`@theme`):
 
 | Source token | Tailwind theme variable | Utility classes generated |
 | --- | --- | --- |
