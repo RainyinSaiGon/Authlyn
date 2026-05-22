@@ -10,8 +10,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,7 +22,9 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.authlyn.shared.security.jwt.AuthlynJwtProperties;
+import com.authlyn.shared.security.jwt.JwtSessionStateValidator;
 import com.authlyn.shared.security.jwt.RsaKeyService;
+import com.authlyn.shared.security.state.RedisSessionStateService;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 
@@ -48,8 +52,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    JwtDecoder jwtDecoder(RsaKeyService rsaKeyService) {
-        return NimbusJwtDecoder.withPublicKey(rsaKeyService.getPublicKey()).build();
+    JwtDecoder jwtDecoder(RsaKeyService rsaKeyService,
+                          AuthlynJwtProperties properties,
+                          RedisSessionStateService sessionStateService) {
+        NimbusJwtDecoder decoder = NimbusJwtDecoder.withPublicKey(rsaKeyService.getPublicKey()).build();
+        decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(
+                JwtValidators.createDefaultWithIssuer(properties.getIssuer()),
+                new JwtSessionStateValidator(sessionStateService)));
+        return decoder;
     }
 
     @Bean

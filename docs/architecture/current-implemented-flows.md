@@ -11,12 +11,12 @@ Implemented today:
 - RSA key loading / generation and JWKS exposure
 - JWT verification for protected requests (resource server mode)
 - Frontend bootstrap metadata endpoint
+- Signup, login, refresh rotation, logout, and logout-all auth flows
+- Redis-backed session revocation checks for protected JWTs
 
 Not yet implemented:
 
-- Signup/login APIs
-- Refresh-token rotation endpoint flow
-- Logout/logout-all-devices endpoint flow
+- Password reset flow
 - MFA challenge/verification
 
 ## Flow 1: Application startup
@@ -109,7 +109,7 @@ sequenceDiagram
 
 ## Notes
 
-- JWT issuance endpoint flow is not implemented yet in controllers/services, but encoder wiring is already present.
+- JWT issuance is implemented in the signup/login/refresh services. Access tokens include a session id (`sid`) claim, and protected requests consult Redis-backed session revocation state.
 - If RSA keys are not configured, generated keys are ephemeral and will change on restart.
 - React development is expected to run from `http://localhost:5173`, which is allowed by default via CORS.
 - Detailed key-management and rotation guidance is in:
