@@ -44,6 +44,12 @@ Build user-facing session management and trusted device controls.
 
 ---
 
+## Related Use Cases
+
+- [UC-17](../UC/UC-17-view-sessions.md) — user views their list of active sessions
+- [UC-18](../UC/UC-18-revoke-session.md) — user revokes a specific active session
+- [UC-19](../UC/UC-19-trust-device.md) — user marks a device as trusted
+
 ## Related Tasks
 
 - Prerequisite: [02-01](./02-01-session-metadata-and-last-seen.md)

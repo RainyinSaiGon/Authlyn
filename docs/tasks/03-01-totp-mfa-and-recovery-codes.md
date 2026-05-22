@@ -44,6 +44,13 @@ Implement TOTP-based MFA enrollment, verification, and recovery code support.
 
 ---
 
+## Related Use Cases
+
+- [UC-10](../UC/UC-10-enroll-totp.md) — user enrolls a TOTP authenticator app as an MFA factor
+- [UC-11](../UC/UC-11-mfa-challenge.md) — user completes an MFA challenge during sign-in
+- [UC-12](../UC/UC-12-use-recovery-code.md) — user signs in using a backup recovery code
+- [UC-13](../UC/UC-13-remove-mfa.md) — user removes a registered MFA factor from their account
+
 ## Related Tasks
 
 - Prerequisite: [01-05](./01-05-refresh-logout-and-password-reset.md)

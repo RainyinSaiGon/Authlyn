@@ -45,6 +45,10 @@ Complete Phase 11 with bot defense controls, breached-password detection, and se
 
 ---
 
+## Related Use Cases
+
+- [UC-55](../UC/UC-55-anomaly-detection.md) — the platform detects and alerts on anomalous sign-in patterns
+
 ## Related Tasks
 
 - Prerequisite: [11-01](./11-01-security-analytics-and-dashboard.md), [08-02](./08-02-hardware-keys-and-adaptive-auth.md)

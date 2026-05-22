@@ -39,6 +39,11 @@ Add request-derived session metadata and last-seen tracking to the auth system.
 
 ---
 
+## Related Use Cases
+
+- [UC-02](../UC/UC-02-sign-in-password.md) — user signs in with email and password
+- [UC-17](../UC/UC-17-view-sessions.md) — user views their list of active sessions
+
 ## Related Tasks
 
 - Prerequisite: [01-04](./01-04-login-token-issuance-and-api-me.md)

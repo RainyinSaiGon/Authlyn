@@ -39,6 +39,10 @@ Apply rate limits to sensitive auth flows and start recording security events in
 
 ---
 
+## Related Use Cases
+
+- [UC-46](../UC/UC-46-view-audit-log.md) — admin views the platform-wide audit log of security events
+
 ## Related Tasks
 
 - Prerequisite: [01-05](./01-05-refresh-logout-and-password-reset.md)

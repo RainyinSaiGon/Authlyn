@@ -39,6 +39,10 @@ Detect suspicious sign-in behavior and notify users or operators when needed.
 
 ---
 
+## Related Use Cases
+
+- [UC-55](../UC/UC-55-anomaly-detection.md) — the platform detects and alerts on anomalous sign-in patterns
+
 ## Related Tasks
 
 - Prerequisite: [02-02](./02-02-trusted-devices-and-session-management.md), [02-03](./02-03-rate-limits-and-audit-logs.md)

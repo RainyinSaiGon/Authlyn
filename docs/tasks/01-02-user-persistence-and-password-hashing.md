@@ -44,6 +44,12 @@ Add the persistence layer required for user creation and credential verification
 
 ---
 
+## Related Use Cases
+
+- [UC-01](../UC/UC-01-sign-up.md) — user registers a new account with email and password
+- [UC-02](../UC/UC-02-sign-in-password.md) — user signs in with email and password
+- [UC-06](../UC/UC-06-reset-password.md) — user resets their password using a reset token
+
 ## Related Tasks
 
 - Prerequisite: [01-01](./01-01-jwt-and-jwks-foundation.md)

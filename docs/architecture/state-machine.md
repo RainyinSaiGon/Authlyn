@@ -47,6 +47,7 @@ For task `00-01`, sessions and refresh tokens are specified in detail as impleme
 - Only `ACTIVE` sessions may participate in refresh rotation.
 - `REVOKED` and `EXPIRED` sessions cannot be restored.
 - Session revocation must cascade to active refresh tokens in that session.
+- Protected access tokens should carry the session id claim, and session revocation should be mirrored into the Redis session-state cache so bearer-token checks fail immediately.
 - `last_seen_at` can only move forward (monotonic update).
 
 ## 1.5 Persistence Expectations

@@ -46,6 +46,12 @@ Start Phase 8 with WebAuthn registration and authentication foundations for pass
 
 ---
 
+## Related Use Cases
+
+- [UC-14](../UC/UC-14-enroll-passkey.md) — user enrolls a passkey on their account
+- [UC-15](../UC/UC-15-sign-in-passkey.md) — user signs in using a registered passkey
+- [UC-16](../UC/UC-16-remove-passkey.md) — user removes a registered passkey from their account
+
 ## Related Tasks
 
 - Prerequisite: [03-01](./03-01-totp-mfa-and-recovery-codes.md), [02-02](./02-02-trusted-devices-and-session-management.md)

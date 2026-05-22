@@ -45,6 +45,11 @@ Start Phase 11 by building security analytics pipelines and a dashboard for key 
 
 ---
 
+## Related Use Cases
+
+- [UC-39](../UC/UC-39-admin-dashboard.md) — admin views the platform overview dashboard with key security metrics
+- [UC-55](../UC/UC-55-anomaly-detection.md) — the platform detects and alerts on anomalous sign-in patterns
+
 ## Related Tasks
 
 - Prerequisite: [02-03](./02-03-rate-limits-and-audit-logs.md), [02-04](./02-04-anomaly-detection-and-security-notifications.md)

@@ -82,6 +82,22 @@ All admin screens are wrapped in `AdminShell` with the correct `active`, `crumbs
 
 ---
 
+## Related Use Cases
+
+- [UC-39](../UC/UC-39-admin-dashboard.md) — admin views the platform overview dashboard
+- [UC-40](../UC/UC-40-search-users.md) — admin searches and filters the user list
+- [UC-41](../UC/UC-41-view-user-detail.md) — admin views detailed information for a specific user
+- [UC-42](../UC/UC-42-invite-user-admin.md) — admin invites a new user to the platform
+- [UC-43](../UC/UC-43-revoke-session-admin.md) — admin revokes a user's active session
+- [UC-44](../UC/UC-44-manage-roles.md) — admin manages roles and their associated permissions
+- [UC-45](../UC/UC-45-manage-applications.md) — admin registers and manages OAuth applications
+- [UC-46](../UC/UC-46-view-audit-log.md) — admin views the platform-wide audit log
+- [UC-47](../UC/UC-47-configure-platform-settings.md) — admin configures global platform settings
+- [UC-48](../UC/UC-48-manage-admin-api-keys.md) — admin creates and manages platform-level API keys
+- [UC-49](../UC/UC-49-manage-webhooks.md) — admin registers and manages webhook endpoints
+- [UC-52](../UC/UC-52-live-log-stream.md) — developer views the live structured log stream
+- [UC-53](../UC/UC-53-tenant-onboarding.md) — operator completes the tenant onboarding wizard
+
 ## Related Tasks
 
 - Prerequisite: [00-04](./00-04-frontend-design-system-foundation.md), [00-05](./00-05-auth-screens.md)

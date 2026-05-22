@@ -206,6 +206,8 @@ It is the API-side counterpart of `docs/architecture/interfaces.md` and should b
 - **Method/Path:** `POST /api/auth/logout`
 - **Auth:** `bearer-user`
 - **Mapped service:** `LogoutService.logout`
+- If the request body omits `sessionId`, the server uses the current access token's `sid` claim.
+- The server verifies that the session belongs to the authenticated user before revoking it.
 
 #### Logout request (logical)
 

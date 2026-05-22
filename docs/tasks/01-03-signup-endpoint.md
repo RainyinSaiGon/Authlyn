@@ -40,6 +40,11 @@ Implement `POST /api/public/auth/signup` as the first real identity API.
 
 ---
 
+## Related Use Cases
+
+- [UC-01](../UC/UC-01-sign-up.md) — user registers a new account with email and password
+- [UC-04](../UC/UC-04-verify-email.md) — user verifies their email address after sign-up
+
 ## Related Tasks
 
 - Prerequisite: [01-02](./01-02-user-persistence-and-password-hashing.md)

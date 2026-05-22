@@ -8,7 +8,7 @@ This document tracks Authlyn authentication architecture and the implemented tok
 
 - **`RsaKeyService`** (`shared.security.jwt`) — loads RSA keys from config (inline PEM, classpath/file path) or generates an ephemeral 2048-bit RSA pair at startup. Derives public key from CRT private key when only the private key is given. Validates that the public and private keys match before registering them.
 - **`JwksController`** (`shared.security.jwt`) — serves `GET /.well-known/jwks.json` with the public JWK only (kid, kty, use, alg, n, e).
-- **`SecurityConfig`** (`shared.config`) — configures the resource server (`oauth2ResourceServer.jwt`), registers `JwtEncoder` (NimbusJwtEncoder) and `JwtDecoder` (NimbusJwtDecoder.withPublicKey), and permits the JWKS path without authentication.
+- **`SecurityConfig`** (`shared.config`) — configures the resource server (`oauth2ResourceServer.jwt`), registers `JwtEncoder` (NimbusJwtEncoder) and `JwtDecoder` (NimbusJwtDecoder.withPublicKey plus a Redis-backed session-state validator), and permits the JWKS path without authentication.
 - **`AuthlynJwtProperties`** (`shared.security.jwt`) — `@ConfigurationProperties(prefix = "authlyn.jwt")` binding for issuer, kid, jwks-path, access-token-minutes, refresh-token-days, and key material.
 
 ### Key Resolution Order
@@ -23,9 +23,9 @@ The `JwtDecoder` bean is built directly from the RSA public key (`NimbusJwtDecod
 
 ---
 
-## Planned Flows
+## Implemented Identity Flows
 
-The following are defined in the phased task plan and will be implemented in tasks 01-02 through 01-05.
+The following flows are implemented in `modules.identity`.
 
 ### Sign-Up
 
@@ -63,19 +63,43 @@ Client → POST /api/auth/refresh
 
 ```text
 Client → POST /api/auth/logout
-  → revoke refresh token in DB
+  → resolve current session (body sessionId or JWT sid claim)
+  → revoke session in DB and Redis session-state cache
+  → revoke refresh tokens in DB
   → 204
 ```
 
-### Password Reset
+### Logout All Sessions
 
 ```text
-Client → POST /api/auth/forgot-password
+Client → POST /api/auth/logout-all
+  → revoke all user sessions in DB and Redis session-state cache
+  → revoke all refresh tokens for that user
+  → 204
+```
+
+### Session-State Enforcement
+
+```text
+Protected request → JwtDecoder
+  → verify JWT signature and issuer
+  → read `sid` claim from access token
+  → reject if Redis session-state cache marks the session revoked
+```
+
+---
+
+## Planned Flows
+
+### Password Reset (planned)
+
+```text
+Client → POST /api/public/auth/password-reset/request
   → generate reset token, persist expiry
   → send reset email
   → 204
 
-Client → POST /api/auth/reset-password?token=<token>
+Client → POST /api/public/auth/password-reset/confirm
   → validate token (expiry, single-use)
   → update hashed password
   → revoke all refresh tokens for that user

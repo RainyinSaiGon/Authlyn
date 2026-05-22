@@ -45,6 +45,11 @@ Start Phase 7 by implementing consent capture, withdrawal, and privacy preferenc
 
 ---
 
+## Related Use Cases
+
+- [UC-37](../UC/UC-37-grant-consent.md) — user grants consent to a data processing activity
+- [UC-38](../UC/UC-38-withdraw-consent.md) — user withdraws a previously granted consent
+
 ## Related Tasks
 
 - Prerequisite: [06-02](./06-02-contact-change-export-deletion-and-custom-claims.md)

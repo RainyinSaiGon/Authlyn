@@ -44,6 +44,10 @@ Implement the basic self-service profile and settings experience.
 
 ---
 
+## Related Use Cases
+
+- [UC-20](../UC/UC-20-update-profile.md) — user updates their display name and profile fields
+
 ## Related Tasks
 
 - Prerequisite: [01-04](./01-04-login-token-issuance-and-api-me.md)

@@ -40,6 +40,14 @@ Implement organization invites, enterprise SSO entry points, and just-in-time pr
 
 ---
 
+## Related Use Cases
+
+- [UC-29](../UC/UC-29-invite-member.md) — organization admin invites a user to join the organization
+- [UC-30](../UC/UC-30-accept-invitation.md) — invited user accepts an organization membership invitation
+- [UC-32](../UC/UC-32-configure-sso.md) — admin configures enterprise SSO for an organization
+- [UC-33](../UC/UC-33-sso-sign-in.md) — user signs in via enterprise SSO
+- [UC-42](../UC/UC-42-invite-user-admin.md) — platform admin invites a new user to the platform
+
 ## Related Tasks
 
 - Prerequisite: [04-02](./04-02-roles-permissions-and-org-claims.md)
