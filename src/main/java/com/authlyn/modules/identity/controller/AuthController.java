@@ -13,12 +13,15 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.authlyn.modules.identity.dto.LoginRequest;
 import com.authlyn.modules.identity.dto.LoginResponse;
+import com.authlyn.modules.identity.dto.PasswordResetConfirmRequest;
+import com.authlyn.modules.identity.dto.PasswordResetRequest;
 import com.authlyn.modules.identity.dto.RefreshRequest;
 import com.authlyn.modules.identity.dto.RefreshResponse;
 import com.authlyn.modules.identity.dto.SignupRequest;
 import com.authlyn.modules.identity.dto.SignupResponse;
 import com.authlyn.modules.identity.service.LoginService;
 import com.authlyn.modules.identity.service.LogoutService;
+import com.authlyn.modules.identity.service.PasswordResetService;
 import com.authlyn.modules.identity.service.RefreshService;
 import com.authlyn.modules.identity.service.SignupService;
 
@@ -31,15 +34,18 @@ public class AuthController {
     private final LoginService loginService;
     private final RefreshService refreshService;
     private final LogoutService logoutService;
+    private final PasswordResetService passwordResetService;
 
     public AuthController(SignupService signupService,
                           LoginService loginService,
                           RefreshService refreshService,
-                          LogoutService logoutService) {
+                          LogoutService logoutService,
+                          PasswordResetService passwordResetService) {
         this.signupService = signupService;
         this.loginService = loginService;
         this.refreshService = refreshService;
         this.logoutService = logoutService;
+        this.passwordResetService = passwordResetService;
     }
 
     @PostMapping("/api/public/auth/signup")
@@ -56,6 +62,18 @@ public class AuthController {
     @PostMapping("/api/public/auth/refresh")
     public RefreshResponse refresh(@Valid @RequestBody RefreshRequest request) {
         return refreshService.rotate(request);
+    }
+
+    @PostMapping("/api/public/auth/password-reset/request")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void requestPasswordReset(@Valid @RequestBody PasswordResetRequest request) {
+        passwordResetService.requestReset(request);
+    }
+
+    @PostMapping("/api/public/auth/password-reset/confirm")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void confirmPasswordReset(@Valid @RequestBody PasswordResetConfirmRequest request) {
+        passwordResetService.confirmReset(request);
     }
 
     @PostMapping("/api/auth/logout")

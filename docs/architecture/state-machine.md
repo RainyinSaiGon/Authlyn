@@ -110,12 +110,83 @@ For task `00-01`, sessions and refresh tokens are specified in detail as impleme
 
 ## 3. Additional State Machines (Planned)
 
+## 3. Password Reset Token Lifecycle (Detailed Baseline)
+
+## 3.1 States
+
+- `ACTIVE`: reset token can be consumed once.
+- `USED`: reset token was successfully consumed.
+- `REVOKED`: reset token was invalidated before use or superseded by a newer request.
+- `EXPIRED`: reset token reached TTL.
+
+## 3.2 Trigger Events
+
+- `ISSUED`
+- `RESET_SUCCESS`
+- `RESET_REISSUED`
+- `TOKEN_TTL_ELAPSED`
+
+## 3.3 Transition Table
+
+| Current State | Event | Next State | Notes |
+| --- | --- | --- | --- |
+| (none) | `ISSUED` | `ACTIVE` | created during password reset request |
+| `ACTIVE` | `RESET_SUCCESS` | `USED` | one-time consumption |
+| `ACTIVE` | `RESET_REISSUED` | `REVOKED` | superseded by a newer reset request |
+| `ACTIVE` | `TOKEN_TTL_ELAPSED` | `EXPIRED` | time-based |
+| `USED` | any auth event | `USED` | terminal |
+| `REVOKED` | any auth event | `REVOKED` | terminal |
+| `EXPIRED` | any auth event | `EXPIRED` | terminal |
+
+## 3.4 Guards and Security Invariants
+
+- Password reset tokens are one-time use.
+- Issuing a new password reset request should invalidate older active tokens for the same user.
+- Successful password reset should revoke the user’s active sessions and refresh tokens.
+- Stored reset tokens must be hashed/fingerprinted; raw token must only exist in the delivery channel.
+
+---
+
+## 4. Identity (OAuth2 Provider Link) Lifecycle
+
+## 4.1 States
+
+- `LINKED`: identity record exists; provider authentication can find the local user.
+- `UNLINKED`: identity row deleted; provider login will create a new user or fail to find the previous one.
+
+## 4.2 Trigger Events
+
+- `OAUTH2_LOGIN_SUCCESS` — provider authenticated the user; find-or-create runs in `OAuth2LoginSuccessHandler`.
+- `IDENTITY_UNLINKED` — user removes a social login connection (not yet implemented).
+
+## 4.3 Transition Table
+
+| Current State | Event | Next State | Notes |
+| --- | --- | --- | --- |
+| (none) | `OAUTH2_LOGIN_SUCCESS` | `LINKED` | `IdentityEntity` created with `(provider, providerUserId)` unique key |
+| `LINKED` | `OAUTH2_LOGIN_SUCCESS` | `LINKED` | Idempotent — existing record returned, no change |
+| `LINKED` | `IDENTITY_UNLINKED` | `UNLINKED` | Row deleted; planned feature |
+
+## 4.4 Guards and Invariants
+
+- `(provider, providerUserId)` must be unique — enforced by DB constraint.
+- Provider email is stored for reference but not used as the primary lookup key (providers may change their user's email).
+- OAuth2 identity row links to a local `UserEntity`; the user record's `email` is the canonical identity key.
+
+---
+
+## 5. Additional State Machines (Planned)
+
 - Invites: `PENDING -> ACCEPTED | EXPIRED | REVOKED`
 - Webhook deliveries: `PENDING -> RETRYING -> DELIVERED | FAILED -> DEAD_LETTERED`
 - MFA enrollment: `PENDING -> ACTIVE -> DISABLED`
 
 Detailed contracts for these are expected in their corresponding implementation tasks.
 
-## 4. Status
+---
 
-Sessions and refresh-token lifecycles are now defined as baseline contracts for task `00-01`. Update this file whenever enums, transition guards, or security responses change.
+## 6. Status
+
+- Sessions, refresh tokens, password reset tokens: fully implemented. State machines match code in `RefreshService`, `LogoutService`, `PasswordResetService`.
+- OAuth2 identity: `LINKED` state implemented in `OAuth2LoginSuccessHandler`; `UNLINKED` transition is planned.
+- Update this file whenever enums, transition guards, or security responses change.

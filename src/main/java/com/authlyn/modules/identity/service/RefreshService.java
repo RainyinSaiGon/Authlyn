@@ -65,7 +65,8 @@ public class RefreshService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token revoked");
         }
 
-        if (token.getExpiresAt().isBefore(now)) {
+        // 5-second grace window absorbs client-side clock skew and retry races.
+        if (token.getExpiresAt().plusSeconds(5).isBefore(now)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token expired");
         }
 

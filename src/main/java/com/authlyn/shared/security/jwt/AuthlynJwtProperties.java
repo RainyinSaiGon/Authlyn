@@ -27,6 +27,9 @@ public class AuthlynJwtProperties {
     @Min(1)
     private long refreshTokenDays = 30;
 
+    @Min(1)
+    private long passwordResetTokenMinutes = 60;
+
     private String privateKey;
     private String privateKeyPath;
     private String publicKey;
@@ -70,6 +73,14 @@ public class AuthlynJwtProperties {
 
     public void setRefreshTokenDays(long refreshTokenDays) {
         this.refreshTokenDays = refreshTokenDays;
+    }
+
+    public long getPasswordResetTokenMinutes() {
+        return passwordResetTokenMinutes;
+    }
+
+    public void setPasswordResetTokenMinutes(long passwordResetTokenMinutes) {
+        this.passwordResetTokenMinutes = passwordResetTokenMinutes;
     }
 
     public String getPrivateKey() {

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Project Is
 
-Authlyn is a full-stack Identity and Access Management (IAM) platform. The backend is a Spring Boot 4 application (Java 25) and the frontend is a React 19 + Vite + TypeScript app. The project is being built in phases; current work is Phase 01 (core auth: JWT/JWKS foundation, signup, login, refresh, and logout/session revocation).
+Authlyn is a full-stack Identity and Access Management (IAM) platform. The backend is a Spring Boot 4 application (Java 25) and the frontend is a React 19 + Vite + TypeScript app. The project is being built in phases; current work is Phase 01 (core auth: JWT/JWKS foundation, signup, login, refresh, logout/session revocation, and password reset).
 
 ## Commands
 
@@ -15,6 +15,7 @@ Authlyn is a full-stack Identity and Access Management (IAM) platform. The backe
 ./gradlew test --tests RsaKeyServiceTest                  # Run one test class
 ./gradlew test --tests RsaKeyServiceTest.testMethodName   # Run one test method
 ./gradlew test --tests com.authlyn.modules.identity.service.SignupServiceTest --tests com.authlyn.modules.identity.service.LoginServiceTest --tests com.authlyn.modules.identity.service.RefreshServiceTest --tests com.authlyn.modules.identity.service.LogoutServiceTest
+./gradlew test --tests com.authlyn.modules.identity.service.PasswordResetServiceTest
 ./gradlew test --tests com.authlyn.modules.identity.controller.AuthControllerIntegrationTest
 ./gradlew test jacocoTestReport                           # Generate coverage report
 ./gradlew clean
@@ -49,7 +50,7 @@ docker compose down -v  # Stop and wipe volumes
 
 Key env vars: `AUTHLYN_DB_URL`, `AUTHLYN_DB_USERNAME`, `AUTHLYN_DB_PASSWORD`, `AUTHLYN_REDIS_HOST/PORT/PASSWORD`. See `.env.example` for the full list.
 
-Redis is now part of the auth runtime: revoked sessions are mirrored into Redis, and protected JWTs are checked against that session-state cache.
+Redis is now part of the auth runtime: revoked sessions are mirrored into Redis, and protected JWTs are checked against that session-state cache. Password-reset delivery is stubbed through a mail service abstraction.
 
 ## Architecture
 
@@ -69,6 +70,7 @@ New features belong in `modules.<domain>`. Cross-cutting concerns (security, con
 - **`JwtSessionStateValidator`** — rejects access tokens whose session id has been revoked in Redis
 - **`RedisSessionStateService`** — stores session revocation markers in Redis
 - **`JwtTokenService`** — issues access tokens with session (`sid`) claims
+- **`PasswordResetService`** — issues one-time password reset tokens, stubs mail delivery, and revokes active sessions on confirmation
 - **`RsaKeyService`** — loads RSA keys from inline PEM, file path, or classpath; generates ephemeral key if none configured
 - **`JwksController`** — serves `/.well-known/jwks.json` from the public key derived by `RsaKeyService`
 - **`SignupService` / `LoginService` / `RefreshService` / `LogoutService`** — implement the current auth flow, including refresh rotation, reuse detection, and logout/logout-all revocation
@@ -93,6 +95,7 @@ New features belong in `modules.<domain>`. Cross-cutting concerns (security, con
 - **Test naming**: `{ClassName}Test` for unit tests, `{ClassName}IntegrationTest` for Spring/DB/HTTP tests
 - **Test method naming**: `test{Scenario}{ExpectedOutcome}` (e.g., `testGeneratesAnEphemeralKeyWhenNothingIsConfigured`)
 - Unit tests use H2 in-memory DB; prefer self-contained H2-backed integration tests when possible, and use Testcontainers only when the external dependency is the thing under test
+- Password-reset tests use the stubbed mail service and the H2-backed integration path; no external SMTP server is required
 - Test packages mirror production packages exactly
 - Class names are explicit and long: `PublicMetaController`, `SignupRequest`, `RsaKeyService`
 

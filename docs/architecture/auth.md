@@ -2,70 +2,113 @@
 
 This document tracks Authlyn authentication architecture and the implemented token infrastructure.
 
-## Implemented (01-01)
+## RSA Key Infrastructure
 
-### JWT + JWKS Infrastructure
+### RsaKeyService
 
-- **`RsaKeyService`** (`shared.security.jwt`) — loads RSA keys from config (inline PEM, classpath/file path) or generates an ephemeral 2048-bit RSA pair at startup. Derives public key from CRT private key when only the private key is given. Validates that the public and private keys match before registering them.
-- **`JwksController`** (`shared.security.jwt`) — serves `GET /.well-known/jwks.json` with the public JWK only (kid, kty, use, alg, n, e).
-- **`SecurityConfig`** (`shared.config`) — configures the resource server (`oauth2ResourceServer.jwt`), registers `JwtEncoder` (NimbusJwtEncoder) and `JwtDecoder` (NimbusJwtDecoder.withPublicKey plus a Redis-backed session-state validator), and permits the JWKS path without authentication.
-- **`AuthlynJwtProperties`** (`shared.security.jwt`) — `@ConfigurationProperties(prefix = "authlyn.jwt")` binding for issuer, kid, jwks-path, access-token-minutes, refresh-token-days, and key material.
+`RsaKeyService` (`shared.security.jwt`) loads RSA keys at startup using a priority-ordered list of `RsaKeyMaterialSource` strategies:
 
-### Key Resolution Order
+| Strategy | Condition |
+|---|---|
+| `InlinePemKeyMaterialSource` | value contains `-----BEGIN ` |
+| `SpringResourceKeyMaterialSource` | `classpath:` or `file:` prefix |
+| `FilesystemKeyMaterialSource` | value is a readable filesystem path |
+| `FallbackResourceKeyMaterialSource` | any non-null value (last resort) |
 
-1. Inline PEM via `authlyn.jwt.private-key` / `authlyn.jwt.public-key`
-2. File or classpath path via `authlyn.jwt.private-key-path` / `authlyn.jwt.public-key-path`
-3. Ephemeral 2048-bit RSA pair (development default; key changes on every restart)
+If no private key is configured the service generates a 2048-bit ephemeral RSA pair. On startup it measures signing throughput on the loaded key and runs a CRT-vs-non-CRT comparison, logging:
 
-### JwtDecoder Note
+```
+RSA signing key loaded; CRT form: true; throughput: X ns/op; CRT speedup vs non-CRT: Y%
+```
 
-The `JwtDecoder` bean is built directly from the RSA public key (`NimbusJwtDecoder.withPublicKey`). This overrides Spring's auto-configured decoder that would fetch JWKS over HTTP — which would deadlock on startup because the server itself serves the JWKS endpoint.
+Public key derivation requires `RSAPrivateCrtKey` — the CRT parameters (p, q, dp, dq, qInv) are mandatory both for deriving the public key and for the JCA provider to apply CRT decomposition during signing.
+
+### JwksController
+
+Serves `GET /.well-known/jwks.json` with the public JWK only (kid, kty, use, alg, n, e).
+
+### SecurityConfig
+
+Builds the security filter chain with:
+
+1. `LoginRateLimitFilter` — 10 attempts per 15 minutes per client IP (Bucket4j), registered before `UsernamePasswordAuthenticationFilter`
+2. `oauth2ResourceServer.jwt` — validates RS256 JWTs via `NimbusJwtDecoder`
+3. `oauth2Login` — conditionally active when `ClientRegistrationRepository` is present (i.e., when Google/GitHub OAuth2 client IDs are configured)
+
+The `JwtDecoder` is built directly from the RSA public key (`NimbusJwtDecoder.withPublicKey`), bypassing Spring's auto-configured JWKS-fetching decoder, which would deadlock because the server itself serves the JWKS endpoint.
+
+### AuthlynJwtProperties
+
+`@ConfigurationProperties(prefix = "authlyn.jwt")` binding for: issuer, kid, jwks-path, access-token-minutes, refresh-token-days, password-reset-token-minutes, and key material paths/values.
 
 ---
 
 ## Implemented Identity Flows
 
-The following flows are implemented in `modules.identity`.
-
 ### Sign-Up
 
 ```text
-Client → POST /api/auth/signup
-  → validate email uniqueness
-  → hash password (bcrypt)
-  → persist User (id, email, password_hash, created_at)
-  → issue access token + refresh token
-  → 201 {accessToken, refreshToken, user}
+Client → POST /api/public/auth/signup
+  → validate: email format, @StrongPassword (8-128 chars, upper+lower+digit+special)
+  → normalize email to lowercase
+  → check email uniqueness (409 if taken)
+  → BCrypt-hash password
+  → persist User
+  → create Session + RefreshToken
+  → issue access JWT with sid claim
+  → 201 {userId, sessionId, accessToken, refreshToken, createdAt}
 ```
 
 ### Sign-In (Password)
 
 ```text
-Client → POST /api/auth/login
-  → look up user by email
-  → verify bcrypt hash
-  → create session record (device, IP, user-agent)
-  → issue access token + refresh token
-  → 200 {accessToken, refreshToken}
+Client → POST /api/public/auth/login
+  → rate-limit check: 10 attempts / 15 min / IP (429 if exceeded)
+  → look up user by normalized email (401 if not found or deleted)
+  → BCrypt verify password (401 on mismatch)
+  → create Session + RefreshToken
+  → issue access JWT with sid claim
+  → 200 {userId, sessionId, accessToken, refreshToken, expiresAt}
 ```
 
-### Token Refresh
+### Token Refresh (Rotation with Reuse Detection)
 
 ```text
-Client → POST /api/auth/refresh
-  → validate refresh token (DB lookup, expiry, revocation check)
-  → issue new access token
-  → optionally rotate refresh token (sliding window)
-  → 200 {accessToken}
+Client → POST /api/public/auth/refresh
+  → SHA-256 hash presented token, look up in DB
+  → if replaced_by_token_id != null → REUSE DETECTED:
+      mark reuseDetected=true
+      mirror session to Redis blacklist
+      revoke all refresh tokens in session family
+      revoke session record
+      → 401 Refresh token reuse detected
+  → check revoked_at (401 if revoked)
+  → check expires_at + 5s grace window (401 if expired; grace absorbs clock-skew retries)
+  → load session, check revoked_at
+  → create successor RefreshToken
+  → set old token's replaced_by_token_id = new token id (atomic in transaction)
+  → update session.last_seen_at
+  → issue new access JWT
+  → 200 {accessToken, refreshToken, accessTokenExpiresAt}
 ```
 
-### Logout
+### Two-Layer JWT Validation
+
+Every authenticated request passes through two validators in a `DelegatingOAuth2TokenValidator`:
+
+1. **Standard claims** — `JwtValidators.createDefaultWithIssuer` checks `iss`, `exp`, signature
+2. **Session state** — `JwtSessionStateValidator` reads the `sid` claim and checks `authlyn:session:revoked:{sid}` in Redis
+
+A token that is cryptographically valid but whose session was revoked (logout, password reset, reuse detection) is rejected at layer 2. Revocation takes effect within milliseconds of the triggering action.
+
+### Logout (Current Session)
 
 ```text
 Client → POST /api/auth/logout
-  → resolve current session (body sessionId or JWT sid claim)
-  → revoke session in DB and Redis session-state cache
-  → revoke refresh tokens in DB
+  → resolve sessionId from body or JWT sid claim
+  → mirror session to Redis blacklist
+  → revoke session record in DB
+  → revoke refresh tokens for that session in DB
   → 204
 ```
 
@@ -73,59 +116,90 @@ Client → POST /api/auth/logout
 
 ```text
 Client → POST /api/auth/logout-all
-  → revoke all user sessions in DB and Redis session-state cache
-  → revoke all refresh tokens for that user
+  → load all sessions for user
+  → mirror each session to Redis blacklist
+  → revoke all session records in DB
+  → revoke all refresh tokens for user in DB
   → 204
 ```
 
-### Session-State Enforcement
-
-```text
-Protected request → JwtDecoder
-  → verify JWT signature and issuer
-  → read `sid` claim from access token
-  → reject if Redis session-state cache marks the session revoked
-```
-
----
-
-## Planned Flows
-
-### Password Reset (planned)
+### Password Reset
 
 ```text
 Client → POST /api/public/auth/password-reset/request
-  → generate reset token, persist expiry
-  → send reset email
-  → 204
+  → normalize email
+  → if user exists: revoke prior reset tokens, generate opaque token, SHA-256 hash + persist
+  → send reset email via mail service (stubbed in dev)
+  → 204 (constant shape — no account enumeration)
 
 Client → POST /api/public/auth/password-reset/confirm
-  → validate token (expiry, single-use)
-  → update hashed password
-  → revoke all refresh tokens for that user
-  → 200
+  → validate: @StrongPassword on newPassword
+  → look up token by SHA-256 hash (401 if not found)
+  → guard: used_at null, revoked_at null, expires_at > now (401 otherwise)
+  → BCrypt-hash new password, update user
+  → mark token used_at = now; revoke sibling tokens
+  → revoke all sessions + refresh tokens for user
+  → mirror all sessions to Redis blacklist
+  → 204
 ```
+
+### OAuth2 Social Login
+
+```text
+Client → GET /oauth2/authorization/{provider}  (Google or GitHub)
+  → Spring Security redirects to provider
+  → Provider authenticates user, redirects back
+
+Provider → GET /login/oauth2/code/{provider}
+  → OAuth2LoginSuccessHandler.onAuthenticationSuccess:
+      extract provider, providerUserId (sub or id), email from OAuth2User attributes
+      find-or-create UserEntity by email (emailVerified=true for OAuth2 users)
+      find-or-create IdentityEntity (provider, providerUserId) → links to User
+      create Session + RefreshToken
+      issue access JWT with sid claim
+  → redirect to ${authlyn.web.oauth2-redirect-uri}?access_token=...&refresh_token=...&session_id=...
+```
+
+`oauth2Login()` is only wired into the filter chain when at least one `ClientRegistrationRepository` entry is present. Without OAuth2 provider environment variables the entire code path is inactive; no startup failure occurs.
 
 ---
 
-## Open Decisions
+## Security Layering
 
-- Token claims baseline per endpoint group (e.g., whether admin endpoints require a dedicated `admin` role claim)
-- Session invalidation strategy across devices (revoke one vs. revoke all)
-- Step-up authentication triggers (e.g., re-login required for sensitive account changes)
-- Access token TTL vs. refresh rotation policy (absolute expiry vs. sliding window)
+| Layer | Control | Implementation |
+|---|---|---|
+| Transport | TLS enforced by deployment; local dev uses HTTP | — |
+| Rate limiting | 10 login attempts / 15 min / IP | `LoginRateLimitFilter` (Bucket4j) |
+| Password storage | BCrypt, configurable cost (default 12) | `PasswordConfig` |
+| Password policy | 8–128 chars, upper + lower + digit + special | `@StrongPassword` / `StrongPasswordValidator` |
+| Token storage | SHA-256 hashed refresh tokens; raw token only in transit | `TokenUtil.sha256Hex` |
+| Token rotation | One-time use; successor issued atomically | `RefreshService` |
+| Reuse detection | Second presentation triggers full session-family revocation | `RefreshService` |
+| Session blacklist | Redis TTL-keyed revocation markers | `RedisSessionStateService` |
+| JWT validation | Sig + issuer + exp + Redis session state per request | `JwtSessionStateValidator` |
+| Provider linking | OAuth2 identities linked to local users; `IdentityEntity` tracks provider + providerUserId | `OAuth2LoginSuccessHandler` |
+
+---
 
 ## Trust Boundaries
 
 - The backend is the only token issuer; clients must never forge tokens.
-- The JWKS endpoint is public (no auth required) — resource servers and clients use it to validate token signatures.
+- The JWKS endpoint is public — resource servers and clients use it to validate token signatures.
 - Refresh tokens are opaque handles stored server-side; they carry no embedded user data.
 - Private key material must not be logged or exposed in error responses.
-- The frontend reads access tokens from memory (or localStorage) and sends them as `Authorization: Bearer <token>` headers; it never has access to the private key.
+- The frontend sends `Authorization: Bearer <token>` headers; it never has access to the private key.
+- OAuth2 access tokens from external providers are never stored; only the provider user ID and email are persisted in `IdentityEntity`.
+
+## Open Decisions
+
+- Token claims baseline for admin endpoints (dedicated `admin` role claim vs. checked in service)
+- Step-up authentication triggers for sensitive account changes
+- Signup rate limiting (login rate limit is implemented; signup is not yet rate-limited)
+- Grace-window configurability via `application.yml` (currently hardcoded 5 seconds)
 
 ## See Also
 
 - [JWT/JWKS Flow Diagrams](./jwt-jwks-flow.md)
 - [Currently Implemented Flows](./current-implemented-flows.md)
-- [Interfaces and Contracts](./interfaces.md)
 - [API Endpoints](./api-endpoints.md)
+- [Security Controls](./security.md)

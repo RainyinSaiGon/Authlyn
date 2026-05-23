@@ -20,24 +20,24 @@ Implement the remaining Phase 1 auth flows after signup and login are working.
 
 ### Backend
 
-- [ ] Implement refresh token rotation
-- [ ] Implement logout and logout-all
-- [ ] Add password reset request and confirm flows
-- [ ] Add refresh token reuse detection
+- [x] Implement refresh token rotation
+- [x] Implement logout and logout-all
+- [x] Add password reset request and confirm flows
+- [x] Add refresh token reuse detection
 
 ### Tests
 
-- [ ] Refresh rotation tests
-- [ ] Logout tests
-- [ ] Password reset tests
+- [x] Refresh rotation tests
+- [x] Logout tests
+- [x] Password reset tests
 
 ---
 
 ## Completion Criteria
 
-- [ ] Refresh works with rotation
-- [ ] Logout invalidates active auth state
-- [ ] Password reset works end-to-end
+- [x] Refresh works with rotation
+- [x] Logout invalidates active auth state
+- [x] Password reset works end-to-end
 
 ---
 

@@ -20,24 +20,24 @@ Implement login, access token issuance, refresh token creation, and `GET /api/me
 
 ### Backend
 
-- [ ] Add login request and response contracts
-- [ ] Verify user credentials against hashed passwords
-- [ ] Issue access token and create refresh token record
-- [ ] Implement `GET /api/me`
+- [x] Add login request and response contracts
+- [x] Verify user credentials against hashed passwords
+- [x] Issue access token and create refresh token record
+- [x] Implement `GET /api/me`
 
 ### Tests
 
-- [ ] Login service tests
-- [ ] Login controller tests
-- [ ] `/api/me` controller tests
+- [x] Login service tests
+- [x] Login controller tests
+- [x] `/api/me` controller tests
 
 ---
 
 ## Completion Criteria
 
-- [ ] Login returns access and refresh tokens
-- [ ] `/api/me` returns the authenticated user
-- [ ] Login and `/api/me` tests pass
+- [x] Login returns access and refresh tokens
+- [x] `/api/me` returns the authenticated user
+- [x] Login and `/api/me` tests pass
 
 ---
 
