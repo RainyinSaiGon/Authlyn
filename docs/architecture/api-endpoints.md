@@ -234,6 +234,7 @@ Password rules: 8–128 characters, must contain uppercase, lowercase, digit, an
 #### Password-reset-request success
 
 - `204 No Content` (constant shape — no account enumeration)
+- The email must link to the frontend at `/auth/reset-password?token=<resetToken>`. The page removes the token from the address bar as soon as it loads. (Mail delivery is still stubbed; `NoopMailService` only logs.)
 
 ### 2.8 Password Reset Confirm
 

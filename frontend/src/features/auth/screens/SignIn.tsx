@@ -1,27 +1,65 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthShell } from '@/components/layout/AuthShell';
 import { Button } from '@/components/ui/Button';
-import { InputField } from '@/components/ui/InputField';
-import { Icon } from '@/components/ui/Icon';
+import { FormTextField } from '@/components/form/FormTextField';
+import type { ReturnToState } from '@/components/auth/RequireAuth';
+import { authApi } from '@/features/auth/api/authApi';
 import { socialLoginUrl } from '@/features/auth/api/socialLogin';
+import { FormAlert } from '@/features/auth/components/FormAlert';
+import { authErrorMessage, safeReturnPath } from '@/features/auth/errors';
+import { signInSchema, type SignInValues } from '@/features/auth/schemas';
+import { saveSession } from '@/features/auth/session';
 
 export function SignIn() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const returnTo = (location.state as ReturnToState | null)?.from;
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<SignInValues>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: { email: '', password: '' },
+  });
+
+  const onSubmit = async (values: SignInValues) => {
+    setFormError(null);
+    try {
+      saveSession(await authApi.login(values));
+      navigate(safeReturnPath(returnTo), { replace: true });
+    } catch (error) {
+      // 401 never says whether the email exists.
+      setFormError(authErrorMessage(error, { 401: 'Email or password is incorrect.' }));
+    }
+  };
+
   return (
     <AuthShell head="Sign in" centered>
-      <InputField label="Email" value="maya.tran@pagoda.dev" mono onChange={() => {}} />
-      <InputField label="Password" type="password" value="············" onChange={() => {}} />
+      <form noValidate onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5" aria-label="Sign in">
+        {formError && <FormAlert>{formError}</FormAlert>}
+        <FormTextField control={control} name="email" label="Email" type="email" autoComplete="username" mono />
+        <FormTextField
+          control={control}
+          name="password"
+          label="Password"
+          type="password"
+          autoComplete="current-password"
+        />
 
-      <div className="flex items-center justify-between text-[12.5px]">
-        <label className="flex items-center gap-[7px] text-fg-2 cursor-pointer">
-          <span className="inline-flex items-center justify-center w-[14px] h-[14px] rounded-[4px] border border-border bg-accent shrink-0">
-            <Icon name="check" size={10} className="text-[#1a0f08]" />
-          </span>
-          Remember this device
-        </label>
-        <Link to="/auth/forgot-password" className="text-accent no-underline">Forgot password</Link>
-      </div>
+        <div className="flex items-center justify-end text-[12.5px]">
+          <Link to="/auth/forgot-password" className="text-accent no-underline">Forgot password</Link>
+        </div>
 
-      <Button className="justify-center w-full" onClick={() => {}}>Sign in</Button>
+        <Button type="submit" className="justify-center w-full" disabled={isSubmitting}>
+          {isSubmitting ? 'Signing in…' : 'Sign in'}
+        </Button>
+      </form>
 
       <div className="divider">OR CONTINUE WITH</div>
 
