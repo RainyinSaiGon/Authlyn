@@ -26,7 +26,7 @@ public class SessionManagementTools {
         this.revocationStore = revocationStore;
     }
 
-    @Tool(description = "List active (non-revoked) sessions for a user. Returns session IDs and timestamps only — no tokens or PII.")
+    @Tool(description = "List active (non-revoked) sessions for a user. Returns session IDs and timestamps only; never credentials or PII.")
     public String listUserSessions(
             @ToolParam(description = "The UUID of the user") String userId) {
         var userSessions = sessions.findByUserId(UUID.fromString(userId));
