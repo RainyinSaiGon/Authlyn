@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, type RouteObject } from 'react-router-dom';
 
 import { SignIn }          from '@/features/auth/screens/SignIn';
 import { SignUp }          from '@/features/auth/screens/SignUp';
@@ -47,7 +47,8 @@ import { MobilePasskey } from '@/features/mobile/screens/MobilePasskey';
 import { RequireAuth }  from '@/components/auth/RequireAuth';
 import { RequireAdmin } from '@/components/auth/RequireAdmin';
 
-export const router = createBrowserRouter([
+/** Every route in the app. Exported so tests can mount any page in a memory router. */
+export const routes: RouteObject[] = [
   // Marketing
   { path: '/',        element: <Landing /> },
   { path: '/pricing', element: <Pricing /> },
@@ -102,4 +103,6 @@ export const router = createBrowserRouter([
 
   // 404
   { path: '*', element: <NotFound /> },
-]);
+];
+
+export const router = createBrowserRouter(routes);

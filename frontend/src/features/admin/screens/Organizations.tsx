@@ -53,7 +53,7 @@ export function Organizations() {
 
             <div className="flex items-center gap-2 mt-auto">
               <Button variant="ghost" size="sm" className="flex-1 justify-center">Manage</Button>
-              <Button variant="ghost" size="sm" icon="dots" className="justify-center" />
+              <Button variant="ghost" size="sm" icon="dots" className="justify-center" aria-label={`More actions for ${o.n}`} />
             </div>
           </article>
         ))}

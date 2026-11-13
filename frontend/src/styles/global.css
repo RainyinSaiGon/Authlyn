@@ -19,6 +19,7 @@
   --color-mint:          #6cd0b0;
   --color-danger:        #f15d78;
   --color-danger-soft:   #ffd0d8;
+  --color-danger-text:   #f77a91; /* danger as text: >= 4.5:1 on danger tints; --color-danger is for dots and borders */
   --color-warning:       #f0b84a;
   --color-success:       #6cd0b0;
 
@@ -40,7 +41,8 @@
   /* Foreground scale */
   --color-fg-1:     #f8f2e8;
   --color-fg-2:     rgba(248, 242, 232, 0.72);
-  --color-fg-3:     rgba(248, 242, 232, 0.48);
+  /* 0.54, not lower: the faintest text must stay >= 4.5:1 (WCAG AA) over the warm glow. */
+  --color-fg-3:     rgba(248, 242, 232, 0.54);
   --color-fg-bright: #fff7ee;
 
   /* Radius */
@@ -114,6 +116,32 @@
   }
 
   #root { min-height: 100vh; }
+
+  /* Respect the OS "reduce motion" setting. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  .skip-link {
+    position: absolute;
+    left: 12px;
+    top: -48px;
+    z-index: 50;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: var(--color-accent);
+    color: #1a0f08;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: top var(--duration-fast);
+  }
+  .skip-link:focus { top: 12px; }
 
   :where(a, button, input, select, textarea, [tabindex]):focus-visible {
     outline: 2px solid var(--color-accent);
@@ -247,7 +275,7 @@
   .btn-ghost          { background: rgba(255, 255, 255, 0.05); color: var(--color-fg-1); border-color: var(--color-border); backdrop-filter: blur(14px); }
   .btn-ghost:hover    { border-color: var(--color-border-strong); }
   .btn-link           { background: transparent; color: var(--color-accent); padding: 6px 4px; }
-  .btn-danger         { background: rgba(241, 93, 120, 0.14); color: var(--color-danger); border-color: rgba(241, 93, 120, 0.3); }
+  .btn-danger         { background: rgba(241, 93, 120, 0.14); color: var(--color-danger-text); border-color: rgba(241, 93, 120, 0.3); }
   .btn-danger:hover   { background: rgba(241, 93, 120, 0.22); }
   .btn-sm     { padding: 6px 11px; font-size: 12.5px; }
   .btn-xs     { padding: 4px 9px; font-size: 11.5px; }
@@ -353,7 +381,7 @@
   }
   .pill.ok     { color: var(--color-mint);    border-color: rgba(108, 208, 176, 0.28); background: rgba(108, 208, 176, 0.08); }
   .pill.warn   { color: var(--color-warning); border-color: rgba(240, 184,  74, 0.28); background: rgba(240, 184,  74, 0.08); }
-  .pill.err    { color: var(--color-danger);  border-color: rgba(241,  93, 120, 0.28); background: rgba(241,  93, 120, 0.08); }
+  .pill.err    { color: var(--color-danger-text);  border-color: rgba(241,  93, 120, 0.28); background: rgba(241,  93, 120, 0.08); }
   .pill.accent { color: var(--color-accent);  border-color: rgba(248, 125,  73, 0.28); background: rgba(248, 125,  73, 0.08); }
   .pill .dot   { width: 6px; height: 6px; border-radius: 999px; background: currentColor; }
 

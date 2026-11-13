@@ -26,7 +26,7 @@ const LOGS: LogLine[] = [
 const LEVEL_COLOR: Record<LogLevel, string> = {
   INFO:  'text-mint',
   WARN:  'text-warning',
-  ERROR: 'text-danger',
+  ERROR: 'text-danger-text',
   DEBUG: 'text-fg-3',
 };
 

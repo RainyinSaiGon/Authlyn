@@ -25,7 +25,7 @@ interface SidebarProps {
 function LogoShield() {
   return (
     <div className="logo-shield">
-      <svg width={22} height={22} viewBox="0 0 48 48" fill="none">
+      <svg width={22} height={22} viewBox="0 0 48 48" fill="none" aria-hidden="true">
         <path
           d="M24 4 L40 9 V22 C40 32 33 40 24 44 C15 40 8 32 8 22 V9 Z"
           stroke="#6cd0b0"
@@ -53,6 +53,7 @@ export function Sidebar({ nav, active, footer }: SidebarProps) {
       <div className="brandrow">
         <LogoShield />
       </div>
+      <nav aria-label="Admin">
       {nav.map((group, gi) => (
         <div key={gi}>
           {group.title && <div className="section">{group.title}</div>}
@@ -60,6 +61,7 @@ export function Sidebar({ nav, active, footer }: SidebarProps) {
             <Link
               key={item.id}
               to={item.path}
+              aria-current={item.id === active ? 'page' : undefined}
               className={item.id === active ? 'active' : ''}
             >
               <Icon name={item.icon as Parameters<typeof Icon>[0]['name']} size={15} />
@@ -73,6 +75,7 @@ export function Sidebar({ nav, active, footer }: SidebarProps) {
           ))}
         </div>
       ))}
+      </nav>
       <div className="foot">
         {footer ?? (
           <div className="flex items-center gap-[10px]">

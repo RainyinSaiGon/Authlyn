@@ -49,7 +49,7 @@ export function AdminSessions() {
         <table className="tbl">
           <thead>
             <tr>
-              <th className="w-[28px]"><input type="checkbox" /></th>
+              <th className="w-[28px]"><input type="checkbox" aria-label="Select all sessions" /></th>
               <th>User</th>
               <th>IP address</th>
               <th>Location</th>
@@ -62,7 +62,7 @@ export function AdminSessions() {
           <tbody>
             {SESSIONS.map((s) => (
               <tr key={s.n + s.ip}>
-                <td><input type="checkbox" /></td>
+                <td><input type="checkbox" aria-label={`Select session for ${s.n} from ${s.ip}`} /></td>
                 <td>
                   <div className="flex items-center gap-3">
                     <Avatar name={s.n} />

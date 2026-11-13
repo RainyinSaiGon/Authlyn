@@ -56,6 +56,7 @@ export function Pricing() {
         </p>
         <div className="flex justify-center mt-7">
           <Segmented
+            label="Billing period"
             options={['Monthly', 'Yearly · save 18%']}
             value={billing}
             onChange={setBilling}

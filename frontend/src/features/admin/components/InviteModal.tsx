@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { InputField } from '@/components/ui/InputField';
@@ -11,8 +12,11 @@ interface InviteModalProps {
 }
 
 export function InviteModal({ onClose }: InviteModalProps) {
+  const requireMfaId = useId();
+  const forceResetId = useId();
   return (
     <Modal
+      onClose={onClose}
       title="Invite to Pagoda"
       subtitle="Each invitee receives a signed link, valid 72 hours. They choose their own password or passkey."
       className="w-[520px]"
@@ -39,12 +43,12 @@ export function InviteModal({ onClose }: InviteModalProps) {
       </div>
 
       <div className="flex items-center gap-[10px] text-[12px] text-fg-2">
-        <Toggle on />
-        Require MFA on first sign-in
+        <Toggle on labelledBy={requireMfaId} />
+        <span id={requireMfaId}>Require MFA on first sign-in</span>
       </div>
       <div className="flex items-center gap-[10px] text-[12px] text-fg-2">
-        <Toggle />
-        Force password change on first sign-in
+        <Toggle labelledBy={forceResetId} />
+        <span id={forceResetId}>Force password change on first sign-in</span>
       </div>
     </Modal>
   );
