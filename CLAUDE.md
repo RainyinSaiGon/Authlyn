@@ -71,7 +71,7 @@ New features belong in `modules.<domain>`. Cross-cutting concerns (security, con
 - **`RedisSessionStateService`** — stores session revocation markers in Redis
 - **`JwtTokenService`** — issues access tokens with session (`sid`) claims
 - **`PasswordResetService`** — issues one-time password reset tokens, stubs mail delivery, and revokes active sessions on confirmation
-- **`RsaKeyService`** — loads RSA keys from inline PEM, file path, or classpath; generates ephemeral key if none configured
+- **`RsaKeyService`** — loads RSA keys from inline PEM, file path, or classpath; fails startup if none is configured, unless `AUTHLYN_JWT_ALLOW_EPHEMERAL_KEY=true` (local dev/tests) allows a random per-process key
 - **`JwksController`** — serves `/.well-known/jwks.json` from the public key derived by `RsaKeyService`
 - **`SignupService` / `LoginService` / `RefreshService` / `LogoutService`** — implement the current auth flow, including refresh rotation, reuse detection, and logout/logout-all revocation
 - **`AuthlynJwtProperties`** — binds `application.yml` JWT config (issuer, TTLs, key paths)
