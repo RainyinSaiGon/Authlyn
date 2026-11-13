@@ -1,4 +1,8 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AccountShell } from '@/components/layout/AccountShell';
+import { signOut } from '@/features/auth/api/accountApi';
+import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
 import { Avatar } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
@@ -18,18 +22,73 @@ const IDENTITIES: Identity[] = [
   { provider: 'Slack',  icon: 'slack',  sub: 'Pagoda workspace',                linked: false },
 ];
 
+const SINCE_FORMAT = new Intl.DateTimeFormat('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+
+function ProfileHeader() {
+  const current = useCurrentUser();
+
+  if (current.status === 'loading') {
+    return (
+      <div aria-busy="true">
+        <p className="eye">PROFILE</p>
+        <h1 className="text-[32px] font-medium tracking-[-0.01em] m-0 mt-2">Loading your profile…</h1>
+      </div>
+    );
+  }
+
+  if (current.status === 'error') {
+    return (
+      <div>
+        <p className="eye">PROFILE</p>
+        <h1 className="text-[32px] font-medium tracking-[-0.01em] m-0 mt-2">Your profile</h1>
+        <p role="alert" className="text-danger-soft text-[12.5px] mt-1 mb-0">
+          We couldn't load your profile. Refresh the page to try again.
+        </p>
+      </div>
+    );
+  }
+
+  const { user } = current;
+  return (
+    <div>
+      <p className="eye">PROFILE</p>
+      <h1 className="text-[32px] font-medium tracking-[-0.01em] m-0 mt-2">{user.displayName ?? user.email}</h1>
+      <div className="text-fg-3 text-[12.5px] font-mono mt-1">
+        {user.email}
+        {!user.emailVerified && ' (unverified)'} — since {SINCE_FORMAT.format(new Date(user.createdAt))}
+      </div>
+    </div>
+  );
+}
+
+function SignOutButton() {
+  const navigate = useNavigate();
+  const [signingOut, setSigningOut] = useState(false);
+  return (
+    <Button
+      variant="ghost"
+      icon="x"
+      disabled={signingOut}
+      onClick={async () => {
+        setSigningOut(true);
+        await signOut();
+        navigate('/auth/sign-in', { replace: true });
+      }}
+    >
+      {signingOut ? 'Signing out…' : 'Sign out'}
+    </Button>
+  );
+}
+
 export function Profile() {
   return (
     <AccountShell active="profile">
       <div className="flex justify-between items-end mb-6">
-        <div>
-          <p className="eye">PROFILE</p>
-          <h1 className="text-[32px] font-medium tracking-[-0.01em] m-0 mt-2">Maya Tran</h1>
-          <div className="text-fg-3 text-[12.5px] font-mono mt-1">
-            usr_01HZXQK4M7RB9TP — since 12 Mar 2024
-          </div>
+        <ProfileHeader />
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" icon="edit">Edit profile</Button>
+          <SignOutButton />
         </div>
-        <Button variant="ghost" icon="edit">Edit profile</Button>
       </div>
 
       <div className="glass p-6 grid grid-cols-[120px_1fr] gap-7">

@@ -31,7 +31,7 @@ npm run typecheck
 
 ### Frontend Tests (run from `frontend/`)
 ```bash
-npm run test           # Vitest (jsdom environment, @testing-library/react)
+npm run test           # Vitest (jsdom, @testing-library/react, MSW fake backend in src/test/msw)
 npm run coverage       # Test coverage report
 ```
 
@@ -87,8 +87,10 @@ New features belong in `modules.<domain>`. Cross-cutting concerns (security, con
 - `components/ui/` — shared UI primitives (Button, InputField, Modal, etc.) styled with Tailwind
 - `components/layout/` — layout shells (AuthShell, AccountShell, AdminShell, Sidebar)
 - `components/auth/` — `RequireAuth` and `RequireAdmin` route-guard wrappers
-- `shared/api/` — typed fetch wrappers (`getJson<T>`, `postJson<T>`, `HttpError`) — never do raw fetch in components
-- Most screens are still static mockups; so far only the overview meta call and the social-login callback (`features/auth/screens/OAuthCallback.tsx`) talk to the backend. Tokens are kept in `localStorage` (`authlyn.token`, read by `RequireAuth`/`RequireAdmin`) until the planned BFF moves them into HttpOnly cookies
+- `shared/api/http.ts` — the one fetch wrapper (`request<T>`, plus `HttpError` with `status` and `NetworkError`). UI code branches on status codes, never on error bodies
+- `features/auth/` — the auth core: `api/authApi.ts` (public endpoints), `api/accountApi.ts` (bearer endpoints, `signOut`), `authorizedRequest.ts` (bearer + single-flight silent refresh, cross-tab Web Lock so a refresh token is never replayed), `session.ts` (localStorage session store, `useSession()` via `useSyncExternalStore`), `schemas.ts` (zod; `PASSWORD_RULES` mirrors the backend `StrongPasswordValidator`)
+- Forms use react-hook-form + zod through `components/form/FormTextField`; form-level errors use `FormAlert` (`role="alert"`)
+- Sign in, sign up, forgot/reset password, the OAuth callback and the Profile header talk to the backend; the other screens are still static mockups. Tokens live in `localStorage` until the planned BFF moves them into HttpOnly cookies
 - `shared/config/env.ts` — normalizes `VITE_API_BASE_URL` (trailing-slash handling)
 - `shared/types/` — TypeScript contracts shared across features
 - Path alias `@` resolves to `./src` (e.g., `@/features/auth`)
@@ -106,7 +108,8 @@ New features belong in `modules.<domain>`. Cross-cutting concerns (security, con
 Note: the current auth integration test is H2-backed and does not require Docker.
 
 ### Frontend
-- All HTTP calls go through `shared/api/http.ts` (`getJson<T>` / `postJson<T>`) — no inline `fetch` in components
+- All HTTP calls go through `shared/api/http.ts` (`request<T>`), or `authorizedRequest` for bearer calls — no inline `fetch` in components
+- Tests hit the MSW fake backend (`src/test/msw/handlers.ts`, overridden per test with `server.use`); unhandled requests fail the test
 - Feature API modules live at `features/<name>/api/`
 - TypeScript strict mode is enforced; no `any` unless justified
 
