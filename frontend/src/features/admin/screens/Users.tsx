@@ -50,6 +50,8 @@ export function Users() {
         <div className="glass xs p-[8px_12px] flex items-center gap-2 flex-1 max-w-[360px]">
           <Icon name="search" size={14} className="text-fg-3 shrink-0" />
           <input
+            type="search"
+            aria-label="Search users"
             className="bg-transparent border-0 outline-none text-fg-1 w-full text-[13px] font-sans"
             placeholder="Search by name, email, or user ID"
           />
@@ -65,7 +67,7 @@ export function Users() {
         <table className="tbl">
           <thead>
             <tr>
-              <th className="w-[28px]"><input type="checkbox" /></th>
+              <th className="w-[28px]"><input type="checkbox" aria-label="Select all users" /></th>
               <th>User</th>
               <th>Role</th>
               <th>Organization</th>
@@ -77,7 +79,7 @@ export function Users() {
           <tbody>
             {USERS.map((u) => (
               <tr key={u.e}>
-                <td><input type="checkbox" /></td>
+                <td><input type="checkbox" aria-label={`Select ${u.n}`} /></td>
                 <td>
                   <div className="flex items-center gap-3">
                     <Avatar name={u.n} />

@@ -47,7 +47,7 @@ export function Overview() {
         <div className="glass p-[22px]">
           <div className="flex items-center justify-between mb-[18px]">
             <h2 className="m-0 text-[16px] font-semibold">Sign-ins · last 14 days</h2>
-            <Segmented options={['24h', '14d', '30d']} value={period} onChange={setPeriod} />
+            <Segmented label="Time range" options={['24h', '14d', '30d']} value={period} onChange={setPeriod} />
           </div>
           <svg viewBox="0 0 500 140" className="w-full h-[140px]">
             <defs>

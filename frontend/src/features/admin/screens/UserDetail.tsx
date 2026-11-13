@@ -52,19 +52,19 @@ export function UserDetail() {
       </div>
 
       <Tabs
+        label="User details"
         options={['Overview', 'Sessions', 'Roles', 'Apps', 'Events']}
         value={tab}
         onChange={setTab}
-      />
-
+      >
       <div className="grid grid-cols-[1.6fr_1fr] gap-[14px] mt-[18px]">
         <div className="glass p-[22px]">
           <h2 className="m-0 text-[16px] font-semibold mb-[16px]">Identity</h2>
           <dl className="grid grid-cols-2 gap-[18px] m-0">
             {IDENTITY.map(([k, v]) => (
               <div key={k}>
-                <div className="cap">{k}</div>
-                <div className="font-mono text-fg-bright text-[13px] mt-1">{v}</div>
+                <dt className="cap">{k}</dt>
+                <dd className="m-0 font-mono text-fg-bright text-[13px] mt-1">{v}</dd>
               </div>
             ))}
           </dl>
@@ -87,6 +87,7 @@ export function UserDetail() {
           </div>
         </div>
       </div>
+      </Tabs>
     </AdminShell>
   );
 }

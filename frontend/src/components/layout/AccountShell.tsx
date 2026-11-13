@@ -1,3 +1,4 @@
+import { MAIN_CONTENT_ID, SkipLink } from './SkipLink';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '@/components/ui/Icon';
@@ -22,9 +23,10 @@ const NAV: { id: AccountNavId; label: string; path: string; icon: IconName }[] =
 export function AccountShell({ active, children }: AccountShellProps) {
   return (
     <div className="min-h-screen flex flex-col">
-      <nav className="topnav">
+      <SkipLink />
+      <header className="topnav">
         <div className="brand">
-          <svg width={22} height={22} viewBox="0 0 48 48" fill="none">
+          <svg width={22} height={22} viewBox="0 0 48 48" fill="none" aria-hidden="true">
             <path
               d="M24 4 L40 9 V22 C40 32 33 40 24 44 C15 40 8 32 8 22 V9 Z"
               stroke="#6cd0b0"
@@ -44,14 +46,15 @@ export function AccountShell({ active, children }: AccountShellProps) {
           <span className="brand-name">Authlyn</span>
         </div>
         <span className="text-fg-2 text-[13px]">Account Settings</span>
-      </nav>
+      </header>
 
       <div className="flex flex-1">
-        <aside className="w-[220px] shrink-0 flex flex-col gap-[2px] p-[24px_12px] border-r border-border bg-[rgba(9,19,29,0.5)]">
+        <nav aria-label="Account" className="w-[220px] shrink-0 flex flex-col gap-[2px] p-[24px_12px] border-r border-border bg-[rgba(9,19,29,0.5)]">
           {NAV.map((item) => (
             <Link
               key={item.id}
               to={item.path}
+              aria-current={active === item.id ? 'page' : undefined}
               className={`flex items-center gap-[10px] py-[9px] px-3 rounded-[10px] no-underline text-[13.5px] transition-all duration-fast border ${
                 active === item.id
                   ? 'text-fg-bright bg-[linear-gradient(160deg,rgba(248,125,73,0.18),rgba(248,125,73,0.03))] border-[rgba(248,125,73,0.28)] font-medium'
@@ -66,9 +69,9 @@ export function AccountShell({ active, children }: AccountShellProps) {
               {item.label}
             </Link>
           ))}
-        </aside>
+        </nav>
 
-        <main className="flex-1 p-8 overflow-auto">
+        <main id={MAIN_CONTENT_ID} tabIndex={-1} className="flex-1 p-8 overflow-auto outline-none">
           {children}
         </main>
       </div>

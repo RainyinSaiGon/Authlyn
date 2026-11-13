@@ -1,3 +1,4 @@
+import { SelectList } from '@/components/ui/SelectList';
 import { useState } from 'react';
 import { AdminShell } from '@/components/layout/AdminShell';
 import { Button } from '@/components/ui/Button';
@@ -51,25 +52,26 @@ export function Webhooks() {
     >
       <div className="grid grid-cols-[1fr_1.4fr] gap-[14px]">
         <div className="glass overflow-hidden h-fit">
-          {ENDPOINTS.map((e, i) => (
-            <div
-              key={e.id}
-              role="button"
-              onClick={() => setSelected(i)}
-              className={`px-[18px] py-[14px] cursor-pointer border-l-2 flex items-start gap-3 ${
-                i < ENDPOINTS.length - 1 ? 'border-b border-border' : ''
-              } ${i === selected
-                ? 'bg-[rgba(248,125,73,0.06)] border-l-accent'
-                : 'border-l-transparent'
-              }`}
-            >
-              <span className={`inline-block w-[7px] h-[7px] rounded-full mt-[5px] shrink-0 ${e.ok ? 'bg-mint' : 'bg-danger'}`} />
-              <div className="flex-1 min-w-0">
-                <div className="font-mono text-[12px] text-fg-bright truncate">{e.url}</div>
-                <div className="text-fg-3 text-[11.5px] mt-[3px]">{e.events.join(', ')}</div>
-              </div>
-            </div>
-          ))}
+          <SelectList
+            label="Webhook endpoints"
+            items={ENDPOINTS}
+            selectedIndex={selected}
+            onSelect={setSelected}
+            getKey={(e) => e.id}
+            itemClassName="px-[18px] py-[14px] flex items-start gap-3"
+            renderItem={(e) => (
+              <>
+                <span className={`inline-block w-[7px] h-[7px] rounded-full mt-[5px] shrink-0 ${e.ok ? 'bg-mint' : 'bg-danger'}`} />
+                <span className="flex-1 min-w-0">
+                  <span className="block font-mono text-[12px] text-fg-bright truncate">{e.url}</span>
+                  <span className="block text-fg-3 text-[11.5px] mt-[3px]">
+                    {e.events.join(', ')}
+                    <span className="sr-only">{e.ok ? ' (healthy)' : ' (failing)'}</span>
+                  </span>
+                </span>
+              </>
+            )}
+          />
         </div>
 
         <div className="glass p-[22px] flex flex-col gap-[16px]">
@@ -83,7 +85,7 @@ export function Webhooks() {
               <StatusPill tone={ENDPOINTS[selected].ok ? 'ok' : 'err'}>
                 {ENDPOINTS[selected].ok ? 'Healthy' : 'Failing'}
               </StatusPill>
-              <Button variant="ghost" size="sm" icon="dots" className="justify-center" />
+              <Button variant="ghost" size="sm" icon="dots" className="justify-center" aria-label="More actions for this endpoint" />
             </div>
           </div>
 

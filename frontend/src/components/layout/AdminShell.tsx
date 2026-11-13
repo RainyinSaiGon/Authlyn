@@ -1,3 +1,4 @@
+import { MAIN_CONTENT_ID, SkipLink } from './SkipLink';
 import type { ReactNode } from 'react';
 import { Sidebar } from './Sidebar';
 import { AppBar } from './AppBar';
@@ -58,8 +59,9 @@ interface AdminShellProps {
 export function AdminShell({ active, crumbs, title, actions, children }: AdminShellProps) {
   return (
     <div className="app">
+      <SkipLink />
       <Sidebar nav={ADMIN_NAV} active={active} />
-      <main className="appmain">
+      <main id={MAIN_CONTENT_ID} tabIndex={-1} className="appmain outline-none">
         <AppBar crumbs={crumbs} title={title} actions={actions} />
         <div className="appbody">{children}</div>
       </main>

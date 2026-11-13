@@ -1,3 +1,4 @@
+import { SelectList } from '@/components/ui/SelectList';
 import { useState } from 'react';
 import { AdminShell } from '@/components/layout/AdminShell';
 import { Button } from '@/components/ui/Button';
@@ -36,26 +37,24 @@ export function Roles() {
     >
       <div className="grid grid-cols-[1fr_1.4fr] gap-[14px]">
         <div className="glass overflow-hidden">
-          {ROLES.map((r, i) => (
-            <div
-              key={r.n}
-              role="button"
-              onClick={() => setActiveIdx(i)}
-              className={`flex items-center px-[18px] py-[16px] gap-3 cursor-pointer border-l-2 ${
-                i < ROLES.length - 1 ? 'border-b border-border' : ''
-              } ${i === activeIdx
-                ? 'bg-[rgba(248,125,73,0.06)] border-l-accent'
-                : 'border-l-transparent'
-              }`}
-            >
-              <div className="flex-1">
-                <div className="font-medium text-[14px]">{r.n}</div>
-                <div className="text-fg-3 text-[12px] mt-[2px]">{r.d}</div>
-              </div>
-              <span className="font-mono text-fg-3 text-[12px]">{r.c}</span>
-              <Icon name="chevR" size={14} className="text-fg-3" />
-            </div>
-          ))}
+          <SelectList
+            label="Roles"
+            items={ROLES}
+            selectedIndex={activeIdx}
+            onSelect={setActiveIdx}
+            getKey={(r) => r.n}
+            itemClassName="flex items-center px-[18px] py-[16px] gap-3"
+            renderItem={(r) => (
+              <>
+                <span className="flex-1">
+                  <span className="block font-medium text-[14px]">{r.n}</span>
+                  <span className="block text-fg-3 text-[12px] mt-[2px]">{r.d}</span>
+                </span>
+                <span className="font-mono text-fg-3 text-[12px]">{r.c}</span>
+                <Icon name="chevR" size={14} className="text-fg-3" />
+              </>
+            )}
+          />
         </div>
 
         <div className="glass p-[24px] flex flex-col gap-[18px]">

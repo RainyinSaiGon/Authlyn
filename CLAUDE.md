@@ -112,6 +112,15 @@ Note: the current auth integration test is H2-backed and does not require Docker
 - Tests hit the MSW fake backend (`src/test/msw/handlers.ts`, overridden per test with `server.use`); unhandled requests fail the test
 - Feature API modules live at `features/<name>/api/`
 - TypeScript strict mode is enforced; no `any` unless justified
+- `npm run typecheck` checks `tsconfig.app.json` and `tsconfig.node.json` explicitly (plain `tsc --noEmit` on the root config checks nothing)
+
+### Frontend Accessibility (WCAG 2.2 AA)
+- `src/app/routes.a11y.test.tsx` renders **every route** and fails on any axe-core WCAG A/AA violation. Add new routes to its `PAGES` list
+- jsdom can't judge colour contrast, and axe in a browser can't either, because every page sits on a gradient. Keep text on the `fg-*` tokens: `fg-3` is the faintest allowed (>= 4.5:1). Use `--color-danger-text` for red text, and `--color-danger` only for dots and borders
+- Components enforce names through their types: an icon-only `Button` needs `aria-label`; `Toggle`, `Tabs`, `Segmented` and `SelectList` need a `label`
+- Use the shared patterns, not hand-rolled ones: `Modal` (focus trap, Escape, focus restore), `Tabs` (arrow keys), `SelectList` (list/detail with `aria-current`). Never put `onClick` on a `div` or `span`
+- Pages with navigation render `SkipLink` and give `<main>` the `MAIN_CONTENT_ID`; nav links set `aria-current="page"`
+- `eslint-plugin-jsx-a11y` is not used: it doesn't support ESLint 10 yet
 
 ### Docs-First Contract
 HTTP endpoints are documented in `docs/architecture/api-endpoints.md` before implementation. Update the contract doc first, then write code to match.

@@ -1,3 +1,4 @@
+import { SelectList } from '@/components/ui/SelectList';
 import { useState } from 'react';
 import { AdminShell } from '@/components/layout/AdminShell';
 import { Button } from '@/components/ui/Button';
@@ -29,40 +30,40 @@ export function Settings() {
       title="Settings"
     >
       <div className="grid grid-cols-[200px_1fr] gap-[14px]">
-        <div className="glass overflow-hidden h-fit">
-          {SUBNAV.map((s) => (
-            <div
-              key={s}
-              role="button"
-              onClick={() => setSection(s)}
-              className={`px-[16px] py-[11px] text-[13.5px] cursor-pointer border-l-2 ${
-                s === section
-                  ? 'bg-[rgba(248,125,73,0.06)] border-l-accent text-fg-bright font-medium'
-                  : 'border-l-transparent text-fg-2'
-              }`}
-            >
-              {s}
-            </div>
-          ))}
-        </div>
+        <nav className="glass overflow-hidden h-fit" aria-label="Settings sections">
+          <SelectList
+            label="Settings sections"
+            items={SUBNAV}
+            selectedIndex={SUBNAV.indexOf(section)}
+            onSelect={(i) => setSection(SUBNAV[i] ?? 'General')}
+            getKey={(s) => s}
+            separated={false}
+            itemClassName="px-[16px] py-[11px] text-[13.5px]"
+            renderItem={(s, selected) => (
+              <span className={selected ? 'text-fg-bright font-medium' : 'text-fg-2'}>{s}</span>
+            )}
+          />
+        </nav>
 
         <div className="flex flex-col gap-[14px]">
           {section === 'General' && (
             <div className="glass p-[24px] flex flex-col gap-[18px]">
               <div>
-                <div className="cap mb-[6px]">TENANT NAME</div>
+                <label htmlFor="tenant-name" className="cap mb-[6px] block">TENANT NAME</label>
                 <div className="glass xs p-[8px_12px]">
                   <input
+                    id="tenant-name"
                     defaultValue="Pagoda"
                     className="bg-transparent border-0 outline-none text-fg-1 w-full text-[13px] font-sans"
                   />
                 </div>
               </div>
               <div>
-                <div className="cap mb-[6px]">TENANT SLUG</div>
+                <label htmlFor="tenant-slug" className="cap mb-[6px] block">TENANT SLUG</label>
                 <div className="glass xs p-[8px_12px] flex items-center gap-2">
                   <span className="text-fg-3 text-[13px] font-mono">authlyn.io/</span>
                   <input
+                    id="tenant-slug"
                     defaultValue="pagoda-prod"
                     className="bg-transparent border-0 outline-none text-fg-1 flex-1 text-[13px] font-mono"
                   />
@@ -87,7 +88,7 @@ export function Settings() {
                     <span className="font-mono text-[13px]">{d.d}</span>
                     <span className={`pill ${d.verified ? 'ok' : 'warn'}`}>{d.verified ? 'Verified' : 'Pending'}</span>
                   </div>
-                  <Button variant="ghost" size="sm" icon="dots" className="justify-center" />
+                  <Button variant="ghost" size="sm" icon="dots" className="justify-center" aria-label={`More actions for ${d.d}`} />
                 </div>
               ))}
             </div>
@@ -106,6 +107,7 @@ export function Settings() {
                     <div className="font-mono text-fg-3 text-[11.5px] mt-[2px]">{p.id}</div>
                   </div>
                   <Toggle
+                    label={`Enable ${p.n}`}
                     on={ssoToggles[p.id]}
                     onChange={(v) => setSsoToggles((prev) => ({ ...prev, [p.id]: v }))}
                   />
