@@ -18,7 +18,8 @@ It is the API-side counterpart of `docs/architecture/interfaces.md` and should b
 
 - `public`: no bearer token required
 - `bearer-user`: valid user access token required
-- `bearer-admin`: valid access token with the `SCOPE_admin` authority (see section 6 for the current gap)
+- `bearer-admin`: valid access token with the `SCOPE_admin` authority (no token carries it until Phase 2; see section 7.14)
+- `client`: the caller authenticates as a registered OAuth client (Phase 2, section 7)
 
 ### 0.3 Error Envelope (Logical Contract)
 
@@ -495,30 +496,232 @@ The admin assistant answers questions from the indexed architecture docs and can
 
 Revocation is two-step on purpose: the assistant must show the code to the admin, and the admin must send it back before anything is revoked. Tools never take an `orgId`; they are platform-scoped.
 
-> **Known gap:** access tokens issued by `JwtTokenService` do not yet carry a `scope` claim, so no token currently has `SCOPE_admin` and this endpoint returns `403` for every caller. Admin scopes arrive with token audience and scopes in Phase 2 (review finding #5).
+> **Known gap:** access tokens issued by `JwtTokenService` do not yet carry a `scope` claim, so no token currently has `SCOPE_admin` and this endpoint returns `403` for every caller. Admin scopes arrive with token audience and scopes in Phase 2 (section 7.14).
 
 ---
 
-## 7. Planned Endpoint Families
+## 7. OAuth 2.1 / OpenID Connect Authorization Server (Phase 2)
 
-### 7.1 Platform
+> **Status: contract only, not implemented.** Design, scope decisions and the token model are in [oidc-authorization-server.md](./oidc-authorization-server.md). Endpoints use the Spring Authorization Server default paths.
+
+**Conventions for this section**
+
+- OAuth endpoints (`/oauth2/*`, `/userinfo`, `/connect/*`) follow the RFCs, not section 0: form-encoded requests where the RFC says so, and errors in the RFC 6749 shape `{ "error": "...", "error_description": "..." }`.
+- Client authentication modes: `client_secret_basic` (confidential clients) and `none` (public clients, PKCE only).
+- Auth modes add `client`: the caller authenticates as a registered OAuth client.
+
+### 7.1 OpenID Provider Discovery
+
+- **Method/Path:** `GET /.well-known/openid-configuration` (also served at `/.well-known/oauth-authorization-server`, RFC 8414)
+- **Auth:** `public`
+- **Response (`200 OK`)** includes at least:
+
+```json
+{
+  "issuer": "http://localhost:8080",
+  "authorization_endpoint": "http://localhost:8080/oauth2/authorize",
+  "token_endpoint": "http://localhost:8080/oauth2/token",
+  "jwks_uri": "http://localhost:8080/.well-known/jwks.json",
+  "userinfo_endpoint": "http://localhost:8080/userinfo",
+  "revocation_endpoint": "http://localhost:8080/oauth2/revoke",
+  "introspection_endpoint": "http://localhost:8080/oauth2/introspect",
+  "end_session_endpoint": "http://localhost:8080/connect/logout",
+  "response_types_supported": ["code"],
+  "grant_types_supported": ["authorization_code", "refresh_token", "client_credentials"],
+  "code_challenge_methods_supported": ["S256"],
+  "token_endpoint_auth_methods_supported": ["client_secret_basic", "none"],
+  "scopes_supported": ["openid", "profile", "email", "offline_access", "orgs:read", "orgs:write", "admin"],
+  "subject_types_supported": ["public"],
+  "id_token_signing_alg_values_supported": ["RS256"]
+}
+```
+
+### 7.2 JWKS (changed)
+
+- **Method/Path:** `GET /.well-known/jwks.json` (section 1.1; unchanged path)
+- **Change:** may return **more than one** key during rotation. Verifiers must select by `kid`.
+
+### 7.3 Authorization Endpoint
+
+- **Method/Path:** `GET /oauth2/authorize`
+- **Auth:** browser session cookie `AUTHLYN_AS` (see 7.10); without it the request is saved and the browser is sent to `/auth/sign-in?flow=oauth`
+- **Query parameters:**
+
+| Parameter | Required | Notes |
+| --- | --- | --- |
+| `response_type` | yes | must be `code` |
+| `client_id` | yes | registered, enabled client |
+| `redirect_uri` | yes | exact string match with a registered URI |
+| `scope` | yes | space-separated; subset of the client's `allowedScopes` |
+| `state` | yes | opaque, returned unchanged |
+| `code_challenge` | yes | PKCE, required for every client |
+| `code_challenge_method` | yes | must be `S256` |
+| `nonce` | when `openid` | copied into the ID token |
+| `organization` | no | org id; the user must be a member, then `org_id` is put in the token |
+| `prompt` | no | `none` or `login` or `consent` |
+
+- **Success:** `302` to `redirect_uri?code=<code>&state=<state>` (code valid 5 minutes, single use).
+- **Consent needed:** `302` to the frontend `/oauth/consent?client_id=...&scope=...&state=...` (see 7.11).
+- **Errors redirected to the client:** `access_denied` (user declined), `invalid_scope`, `invalid_request` (missing PKCE, bad `organization`), `login_required` / `consent_required` (with `prompt=none`).
+- **Errors shown on an Authlyn error page, never redirected:** unknown `client_id`, disabled client, `redirect_uri` not registered.
+- **Consent form submission:** `POST /oauth2/authorize` (form-encoded `client_id`, `state`, and one `scope` field per approved scope), sent by the consent page.
+
+### 7.4 Token Endpoint
+
+- **Method/Path:** `POST /oauth2/token`
+- **Content type:** `application/x-www-form-urlencoded`
+- **Auth:** `client` (`client_secret_basic`, or `client_id` in the body for public clients)
+
+| `grant_type` | Required fields | Notes |
+| --- | --- | --- |
+| `authorization_code` | `code`, `redirect_uri`, `code_verifier` | Code is consumed. A reused code fails and revokes every token issued from it. |
+| `refresh_token` | `refresh_token`, optional narrower `scope` | Rotates the refresh token. A reused refresh token revokes the whole authorization. |
+| `client_credentials` | optional `scope` | Confidential clients only. No refresh or ID token. |
+
+- **Success (`200 OK`):**
+
+```json
+{
+  "access_token": "eyJ...",
+  "token_type": "Bearer",
+  "expires_in": 900,
+  "scope": "openid profile orgs:read",
+  "refresh_token": "opaque, only when offline_access was granted",
+  "id_token": "eyJ..., only when openid was granted"
+}
+```
+
+- **Errors (`400` unless noted):** `invalid_request`, `invalid_grant` (unknown, expired, reused or wrong-client code or refresh token; PKCE mismatch; `redirect_uri` mismatch), `unauthorized_client` (grant not allowed for this client), `invalid_scope`, `401 invalid_client` (bad client credentials).
+
+### 7.5 Token Revocation (RFC 7009)
+
+- **Method/Path:** `POST /oauth2/revoke`
+- **Auth:** `client`
+- **Body (form):** `token`, optional `token_type_hint` (`access_token` | `refresh_token`)
+- **Response:** `200 OK` with an empty body, also when the token was unknown or already revoked. Revoking a refresh token revokes its authorization; revoking an access token adds its `jti` to the Redis deny list until it expires.
+
+### 7.6 Token Introspection (RFC 7662)
+
+- **Method/Path:** `POST /oauth2/introspect`
+- **Auth:** `client` (confidential clients only)
+- **Body (form):** `token`, optional `token_type_hint`
+- **Response (`200 OK`):** `{ "active": true, "sub": "...", "client_id": "...", "scope": "...", "aud": [...], "exp": 0, "iat": 0, "sid": "...", "org_id": "..." }`, or `{ "active": false }` for unknown, expired or revoked tokens and for tokens whose session was revoked.
+
+### 7.7 UserInfo
+
+- **Method/Path:** `GET /userinfo` (also `POST`)
+- **Auth:** bearer access token with `openid` scope
+- **Response (`200 OK`):** `sub` always; `email`, `email_verified` with `email`; `name`, `picture`, `locale`, `zoneinfo` with `profile`.
+- **Errors:** `401 invalid_token`, `403 insufficient_scope`.
+
+### 7.8 RP-Initiated Logout
+
+- **Method/Path:** `GET /connect/logout` (also `POST`)
+- **Auth:** `public`, identified by `id_token_hint`
+- **Parameters:** `id_token_hint` (required), `post_logout_redirect_uri` (must be registered for the client), `state`
+- **Behavior:** revokes the Authlyn session in the hint's `sid` (same effect as section 2.5), clears `AUTHLYN_AS`, then redirects to `post_logout_redirect_uri?state=...` or shows a signed-out page.
+
+### 7.9 Consent Details (for the consent screen)
+
+- **Method/Path:** `GET /api/public/oauth/consent-details?client_id=...&scope=...`
+- **Auth:** `public` (needs the `AUTHLYN_AS` cookie to report previously granted scopes)
+- **Response (`200 OK`):**
+
+```json
+{
+  "client": { "clientId": "acme-web", "name": "Acme", "logoUri": "https://...", "homepageUri": "https://..." },
+  "requestedScopes": [{ "scope": "orgs:read", "description": "See your organizations, members and roles" }],
+  "previouslyGrantedScopes": ["openid", "profile"]
+}
+```
+
+- **Errors:** `404` unknown or disabled client.
+
+### 7.10 Browser Session Sign-In (for OAuth flows)
+
+- **Method/Path:** `POST /api/public/auth/browser-session`
+- **Auth:** `public`, same rate limit as login (section 2.2)
+- **Request:** `{ "email": "...", "password": "..." }`
+- **Success:** `204 No Content` and `Set-Cookie: AUTHLYN_AS=...; HttpOnly; Secure; SameSite=Lax; Path=/`. Creates a normal session; no tokens are returned in the body.
+- **Errors:** same as login (`401` with no hint whether the email exists, `429`).
+- **Sign out:** `DELETE /api/public/auth/browser-session` revokes that session and clears the cookie (`204`).
+
+### 7.11 My Authorized Applications (UC-25)
+
+- `GET /api/me/oauth/authorizations` — `bearer-user`. Lists clients the user has consented to: `[{ "clientId", "name", "logoUri", "scopes": [...], "grantedAt" }]`.
+- `DELETE /api/me/oauth/authorizations/{clientId}` — `bearer-user`. Withdraws consent and revokes that client's tokens for the user. `204`; `404` if there is no consent.
+
+### 7.12 OAuth Client Registry (admin)
+
+All require `bearer-admin` (`SCOPE_admin`).
+
+| Method/Path | Purpose | Success |
+| --- | --- | --- |
+| `POST /api/admin/oauth/clients` | Register a client | `201` with the client and, for confidential clients, the secret **once** |
+| `GET /api/admin/oauth/clients` | List clients | `200` |
+| `GET /api/admin/oauth/clients/{clientId}` | Read one client (never the secret) | `200` |
+| `PATCH /api/admin/oauth/clients/{clientId}` | Change name, logo, redirect URIs, scopes, `enabled` | `200` |
+| `POST /api/admin/oauth/clients/{clientId}/secret` | Rotate the secret; the old one stops working at once | `200` with the new secret once |
+| `DELETE /api/admin/oauth/clients/{clientId}` | Delete; revokes all its tokens and consents | `204` |
+
+Create request:
+
+```json
+{
+  "clientId": "acme-web",
+  "name": "Acme",
+  "type": "public",
+  "redirectUris": ["https://acme.example/callback"],
+  "postLogoutRedirectUris": ["https://acme.example/"],
+  "grantTypes": ["authorization_code", "refresh_token"],
+  "allowedScopes": ["openid", "profile", "email", "offline_access", "orgs:read"],
+  "audiences": ["authlyn-api"],
+  "firstParty": false,
+  "logoUri": "https://acme.example/logo.png",
+  "homepageUri": "https://acme.example"
+}
+```
+
+Validation (`400`):
+- `type` is `public` or `confidential`. Public clients cannot use `client_credentials`.
+- Redirect URIs must be absolute, use `https` (or `http://localhost` / `http://127.0.0.1` for development), and contain no fragment or wildcard.
+- `allowedScopes` may include `admin` only when `firstParty` is true.
+- `409` when `clientId` is taken.
+
+### 7.13 Platform Role (admin)
+
+- `PUT /api/admin/users/{userId}/platform-role` — `bearer-admin`. Body `{ "platformRole": "admin" | "user" }`. `204`. An admin cannot demote themself, so the platform always keeps at least one admin (`409`).
+
+### 7.14 Changes to Existing Endpoints
+
+- **Every access token** (sections 2.2, 2.3, 3.3 included) gains `aud`, `scope`, `client_id` and `amr`. First-party logins get `client_id = authlyn-web`, `aud = ["authlyn-api"]`, and the scopes the user is entitled to (`orgs:read orgs:write`, plus `admin` for platform admins).
+- **Every protected `/api/*` endpoint** rejects tokens whose `aud` lacks `authlyn-api` (`401`). `/api/admin/**` requires `SCOPE_admin`. Org endpoints (sections 4, 5) require `SCOPE_orgs:read` for reads and `SCOPE_orgs:write` for writes.
+- **Section 3.2:** social login started from an OAuth flow sets `AUTHLYN_AS` and resumes `/oauth2/authorize` instead of redirecting to `/oauth/callback`.
+- **Section 2.4 (`me`)** adds `platformRole` to the response.
+
+---
+
+## 8. Planned Endpoint Families
+
+### 8.1 Platform
 
 - API key lifecycle
 - Webhook endpoint lifecycle and delivery inspection
 - Audit query and admin-only operations
 
-### 7.2 Advanced IAM
+### 8.2 Advanced IAM
 
 - TOTP MFA enrollment and challenge
 - Passkey (WebAuthn) registration and authentication
 - Session management UI (view + revoke individual sessions)
-- OIDC discovery and token introspection
+- Token exchange (RFC 8693) and pushed authorization requests (Phase 3)
 - SAML metadata and assertion consumer
 
 ---
 
-## 8. Traceability
+## 9. Traceability
 
 - Endpoint signatures in section 2 map to identity service contracts in `docs/architecture/interfaces.md`.
+- Section 7 maps to `docs/architecture/interfaces.md` §3.4 and to the design in `docs/architecture/oidc-authorization-server.md`.
 - If one changes, both files must be updated in the same task or pull request.
 - Architecture doc governance rules: `docs/dev/contract-governance.md`.

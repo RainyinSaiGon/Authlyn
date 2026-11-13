@@ -22,7 +22,7 @@
 3. System presents the consent screen: application name, logo, and list of requested permissions.
 4. User clicks "Allow".
 5. System records the consent grant.
-6. System generates a one-time authorization code (10-min TTL, tied to client, redirect URI, and PKCE challenge if provided).
+6. System generates a one-time authorization code (5-min TTL, tied to client, redirect URI, and PKCE challenge if provided).
 7. System redirects to the client's redirect URI with the `code` and `state` parameters.
 
 ## Alternative Flows
@@ -38,5 +38,5 @@
 
 ## Related APIs/Tasks
 
-- APIs: `GET /api/oauth/authorize`
+- APIs: `GET /oauth2/authorize`, `POST /oauth2/authorize` (consent submit), `GET /api/public/oauth/consent-details` — see [api-endpoints.md §7](../architecture/api-endpoints.md)
 - Tasks: [03-02](../tasks/03-02-oauth-authorization-server.md)

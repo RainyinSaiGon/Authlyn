@@ -15,7 +15,7 @@
 
 ## Main Flow
 
-1. Resource server sends `POST /api/oauth/introspect` with the token and its client credentials.
+1. Resource server sends `POST /oauth2/introspect` with the token and its client credentials.
 2. System authenticates the calling client.
 3. System validates the token: verifies the RSA signature using the current JWKS, checks the expiry, and checks the token blocklist in Redis.
 4. System returns the token metadata: `active`, `sub`, `exp`, `iat`, `scope`, `client_id`, `roles`.
@@ -33,5 +33,5 @@
 
 ## Related APIs/Tasks
 
-- APIs: `POST /api/oauth/introspect`
+- APIs: `POST /oauth2/introspect` — see [api-endpoints.md §7.6](../architecture/api-endpoints.md)
 - Tasks: [05-02](../tasks/05-02-webhooks-introspection-and-observability.md)

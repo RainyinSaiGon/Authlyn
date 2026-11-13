@@ -14,6 +14,7 @@ Use this page as a quick navigator for architecture documents.
 ## Cross-Cutting Topics
 
 - [Auth](./auth.md)
+- [OIDC Authorization Server (Phase 2 design)](./oidc-authorization-server.md)
 - [Security](./security.md)
 - [Logging](./logging.md)
 - [CI/CD](./cicd.md)
