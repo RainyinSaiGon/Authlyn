@@ -15,6 +15,7 @@ import org.springframework.ai.document.Document;
 import org.springframework.ai.reader.TextReader;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -25,7 +26,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.authlyn.modules.chatbot.domain.KnowledgeManifestEntity;
 import com.authlyn.modules.chatbot.repository.KnowledgeManifestJpaRepository;
 
+/**
+ * Indexes the knowledge base into pgvector at startup. Needs the V4 schema (PostgreSQL + pgvector),
+ * so H2-backed tests switch it off with {@code authlyn.chatbot.index-on-startup=false}.
+ */
 @Service
+@ConditionalOnProperty(name = "authlyn.chatbot.index-on-startup", havingValue = "true", matchIfMissing = true)
 public class KnowledgeIndexingService implements ResourceLoaderAware {
 
     private record KnowledgeSource(String path, String name) {}
