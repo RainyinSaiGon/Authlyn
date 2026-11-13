@@ -18,7 +18,7 @@ It is the API-side counterpart of `docs/architecture/interfaces.md` and should b
 
 - `public`: no bearer token required
 - `bearer-user`: valid user access token required
-- `bearer-admin`: valid admin token required (planned)
+- `bearer-admin`: valid access token with the `SCOPE_admin` authority (see section 6 for the current gap)
 
 ### 0.3 Error Envelope (Logical Contract)
 
@@ -447,15 +447,67 @@ The creating user is automatically added as an `admin` member.
 
 ---
 
-## 6. Planned Endpoint Families
+## 6. Admin Chatbot Endpoints
 
-### 6.1 Platform
+The admin assistant answers questions from the indexed architecture docs and can call a small set of admin tools. It needs `OPENAI_API_KEY` and a Postgres database with the `pgvector` extension (migration `V4__chatbot_schema.sql`).
+
+### 6.1 Ask the Assistant (Streaming)
+
+- **Method/Path:** `POST /api/admin/chatbot/ask`
+- **Auth:** `bearer-admin`, enforced as `@PreAuthorize("hasAuthority('SCOPE_admin')")`
+- **Produces:** `text/event-stream`
+- **Mapped controller/service:** `ChatbotController.ask` → `ChatbotService.stream`
+
+#### Ask request
+
+```json
+{
+  "conversationId": "4f8b7c0e-0000-0000-0000-000000000000",
+  "message": "How many users signed up in the last 7 days?"
+}
+```
+
+- `conversationId` (UUID, required): chosen by the client. The first message with a new id creates the conversation row.
+- `message` (string, required, not blank).
+
+#### Ask success response (`200 OK`)
+
+- A Server-Sent Events stream. Each event's `data` is the next chunk of the assistant's answer as plain text; the stream ends when the answer is complete.
+- The last 10 messages of the conversation are kept as model context. Each answer is capped at 500 output tokens.
+- If the model provider fails mid-stream, the stream ends with one fallback chunk saying the assistant is unavailable, instead of an error status.
+
+#### Ask expected errors
+
+- `400` missing `conversationId` or blank `message`
+- `401` missing or invalid bearer token
+- `403` token lacks the `SCOPE_admin` authority
+
+#### Tools available to the assistant
+
+| Tool | Effect |
+| --- | --- |
+| `countRecentSignups(days)` | Count sign-ups in the last 1-90 days |
+| `countActiveSessions()` | Count sessions that are neither revoked nor expired |
+| `recentSignupsByDay(days)` | Sign-ups per day for the last 1-30 days |
+| `listUserSessions(userId)` | Active session ids and timestamps for one user; no credentials or PII |
+| `proposeRevokeSession(sessionId)` | Returns a one-time 8-character confirmation code, valid 5 minutes |
+| `confirmRevokeSession(sessionId, code)` | Revokes the session only if the code matches the proposal for that session |
+
+Revocation is two-step on purpose: the assistant must show the code to the admin, and the admin must send it back before anything is revoked. Tools never take an `orgId`; they are platform-scoped.
+
+> **Known gap:** access tokens issued by `JwtTokenService` do not yet carry a `scope` claim, so no token currently has `SCOPE_admin` and this endpoint returns `403` for every caller. Admin scopes arrive with token audience and scopes in Phase 2 (review finding #5).
+
+---
+
+## 7. Planned Endpoint Families
+
+### 7.1 Platform
 
 - API key lifecycle
 - Webhook endpoint lifecycle and delivery inspection
 - Audit query and admin-only operations
 
-### 6.2 Advanced IAM
+### 7.2 Advanced IAM
 
 - TOTP MFA enrollment and challenge
 - Passkey (WebAuthn) registration and authentication
@@ -465,7 +517,7 @@ The creating user is automatically added as an `admin` member.
 
 ---
 
-## 7. Traceability
+## 8. Traceability
 
 - Endpoint signatures in section 2 map to identity service contracts in `docs/architecture/interfaces.md`.
 - If one changes, both files must be updated in the same task or pull request.

@@ -8,6 +8,7 @@ import { VerifyEmail }     from '@/features/auth/screens/VerifyEmail';
 import { MFAChallenge }    from '@/features/auth/screens/MFAChallenge';
 import { PasskeyEnroll }   from '@/features/auth/screens/PasskeyEnroll';
 import { SSORedirect }     from '@/features/auth/screens/SSORedirect';
+import { OAuthCallback }   from '@/features/auth/screens/OAuthCallback';
 
 import { Landing }  from '@/features/marketing/screens/Landing';
 import { Pricing }  from '@/features/marketing/screens/Pricing';
@@ -61,6 +62,7 @@ export const router = createBrowserRouter([
   { path: '/auth/mfa',             element: <MFAChallenge /> },
   { path: '/auth/passkey-enroll',  element: <PasskeyEnroll /> },
   { path: '/auth/sso',             element: <SSORedirect /> },
+  { path: '/oauth/callback',       element: <OAuthCallback /> },
 
   // Account (gated)
   { path: '/account/profile',  element: <RequireAuth><Profile /></RequireAuth> },
