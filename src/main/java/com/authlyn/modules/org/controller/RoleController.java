@@ -44,7 +44,7 @@ public class RoleController {
     public ResponseEntity<List<RoleResponse>> listRoles(
             @PathVariable UUID orgId,
             @AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.ok(roleService.listRoles(orgId));
+        return ResponseEntity.ok(roleService.listRoles(orgId, UUID.fromString(jwt.getSubject())));
     }
 
     @PostMapping("/api/orgs/{orgId}/members/{memberId}/roles")

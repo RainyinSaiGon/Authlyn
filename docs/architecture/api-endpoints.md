@@ -280,13 +280,25 @@ OAuth2 login is active only when at least one provider (`google` or `github`) is
 - **Method/Path:** `GET /login/oauth2/code/{provider}`
 - **Auth:** `public` (handled internally by Spring Security)
 - **Mapped handler:** `OAuth2LoginSuccessHandler.onAuthenticationSuccess`
-- On success: finds or creates local `UserEntity` and `IdentityEntity`, creates a session and refresh token, then redirects to:
+- On success: resolves the local user, creates a session, stores a one-time login code in Redis (60 s, SHA-256 keyed), then redirects to:
 
 ```text
-${authlyn.web.oauth2-redirect-uri}?access_token=...&refresh_token=...&session_id=...
+${authlyn.web.oauth2-redirect-uri}?code=<one-time-code>
 ```
 
+- Tokens are never placed in the URL. The frontend exchanges the code with `POST /api/public/auth/oauth/exchange`.
+- Account resolution: a known `(provider, providerUserId)` signs in as its linked user. Otherwise the provider email is used only when the provider sends `email_verified=true`, and links to an existing account only if that account's email is verified too. Any other email match is refused with `?error=account_link_required`. GitHub sends no `email_verified`, so its email is treated as unverified.
+- Other error redirects: `?error=account_disabled` (linked user deleted).
+
 Default redirect URI: `http://localhost:5173/oauth/callback`
+
+### 3.3 Exchange One-Time Login Code
+
+- **Method/Path:** `POST /api/public/auth/oauth/exchange`
+- **Auth:** `public` (one-time code in body)
+- **Mapped service:** `OAuthLoginCodeService.exchange`
+- Request: `{ "code": "..." }`. Response (`200 OK`): same shape as the login response (`userId`, `sessionId`, `accessToken`, `refreshToken`, `expiresAt`).
+- Errors: `401` unknown, expired or already used code, or the session was revoked.
 
 ---
 

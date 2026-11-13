@@ -55,7 +55,11 @@ public class RoleService {
         return toRoleResponse(role);
     }
 
-    public List<RoleResponse> listRoles(UUID orgId) {
+    public List<RoleResponse> listRoles(UUID orgId, UUID requestingUserId) {
+        memberRepo.findByOrgIdAndUserId(orgId, requestingUserId)
+                .filter(m -> "active".equals(m.getStatus()) || "admin".equals(m.getStatus()))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Organization not found"));
+
         return roleRepo.findByOrgId(orgId).stream()
                 .map(this::toRoleResponse)
                 .toList();
@@ -89,6 +93,16 @@ public class RoleService {
         memberRepo.findByOrgIdAndUserId(orgId, requestingUserId)
                 .filter(m -> "admin".equals(m.getStatus()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Not an admin of this organization"));
+
+        // Both ids come from the URL: confirm they belong to this org, or an admin of one org
+        // could strip roles from members of any other org.
+        memberRepo.findById(memberId)
+                .filter(m -> orgId.equals(m.getOrgId()))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Member not found in this organization"));
+
+        roleRepo.findById(roleId)
+                .filter(r -> orgId.equals(r.getOrgId()))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found in this organization"));
 
         memberRoleRepo.deleteByIdOrgMemberIdAndIdRoleId(memberId, roleId);
     }

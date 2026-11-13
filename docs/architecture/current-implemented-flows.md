@@ -170,11 +170,14 @@ sequenceDiagram
 
     SP->>OH: onAuthenticationSuccess(OAuth2AuthenticationToken)
     OH->>OH: Extract providerUserId (sub/id) + email
-    OH->>DB: findOrCreate UserEntity by email
-    OH->>DB: findOrCreate IdentityEntity (provider, providerUserId)
-    OH->>DB: Create Session + RefreshToken
-    OH->>OH: Issue access JWT with sid claim
-    OH-->>U: 302 → frontend/oauth/callback?access_token=...&refresh_token=...
+    OH->>DB: Find IdentityEntity, else link only on verified email (both sides)
+    OH->>DB: Create Session
+    OH->>OH: Store one-time code in Redis (60 s)
+    OH-->>U: 302 → frontend/oauth/callback?code=...
+
+    U->>SP: POST /api/public/auth/oauth/exchange { code }
+    SP->>DB: GETDEL code, create RefreshToken
+    SP-->>U: 200 accessToken + refreshToken
 ```
 
 ---

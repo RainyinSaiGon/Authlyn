@@ -32,6 +32,7 @@ public class LoginService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenService jwtTokenService;
     private final AuthlynJwtProperties properties;
+    private volatile String dummyPasswordHash;
 
     public LoginService(UserJpaRepository userRepository,
                         SessionJpaRepository sessionRepository,
@@ -47,18 +48,32 @@ public class LoginService {
         this.properties = properties;
     }
 
+    /** A hash with the same cost as real ones, computed once, used when there is no real hash. */
+    private String dummyPasswordHash() {
+        String hash = dummyPasswordHash;
+        if (hash == null) {
+            hash = passwordEncoder.encode(TokenUtil.generateOpaqueToken());
+            dummyPasswordHash = hash;
+        }
+        return hash;
+    }
+
     @Transactional
     public LoginResponse login(LoginRequest request) {
         String normalizedEmail = request.email().toLowerCase(Locale.ROOT).strip();
 
         UserEntity user = userRepository.findByEmail(normalizedEmail)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
+                .filter(u -> u.getDeletedAt() == null)
+                .orElse(null);
 
-        if (user.getDeletedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
-        }
+        // Always run exactly one password hash check, so an unknown, deleted or social-only
+        // account takes as long to reject as a wrong password. Returning before bcrypt would let
+        // callers enumerate registered emails by response time.
+        boolean hasPassword = user != null && user.getPasswordHash() != null;
+        String hashToCheck = hasPassword ? user.getPasswordHash() : dummyPasswordHash();
+        boolean passwordMatches = passwordEncoder.matches(request.password(), hashToCheck);
 
-        if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
+        if (!hasPassword || !passwordMatches) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
 

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.authlyn.modules.identity.domain.UserEntity;
@@ -24,8 +25,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class LoginServiceTest {
@@ -96,6 +101,31 @@ class LoginServiceTest {
 
         ResponseStatusException ex = assertThrows(ResponseStatusException.class,
                 () -> service.login(new LoginRequest("deleted@example.com", "password")));
+
+        assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusCode());
+    }
+
+    @Test
+    void testUnknownEmailStillRunsOnePasswordHashCheck() {
+        PasswordEncoder spyEncoder = spy(new BCryptPasswordEncoder(4));
+        LoginService timedService = new LoginService(userRepository, sessionRepository, refreshTokenRepository,
+                spyEncoder, jwtTokenService, new AuthlynJwtProperties());
+        when(userRepository.findByEmail("nobody@example.com")).thenReturn(Optional.empty());
+
+        assertThrows(ResponseStatusException.class,
+                () -> timedService.login(new LoginRequest("nobody@example.com", "any-password")));
+
+        // Same bcrypt work as a wrong password, so response time does not reveal unknown emails.
+        verify(spyEncoder, times(1)).matches(eq("any-password"), anyString());
+    }
+
+    @Test
+    void testSocialOnlyAccountWithoutPasswordIsRejected() {
+        UserEntity socialOnly = savedUser("social@example.com", null);
+        when(userRepository.findByEmail("social@example.com")).thenReturn(Optional.of(socialOnly));
+
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
+                () -> service.login(new LoginRequest("social@example.com", "anything")));
 
         assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusCode());
     }
