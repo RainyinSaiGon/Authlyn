@@ -17,6 +17,11 @@ import jakarta.persistence.LockModeType;
 
 public interface RefreshTokenJpaRepository extends JpaRepository<RefreshTokenEntity, UUID> {
 
+    /**
+     * Row-locks the token (SELECT ... FOR UPDATE) for the caller's transaction. Without it, two
+     * concurrent refreshes of one token both see it unrotated and both succeed, so reuse
+     * detection never fires.
+     */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<RefreshTokenEntity> findByTokenHash(String tokenHash);
 

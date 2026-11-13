@@ -8,7 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
         "spring.datasource.username=sa",
         "spring.datasource.password=",
     "spring.jpa.hibernate.ddl-auto=none",
-        "spring.flyway.enabled=false"
+        "spring.flyway.enabled=false",
+        "authlyn.jwt.allow-ephemeral-key=true"
 })
 class AuthlynApplicationTests {
 

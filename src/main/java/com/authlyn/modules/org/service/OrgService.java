@@ -2,6 +2,7 @@ package com.authlyn.modules.org.service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,9 @@ import com.authlyn.modules.org.repository.OrganizationJpaRepository;
 @Service
 @Transactional
 public class OrgService {
+
+    /** Member statuses that grant read access to an organization. */
+    private static final Set<String> MEMBER_STATUSES = Set.of("active", "admin");
 
     private final OrganizationJpaRepository orgRepo;
     private final OrgMemberJpaRepository memberRepo;
@@ -56,13 +60,24 @@ public class OrgService {
         return toOrgResponse(org);
     }
 
-    public OrgResponse getOrg(UUID orgId) {
+    public OrgResponse getOrg(UUID orgId, UUID requestingUserId) {
         OrganizationEntity org = orgRepo.findById(orgId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Organization not found"));
         if (org.getDeletedAt() != null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Organization not found");
         }
+        requireMember(orgId, requestingUserId);
         return toOrgResponse(org);
+    }
+
+    /**
+     * Throws 404 unless the user is a member of the organization. 404 rather than 403, so a
+     * non-member cannot tell whether an organization id exists.
+     */
+    public void requireMember(UUID orgId, UUID userId) {
+        memberRepo.findByOrgIdAndUserId(orgId, userId)
+                .filter(m -> MEMBER_STATUSES.contains(m.getStatus()))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Organization not found"));
     }
 
     public List<OrgResponse> listUserOrgs(UUID userId) {
@@ -104,7 +119,8 @@ public class OrgService {
         return toMemberResponse(member);
     }
 
-    public List<OrgMemberResponse> listMembers(UUID orgId) {
+    public List<OrgMemberResponse> listMembers(UUID orgId, UUID requestingUserId) {
+        requireMember(orgId, requestingUserId);
         return memberRepo.findByOrgId(orgId).stream()
                 .map(this::toMemberResponse)
                 .toList();

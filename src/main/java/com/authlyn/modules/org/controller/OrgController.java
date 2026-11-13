@@ -51,7 +51,7 @@ public class OrgController {
     public ResponseEntity<OrgResponse> getOrg(
             @PathVariable UUID orgId,
             @AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.ok(orgService.getOrg(orgId));
+        return ResponseEntity.ok(orgService.getOrg(orgId, UUID.fromString(jwt.getSubject())));
     }
 
     @PostMapping("/{orgId}/members")
@@ -68,6 +68,6 @@ public class OrgController {
     public ResponseEntity<List<OrgMemberResponse>> listMembers(
             @PathVariable UUID orgId,
             @AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.ok(orgService.listMembers(orgId));
+        return ResponseEntity.ok(orgService.listMembers(orgId, UUID.fromString(jwt.getSubject())));
     }
 }

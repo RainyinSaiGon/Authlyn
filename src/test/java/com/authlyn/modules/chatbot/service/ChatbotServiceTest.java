@@ -1,12 +1,15 @@
 package com.authlyn.modules.chatbot.service;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -65,13 +68,15 @@ class ChatbotServiceTest {
     @Test
     void testStreamPersistsUserMessageBeforeCallingModel() {
         when(builder.defaultSystem(any(String.class))).thenReturn(builder);
-        when(builder.defaultAdvisors(any(Object[].class))).thenReturn(builder);
+        when(builder.defaultAdvisors(any(Advisor[].class))).thenReturn(builder);
         when(builder.defaultTools(any(Object[].class))).thenReturn(builder);
 
         ChatClient chatClient = org.mockito.Mockito.mock(ChatClient.class,
                 org.mockito.Answers.RETURNS_DEEP_STUBS);
         when(builder.build()).thenReturn(chatClient);
-        when(chatClient.prompt().user(any(String.class)).advisors(any()).stream().content())
+        // ChatbotService passes a Consumer<AdvisorSpec>; match that overload explicitly.
+        when(chatClient.prompt().user(any(String.class))
+                .advisors(ArgumentMatchers.<Consumer<ChatClient.AdvisorSpec>>any()).stream().content())
                 .thenReturn(Flux.just("ok"));
 
         var memory = MessageWindowChatMemory.builder()
