@@ -24,6 +24,7 @@ import com.authlyn.modules.identity.dto.PasswordResetRequest;
 import com.authlyn.modules.identity.dto.SignupRequest;
 import com.authlyn.shared.mail.MailMessage;
 import com.authlyn.shared.mail.MailService;
+import com.authlyn.shared.ratelimit.LoginAttemptLimiter;
 import com.authlyn.shared.security.state.RedisSessionStateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -42,7 +43,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "spring.datasource.username=sa",
         "spring.datasource.password=",
         "spring.jpa.hibernate.ddl-auto=create-drop",
-        "spring.flyway.enabled=false"
+        "spring.flyway.enabled=false",
+        "authlyn.jwt.allow-ephemeral-key=true"
 })
 class AuthControllerIntegrationTest {
 
@@ -56,6 +58,10 @@ class AuthControllerIntegrationTest {
 
     @MockitoBean
     private MailService mailService;
+
+    // Redis is not running in this test; the limiter's mock returns false = never blocked.
+    @MockitoBean
+    private LoginAttemptLimiter loginAttemptLimiter;
 
     private final Set<UUID> revokedSessions = ConcurrentHashMap.newKeySet();
     private MockMvc mockMvc;

@@ -99,6 +99,11 @@ public class RsaKeyService {
             if (publicKeySource != null) {
                 throw new IllegalStateException("AUTHLYN_JWT_PUBLIC_KEY(_PATH) was provided without a private key; set AUTHLYN_JWT_PRIVATE_KEY(_PATH) too.");
             }
+            if (!properties.isAllowEphemeralKey()) {
+                throw new IllegalStateException("No JWT signing key configured. Set AUTHLYN_JWT_PRIVATE_KEY(_PATH), "
+                        + "or for local development only set AUTHLYN_JWT_ALLOW_EPHEMERAL_KEY=true.");
+            }
+            logger.warn("Using an ephemeral JWT signing key: tokens will not validate on other instances or after a restart.");
             return generateEphemeralKey();
         }
 

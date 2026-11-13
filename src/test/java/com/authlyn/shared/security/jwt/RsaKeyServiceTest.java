@@ -27,8 +27,17 @@ class RsaKeyServiceTest {
     Path tempDir;
 
     @Test
+    void testRefusesToStartWithoutAKeyUnlessEphemeralKeysAreAllowed() {
+        AuthlynJwtProperties properties = new AuthlynJwtProperties();
+
+        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> new RsaKeyService(properties));
+        assertTrue(ex.getMessage().contains("AUTHLYN_JWT_ALLOW_EPHEMERAL_KEY"));
+    }
+
+    @Test
     void generatesAnEphemeralKeyWhenNothingIsConfigured() {
         AuthlynJwtProperties properties = new AuthlynJwtProperties();
+        properties.setAllowEphemeralKey(true);
         RsaKeyService service = new RsaKeyService(properties);
 
         RSAKey signingKey = service.getSigningKey();
@@ -99,6 +108,7 @@ class RsaKeyServiceTest {
     @Test
     void ephemeralKeyIsInCrtFormAndSigningThroughputIsMeasured() {
         AuthlynJwtProperties properties = new AuthlynJwtProperties();
+        properties.setAllowEphemeralKey(true);
         RsaKeyService service = new RsaKeyService(properties);
 
         // JVM-generated ephemeral keys always expose CRT parameters.
@@ -111,6 +121,7 @@ class RsaKeyServiceTest {
     @Test
     void crtSpeedupVsNonCrtIsPositive() {
         AuthlynJwtProperties properties = new AuthlynJwtProperties();
+        properties.setAllowEphemeralKey(true);
         RsaKeyService service = new RsaKeyService(properties);
 
         // CRT decomposition is always faster than naive modular exponentiation on the same key material.

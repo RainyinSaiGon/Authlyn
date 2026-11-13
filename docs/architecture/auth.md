@@ -153,12 +153,18 @@ Client → GET /oauth2/authorization/{provider}  (Google or GitHub)
 Provider → GET /login/oauth2/code/{provider}
   → OAuth2LoginSuccessHandler.onAuthenticationSuccess:
       extract provider, providerUserId (sub or id), email from OAuth2User attributes
-      find-or-create UserEntity by email (emailVerified=true for OAuth2 users)
-      find-or-create IdentityEntity (provider, providerUserId) → links to User
-      create Session + RefreshToken
-      issue access JWT with sid claim
-  → redirect to ${authlyn.web.oauth2-redirect-uri}?access_token=...&refresh_token=...&session_id=...
+      known IdentityEntity (provider, providerUserId) → its linked User
+      else: provider email trusted only if email_verified=true;
+            links to an existing User only if that User's email is verified too;
+            any other email match → redirect ?error=account_link_required
+      create Session; store one-time code in Redis (60 s)
+  → redirect to ${authlyn.web.oauth2-redirect-uri}?code=<one-time-code>
+
+Frontend → POST /api/public/auth/oauth/exchange { code }
+  → OAuthLoginCodeService.exchange: GETDEL code, check session, mint RefreshToken + access JWT
 ```
+
+Tokens never appear in a URL, so they cannot leak through browser history, proxy logs or `Referer` headers.
 
 `oauth2Login()` is only wired into the filter chain when at least one `ClientRegistrationRepository` entry is present. Without OAuth2 provider environment variables the entire code path is inactive; no startup failure occurs.
 
