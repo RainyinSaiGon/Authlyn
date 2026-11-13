@@ -3,6 +3,7 @@ import { AuthShell } from '@/components/layout/AuthShell';
 import { Button } from '@/components/ui/Button';
 import { InputField } from '@/components/ui/InputField';
 import { Icon } from '@/components/ui/Icon';
+import { socialLoginUrl } from '@/features/auth/api/socialLogin';
 
 export function SignIn() {
   return (
@@ -26,8 +27,8 @@ export function SignIn() {
 
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="sm" icon="passkey" className="flex-1 justify-center">Passkey</Button>
-        <Button variant="ghost" size="sm" icon="google" className="flex-1 justify-center">Google</Button>
-        <Button variant="ghost" size="sm" icon="github" className="flex-1 justify-center">GitHub</Button>
+        <Button variant="ghost" size="sm" icon="google" className="flex-1 justify-center" onClick={() => window.location.assign(socialLoginUrl('google'))}>Google</Button>
+        <Button variant="ghost" size="sm" icon="github" className="flex-1 justify-center" onClick={() => window.location.assign(socialLoginUrl('github'))}>GitHub</Button>
       </div>
 
       <p className="text-[12.5px] text-fg-3 text-center m-0">

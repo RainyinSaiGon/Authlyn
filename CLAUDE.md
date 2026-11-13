@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Project Is
 
-Authlyn is a full-stack Identity and Access Management (IAM) platform. The backend is a Spring Boot 4 application (Java 25) and the frontend is a React 19 + Vite + TypeScript app. The project is being built in phases; current work is Phase 01 (core auth: JWT/JWKS foundation, signup, login, refresh, logout/session revocation, and password reset).
+Authlyn is a full-stack Identity and Access Management (IAM) platform. The backend is a Spring Boot 4 application (Java 25) and the frontend is a React 19 + Vite + TypeScript app. The project is being built in phases. Phase 01 (core auth: JWT/JWKS, signup, login, refresh, logout/session revocation, password reset, social login, Redis-backed rate limiting) and its security hardening are done; organizations/roles and an admin AI chatbot are also in. Next is Phase 02: turning Authlyn into an OAuth 2.1/OIDC authorization server (Spring Authorization Server) with `aud`/`scope` claims in tokens.
 
 ## Commands
 
@@ -60,7 +60,7 @@ Frontend (`:5173`) → Vite proxy → Backend (`:8080`) → PostgreSQL + Redis
 The Vite dev server proxies `/api`, `/actuator`, and `/.well-known` to the backend. Spring Security validates JWT tokens using keys from `/.well-known/jwks.json` and checks Redis-backed session revocation via the access token `sid` claim.
 
 ### Backend Package Layout (`src/main/java/com/authlyn/`)
-- `modules/<domain>/` — product features (e.g., `modules.identity`, `modules.system`). Each module owns its controllers, services, and DTOs.
+- `modules/<domain>/` — product features: `modules.identity` (auth flows), `modules.org` (organizations, members, roles), `modules.chatbot` (admin AI assistant). Each module owns its controllers, services, and DTOs.
 - `shared/<capability>/` — reusable infrastructure (e.g., `shared.config.SecurityConfig`, `shared.security.jwt.*`).
 
 New features belong in `modules.<domain>`. Cross-cutting concerns (security, config) go in `shared`.
@@ -74,6 +74,9 @@ New features belong in `modules.<domain>`. Cross-cutting concerns (security, con
 - **`RsaKeyService`** — loads RSA keys from inline PEM, file path, or classpath; fails startup if none is configured, unless `AUTHLYN_JWT_ALLOW_EPHEMERAL_KEY=true` (local dev/tests) allows a random per-process key
 - **`JwksController`** — serves `/.well-known/jwks.json` from the public key derived by `RsaKeyService`
 - **`SignupService` / `LoginService` / `RefreshService` / `LogoutService`** — implement the current auth flow, including refresh rotation, reuse detection, and logout/logout-all revocation
+- **`OAuth2LoginSuccessHandler` / `OAuthLoginCodeService`** — social login (Google/GitHub). The backend redirects to the frontend's `/oauth/callback?code=…` with a 60-second one-time code, which the frontend exchanges at `POST /api/public/auth/oauth/exchange`; tokens never go in URLs
+- **`LoginRateLimitFilter`** — per-IP login limit kept in Redis; `X-Forwarded-For` is trusted only from `AUTHLYN_TRUSTED_PROXY_CIDRS`
+- **`ChatbotService`** (Spring AI 2.0, OpenAI, pgvector) — admin assistant at `POST /api/admin/chatbot/ask` (SSE), gated by `SCOPE_admin`. Needs `OPENAI_API_KEY` and pgvector; H2 tests set `authlyn.chatbot.index-on-startup=false`, and chatbot tests are plain Mockito tests
 - **`AuthlynJwtProperties`** — binds `application.yml` JWT config (issuer, TTLs, key paths)
 - Flyway manages schema; JPA is set to `ddl-auto: validate` (never auto-generates tables). Migrations in `src/main/resources/db/migration/` (`V{n}__description.sql`)
 - Actuator exposes only `health`, `info`, and `prometheus` (readiness/liveness probes enabled for container orchestration)
@@ -84,7 +87,8 @@ New features belong in `modules.<domain>`. Cross-cutting concerns (security, con
 - `components/ui/` — shared UI primitives (Button, InputField, Modal, etc.) styled with Tailwind
 - `components/layout/` — layout shells (AuthShell, AccountShell, AdminShell, Sidebar)
 - `components/auth/` — `RequireAuth` and `RequireAdmin` route-guard wrappers
-- `shared/api/` — typed fetch wrapper (`getJson<T>`) — never do raw fetch in components
+- `shared/api/` — typed fetch wrappers (`getJson<T>`, `postJson<T>`, `HttpError`) — never do raw fetch in components
+- Most screens are still static mockups; so far only the overview meta call and the social-login callback (`features/auth/screens/OAuthCallback.tsx`) talk to the backend. Tokens are kept in `localStorage` (`authlyn.token`, read by `RequireAuth`/`RequireAdmin`) until the planned BFF moves them into HttpOnly cookies
 - `shared/config/env.ts` — normalizes `VITE_API_BASE_URL` (trailing-slash handling)
 - `shared/types/` — TypeScript contracts shared across features
 - Path alias `@` resolves to `./src` (e.g., `@/features/auth`)
@@ -102,7 +106,7 @@ New features belong in `modules.<domain>`. Cross-cutting concerns (security, con
 Note: the current auth integration test is H2-backed and does not require Docker.
 
 ### Frontend
-- All HTTP calls go through `shared/api/http.ts` (`getJson<T>`) — no inline `fetch` in components
+- All HTTP calls go through `shared/api/http.ts` (`getJson<T>` / `postJson<T>`) — no inline `fetch` in components
 - Feature API modules live at `features/<name>/api/`
 - TypeScript strict mode is enforced; no `any` unless justified
 
