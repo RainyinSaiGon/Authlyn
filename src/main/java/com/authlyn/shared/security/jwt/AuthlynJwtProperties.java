@@ -35,6 +35,20 @@ public class AuthlynJwtProperties {
     private String publicKey;
     private String publicKeyPath;
 
+    /**
+     * Allow a random in-memory signing key when no key is configured. Local dev and tests only:
+     * each instance would sign with its own key, so tokens fail across replicas and after restart.
+     */
+    private boolean allowEphemeralKey = false;
+
+    public boolean isAllowEphemeralKey() {
+        return allowEphemeralKey;
+    }
+
+    public void setAllowEphemeralKey(boolean allowEphemeralKey) {
+        this.allowEphemeralKey = allowEphemeralKey;
+    }
+
     public String getIssuer() {
         return issuer;
     }

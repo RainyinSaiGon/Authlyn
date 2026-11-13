@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.authlyn.modules.identity.dto.LoginRequest;
 import com.authlyn.modules.identity.dto.LoginResponse;
+import com.authlyn.modules.identity.dto.OAuthCodeExchangeRequest;
 import com.authlyn.modules.identity.dto.PasswordResetConfirmRequest;
 import com.authlyn.modules.identity.dto.PasswordResetRequest;
 import com.authlyn.modules.identity.dto.RefreshRequest;
@@ -21,6 +22,7 @@ import com.authlyn.modules.identity.dto.SignupRequest;
 import com.authlyn.modules.identity.dto.SignupResponse;
 import com.authlyn.modules.identity.service.LoginService;
 import com.authlyn.modules.identity.service.LogoutService;
+import com.authlyn.modules.identity.service.OAuthLoginCodeService;
 import com.authlyn.modules.identity.service.PasswordResetService;
 import com.authlyn.modules.identity.service.RefreshService;
 import com.authlyn.modules.identity.service.SignupService;
@@ -35,17 +37,20 @@ public class AuthController {
     private final RefreshService refreshService;
     private final LogoutService logoutService;
     private final PasswordResetService passwordResetService;
+    private final OAuthLoginCodeService oauthLoginCodeService;
 
     public AuthController(SignupService signupService,
                           LoginService loginService,
                           RefreshService refreshService,
                           LogoutService logoutService,
-                          PasswordResetService passwordResetService) {
+                          PasswordResetService passwordResetService,
+                          OAuthLoginCodeService oauthLoginCodeService) {
         this.signupService = signupService;
         this.loginService = loginService;
         this.refreshService = refreshService;
         this.logoutService = logoutService;
         this.passwordResetService = passwordResetService;
+        this.oauthLoginCodeService = oauthLoginCodeService;
     }
 
     @PostMapping("/api/public/auth/signup")
@@ -57,6 +62,12 @@ public class AuthController {
     @PostMapping("/api/public/auth/login")
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         return loginService.login(request);
+    }
+
+    /** Exchanges the one-time code from the social-login redirect for tokens. */
+    @PostMapping("/api/public/auth/oauth/exchange")
+    public LoginResponse exchangeOAuthCode(@Valid @RequestBody OAuthCodeExchangeRequest request) {
+        return oauthLoginCodeService.exchange(request.code());
     }
 
     @PostMapping("/api/public/auth/refresh")

@@ -20,7 +20,9 @@ class JwksControllerTest {
     @Test
     void exposesPublicJwks() throws Exception {
         RSAKey jwk = createKey();
-        RsaKeyService rsaKeyService = new RsaKeyService(new AuthlynJwtProperties()) {
+        AuthlynJwtProperties properties = new AuthlynJwtProperties();
+        properties.setAllowEphemeralKey(true);
+        RsaKeyService rsaKeyService = new RsaKeyService(properties) {
             @Override
             public RSAKey getPublicJwk() {
                 return jwk.toPublicJWK();
