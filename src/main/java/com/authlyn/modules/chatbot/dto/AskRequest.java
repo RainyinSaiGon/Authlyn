@@ -1,0 +1,11 @@
+package com.authlyn.modules.chatbot.dto;
+
+import java.util.UUID;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record AskRequest(
+        @NotNull UUID conversationId,
+        @NotBlank String message
+) {}

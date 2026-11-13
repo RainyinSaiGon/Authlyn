@@ -22,4 +22,7 @@ public interface SessionJpaRepository extends JpaRepository<SessionEntity, UUID>
     @Modifying
     @Query("UPDATE SessionEntity s SET s.revokedAt = :revokedAt, s.revokeReason = :reason WHERE s.userId = :userId AND s.revokedAt IS NULL")
     void revokeAllByUserId(@Param("userId") UUID userId, @Param("revokedAt") Instant revokedAt, @Param("reason") String reason);
+
+    @Query("SELECT COUNT(s) FROM SessionEntity s WHERE s.revokedAt IS NULL AND s.expiresAt > :now")
+    long countActive(@Param("now") Instant now);
 }

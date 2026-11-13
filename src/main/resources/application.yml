@@ -42,6 +42,25 @@ spring:
           starttls:
             enable: ${AUTHLYN_MAIL_STARTTLS:false}
 
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      chat:
+        options:
+          model: gpt-4o-mini
+          temperature: 0
+          max-tokens: 500
+          stream-usage: true
+      embedding:
+        options:
+          model: text-embedding-3-small
+    vectorstore:
+      pgvector:
+        index-type: hnsw
+        distance-type: cosine_distance
+        dimensions: 1536
+        initialize-schema: false
+
   security:
     oauth2:
       resourceserver:
