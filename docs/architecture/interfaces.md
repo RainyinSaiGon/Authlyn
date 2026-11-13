@@ -317,6 +317,93 @@ interface IdentityLinkService {
 }
 ```
 
+### 3.4 OAuth 2.1 / OIDC Authorization Server (Phase 2)
+
+Design: [oidc-authorization-server.md](./oidc-authorization-server.md). HTTP: [api-endpoints.md §7](./api-endpoints.md). Protocol endpoints come from Spring Authorization Server; the ports below are what Authlyn implements or plugs into it.
+
+```Java
+type ClientId = String               // public identifier, e.g. "acme-web"
+type Scope = String                  // e.g. "openid", "orgs:read", "admin"
+enum ClientType { PUBLIC, CONFIDENTIAL }
+enum PlatformRole { USER, ADMIN }
+
+// Client registry. Backs Spring Authorization Server's RegisteredClientRepository.
+interface OAuthClientService {
+  CreatedOAuthClient register(RegisterOAuthClientCommand command)          // secret returned once
+  OAuthClientView get(ClientId clientId)
+  List<OAuthClientView> list()
+  OAuthClientView update(ClientId clientId, UpdateOAuthClientCommand command)
+  String rotateSecret(ClientId clientId)                                   // old secret invalid immediately
+  void delete(ClientId clientId)                                           // revokes its authorizations and consents
+}
+
+record RegisterOAuthClientCommand(
+  ClientId clientId, String name, ClientType type,
+  List<URI> redirectUris, List<URI> postLogoutRedirectUris,
+  Set<String> grantTypes, Set<Scope> allowedScopes, Set<String> audiences,
+  boolean firstParty, @Nullable URI logoUri, @Nullable URI homepageUri
+)
+record UpdateOAuthClientCommand(
+  @Nullable String name, @Nullable List<URI> redirectUris, @Nullable List<URI> postLogoutRedirectUris,
+  @Nullable Set<Scope> allowedScopes, @Nullable Boolean enabled,
+  @Nullable URI logoUri, @Nullable URI homepageUri
+)
+record OAuthClientView(ClientId clientId, String name, ClientType type, List<URI> redirectUris,
+  List<URI> postLogoutRedirectUris, Set<String> grantTypes, Set<Scope> allowedScopes,
+  Set<String> audiences, boolean firstParty, boolean enabled, Instant createdAt)
+record CreatedOAuthClient(OAuthClientView client, @Nullable String clientSecret)
+
+// Decides which requested scopes a user may actually receive.
+interface ScopePolicy {
+  Set<Scope> grantable(UserId userId, OAuthClientView client, Set<Scope> requested)  // drops what the user is not entitled to
+  void requireAdminAllowed(UserId userId, OAuthClientView client)                   // throws AuthorizationError -> invalid_scope
+}
+
+// Remembered consent. Backs OAuth2AuthorizationConsentService.
+interface OAuthConsentService {
+  Set<Scope> grantedScopes(UserId userId, ClientId clientId)
+  void grant(UserId userId, ClientId clientId, Set<Scope> scopes)
+  List<AuthorizedApplication> listForUser(UserId userId)
+  void withdraw(UserId userId, ClientId clientId)                         // also revokes that client's tokens for the user
+}
+record AuthorizedApplication(ClientId clientId, String name, @Nullable URI logoUri, Set<Scope> scopes, Instant grantedAt)
+
+// Browser session used by /oauth2/authorize (cookie AUTHLYN_AS).
+interface AuthorizationServerSessionService {
+  BrowserSession signIn(EmailAddress email, String password, IpAddress ip, UserAgent userAgent)  // creates a normal sessions row
+  BrowserSession fromFederatedLogin(UserId userId, IpAddress ip, UserAgent userAgent)
+  Optional<BrowserSession> resolve(String cookieValue)                    // empty when the session is revoked or expired
+  void signOut(String cookieValue)
+}
+record BrowserSession(SessionId sessionId, UserId userId, Set<String> authenticationMethods, Instant authenticatedAt)
+
+// Claims every access token carries (extends section 1.1 AccessTokenClaims).
+record AccessTokenClaims(
+  String subject, String issuer, Set<String> audiences, Set<Scope> scopes, ClientId clientId,
+  @Nullable SessionId sessionId, @Nullable OrganizationId organizationId,
+  List<String> authenticationMethods, Duration ttl
+)
+
+// Individually revoked access tokens, checked by jti until exp.
+interface AccessTokenDenyList {
+  void deny(String jti, Instant expiresAt)
+  boolean isDenied(String jti)
+}
+
+interface PlatformRoleService {
+  PlatformRole roleOf(UserId userId)
+  void setRole(UserId actingAdmin, UserId target, PlatformRole role)       // ConflictError when an admin demotes themself
+  void bootstrapAdmins(Set<EmailAddress> emails)                           // startup, verified users only
+}
+```
+
+Invariants:
+- PKCE `S256` is required for every authorization request; `plain` is rejected.
+- `admin` is grantable only to `PlatformRole.ADMIN` users through `firstParty` clients.
+- Authorization codes are single use; reuse revokes every token issued from that code.
+- Refresh-token reuse revokes the whole authorization, matching first-party refresh behavior.
+- Revoking an Authlyn session revokes every authorization and token issued under it.
+
 ---
 
 ## 4. Organization Module Contracts
@@ -469,6 +556,7 @@ interface ProfileApiClient {
 | Shared contracts | Backend platform | Baseline defined | 00-01 |
 | Identity contracts | Identity module | Baseline defined | 00-01 / 01-01+ |
 | Federation contracts | Identity + enterprise | Planned baseline | 00-01 |
+| Authorization server contracts (§3.4) | Identity module | Contract defined, not implemented | 03-02 (Phase 2) |
 | Organization contracts | Organization module | Planned baseline | 00-01 |
 | Platform contracts | Platform module | Planned baseline | 00-01 |
 | Frontend client contracts | Frontend + backend | Baseline defined | 00-01 |

@@ -1,6 +1,6 @@
 # Task Index
 
-This directory contains the implementation tasks derived from [Specs.md](../../Specs.md) and aligned with [ARCHITECTURE.md](../../ARCHITECTURE.md).
+This directory contains the implementation tasks derived from [Specs.md](../Specs.md) and aligned with [ARCHITECTURE.md](../../ARCHITECTURE.md).
 
 ## Order
 
@@ -44,6 +44,16 @@ This directory contains the implementation tasks derived from [Specs.md](../../S
 | [11-02](./11-02-bot-protection-breach-detection-and-alerting.md) | Bot Protection, Breach Detection, and Alerting | Phase 11 |
 | [12-01](./12-01-tenant-onboarding-and-quotas.md) | Tenant Onboarding and Quotas | Phase 12 |
 | [12-02](./12-02-billing-events-custom-domains-and-tenant-isolation.md) | Billing Events, Custom Domains, and Tenant Isolation | Phase 12 |
+
+## Current Order (platform roadmap, 2026-11)
+
+The platform review re-ordered the work into four phases. Phase 1 (security hardening, tasks 01-01 to 01-05) is done. The table above keeps the original numbering; work now goes in this order:
+
+1. **Phase 2:** [03-02](./03-02-oauth-authorization-server.md) OAuth/OIDC authorization server, with `aud` and `scope` in every token. Design: [oidc-authorization-server.md](../architecture/oidc-authorization-server.md).
+2. **Phase 3:** service-to-service identity (token exchange, RFC 8693) and a central policy service. Task files to be written.
+3. **Phase 4:** security hardening, drawing on the existing MFA, passkey, audit and anomaly-detection tasks.
+
+SCIM, LDAP, billing and the rest of the backlog wait until Phase 4 is done.
 
 ## Notes
 

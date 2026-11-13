@@ -149,9 +149,28 @@ Expected hot reads:
 
 ## 7. Next Additions (Planned)
 
+### 7.1 Phase 2: OAuth/OIDC authorization server (planned migration `V5`)
+
+Design: [oidc-authorization-server.md](./oidc-authorization-server.md).
+
+| Table / change | Owning module | Purpose |
+| --- | --- | --- |
+| `oauth2_registered_client` | `modules.identity` | Spring Authorization Server's client table (standard schema): client id, hashed secret, auth methods, grant types, redirect URIs, scopes, client/token settings |
+| `oauth_client_metadata` | `modules.identity` | Authlyn fields Spring does not store: `client_id` (PK, FK to `oauth2_registered_client.client_id` with cascade delete), `name`, `type`, `first_party`, `enabled`, `audiences TEXT` (comma-separated, like Spring's own columns), `logo_uri`, `homepage_uri`, `created_at`, `updated_at` |
+| `oauth2_authorization` | `modules.identity` | Spring Authorization Server's authorization table (standard schema): codes, access/refresh/ID token metadata. Authlyn adds `user_id UUID` and `session_id UUID` (FK to `sessions`, cascade) so session revocation can find and revoke them |
+| `oauth2_authorization_consent` | `modules.identity` | Spring Authorization Server's consent table (standard schema), plus `granted_at TIMESTAMPTZ` |
+| `users.platform_role` | `modules.identity` | `VARCHAR(16) NOT NULL DEFAULT 'user'`, `CHECK (platform_role IN ('user','admin'))` |
+
+Rules:
+- Token values are stored hashed (SHA-256), never raw; only metadata needed for revocation and introspection is kept.
+- Indexes: `oauth2_authorization(user_id)`, `oauth2_authorization(session_id)`, `oauth2_authorization_consent(principal_name)`, and Spring's token-value lookup columns.
+- The existing `consents` table stays for privacy/legal consent (task 07-01); OAuth scope consent lives in `oauth2_authorization_consent`.
+- H2 tests must run this migration, so it must not use Postgres-only features such as arrays or `JSONB` operators.
+
+### 7.2 Later
+
 - Verification tokens (email/phone verification flow hardening)
 - MFA factors and recovery codes
-- OAuth authorization codes, clients, and consent enhancements
 - WebAuthn credential registries
 - Billing, quotas, and usage tracking tables
 
