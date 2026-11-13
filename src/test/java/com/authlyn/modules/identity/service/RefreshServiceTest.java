@@ -21,6 +21,8 @@ import com.authlyn.shared.security.jwt.AuthlynJwtProperties;
 import com.authlyn.shared.security.jwt.JwtTokenService;
 import com.authlyn.shared.security.state.RedisSessionStateService;
 
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -48,7 +50,7 @@ class RefreshServiceTest {
         jwtTokenService = mock(JwtTokenService.class);
         redisSessionStateService = mock(RedisSessionStateService.class);
         service = new RefreshService(refreshTokenRepository, sessionRepository, jwtTokenService,
-            new AuthlynJwtProperties(), redisSessionStateService);
+            new AuthlynJwtProperties(), redisSessionStateService, new SimpleMeterRegistry());
     }
 
     @Test

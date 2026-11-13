@@ -20,6 +20,10 @@ import com.authlyn.shared.security.jwt.AuthlynJwtProperties;
 import com.authlyn.shared.security.jwt.JwtTokenService;
 import com.authlyn.shared.security.state.RedisSessionStateService;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+
 @Service
 public class RefreshService {
 
@@ -28,23 +32,44 @@ public class RefreshService {
     private final JwtTokenService jwtTokenService;
     private final AuthlynJwtProperties properties;
     private final RedisSessionStateService redisSessionStateService;
+    private final Timer rotateTimer;
+    private final Counter reuseDetectedCounter;
 
     public RefreshService(RefreshTokenJpaRepository refreshTokenRepository,
                           SessionJpaRepository sessionRepository,
                           JwtTokenService jwtTokenService,
                           AuthlynJwtProperties properties,
-                          RedisSessionStateService redisSessionStateService) {
+                          RedisSessionStateService redisSessionStateService,
+                          MeterRegistry meterRegistry) {
         this.refreshTokenRepository = refreshTokenRepository;
         this.sessionRepository = sessionRepository;
         this.jwtTokenService = jwtTokenService;
         this.properties = properties;
         this.redisSessionStateService = redisSessionStateService;
+        this.rotateTimer = Timer.builder("authlyn.refresh.rotate.duration")
+                .description("Time to complete a refresh token rotation")
+                .register(meterRegistry);
+        this.reuseDetectedCounter = Counter.builder("authlyn.refresh.reuse_detected.total")
+                .description("Number of refresh token reuse-detection events")
+                .register(meterRegistry);
     }
 
     @Transactional
     public RefreshResponse rotate(RefreshRequest request) {
+        Timer.Sample sample = Timer.start();
+        try {
+            return doRotate(request);
+        } finally {
+            sample.stop(rotateTimer);
+        }
+    }
+
+    private RefreshResponse doRotate(RefreshRequest request) {
         String tokenHash = TokenUtil.sha256Hex(request.refreshToken());
 
+        // PESSIMISTIC_WRITE lock on findByTokenHash serializes concurrent rotations
+        // of the same token. Without this, two threads can both read replacedByTokenId==null
+        // and both proceed to issue a new token (silent duplicate rotation).
         RefreshTokenEntity token = refreshTokenRepository.findByTokenHash(tokenHash)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid refresh token"));
 
@@ -58,6 +83,7 @@ public class RefreshService {
             redisSessionStateService.revokeSession(token.getSessionId(), token.getExpiresAt(), "reuse_detected");
             refreshTokenRepository.revokeAllBySessionId(token.getSessionId(), now, "reuse_detected");
             sessionRepository.revoke(token.getSessionId(), now, "reuse_detected");
+            reuseDetectedCounter.increment();
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token reuse detected");
         }
 
