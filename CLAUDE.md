@@ -107,6 +107,8 @@ New features belong in `modules.<domain>`. Cross-cutting concerns (security, con
 
 Note: the current auth integration test is H2-backed and does not require Docker.
 
+- CI: `.github/workflows/backend.yml` runs `./gradlew test` on JDK 25 on every PR that touches `src/`, the Gradle build files or the wrapper, and on pushes to `main`. Test reports are uploaded as an artifact when it fails
+
 ### Frontend
 - All HTTP calls go through `shared/api/http.ts` (`request<T>`), or `authorizedRequest` for bearer calls — no inline `fetch` in components
 - Tests hit the MSW fake backend (`src/test/msw/handlers.ts`, overridden per test with `server.use`); unhandled requests fail the test
