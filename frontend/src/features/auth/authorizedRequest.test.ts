@@ -79,6 +79,25 @@ describe('authorizedRequest', () => {
     expect(refreshCalls).toBe(1);
   });
 
+  it('does not refresh again when the tokens were already rotated after the request was sent', async () => {
+    // Another tab refreshed between this request going out and its 401 coming back.
+    signIn('expired', 'refresh-1');
+    let refreshCalls = 0;
+    server.use(
+      http.get('*/api/me', ({ request }) => {
+        if (request.headers.get('Authorization') === 'Bearer expired') {
+          saveSession({ userId: 'user-1', sessionId: 'session-1', accessToken: 'from-other-tab', refreshToken: 'refresh-2' });
+          return new HttpResponse(null, { status: 401 });
+        }
+        return HttpResponse.json(testUser);
+      }),
+      http.post('*/api/public/auth/refresh', () => { refreshCalls += 1; return HttpResponse.json({}); })
+    );
+
+    await expect(authorizedRequest('/api/me')).resolves.toEqual(testUser);
+    expect(refreshCalls).toBe(0);
+  });
+
   it('clears the session when the refresh token is rejected', async () => {
     signIn('expired', 'revoked');
     meAccepting('never');

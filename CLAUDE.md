@@ -33,6 +33,7 @@ npm run typecheck
 ```bash
 npm run test           # Vitest (jsdom, @testing-library/react, MSW fake backend in src/test/msw)
 npm run coverage       # Test coverage report
+npm run test:e2e       # Playwright browser tests on the production build (first run: npx playwright install chromium)
 ```
 
 ### Infrastructure
@@ -112,6 +113,8 @@ Note: the current auth integration test is H2-backed and does not require Docker
 ### Frontend
 - All HTTP calls go through `shared/api/http.ts` (`request<T>`), or `authorizedRequest` for bearer calls — no inline `fetch` in components
 - Tests hit the MSW fake backend (`src/test/msw/handlers.ts`, overridden per test with `server.use`); unhandled requests fail the test
+- Browser tests in `e2e/` run against `vite preview` with a stateful fake API (`e2e/support/fakeBackend.ts`: token rotation, single-use refresh tokens with reuse detection, session revocation). Use the `test`/`expect` from `e2e/support/fixtures.ts`; a test fails if the app calls an endpoint the fake doesn't handle
+- CI: `.github/workflows/frontend.yml` runs lint, typecheck, unit tests (including the axe route check), build and Playwright on every PR that touches `frontend/`. There is no backend CI workflow yet
 - Feature API modules live at `features/<name>/api/`
 - TypeScript strict mode is enforced; no `any` unless justified
 - `npm run typecheck` checks `tsconfig.app.json` and `tsconfig.node.json` explicitly (plain `tsc --noEmit` on the root config checks nothing)

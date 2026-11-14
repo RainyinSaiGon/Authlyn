@@ -7,30 +7,32 @@ const REFRESH_LOCK = "authlyn-token-refresh";
 let refreshInFlight: Promise<string> | null = null;
 
 /**
- * Rotates the refresh token and returns a fresh access token.
+ * Returns an access token newer than `rejectedAccessToken`, rotating the refresh token
+ * only if nobody has done it yet.
  *
  * Refresh tokens are single use and the backend revokes the whole session when one is
- * replayed (reuse detection), so two refreshes with the same token must never race:
+ * replayed (reuse detection), so refreshes must never race, and should not repeat:
  * - within a tab, concurrent callers share one in-flight promise;
- * - across tabs, a Web Lock serialises refreshes, and a tab that waited re-reads storage
- *   and reuses the tokens another tab already rotated.
+ * - across tabs, a Web Lock serialises refreshes;
+ * - inside the lock, if storage already holds a token other than the one the server
+ *   rejected, another tab (or an earlier refresh here) already rotated: reuse it.
  */
-export function refreshAccessToken(): Promise<string> {
-  refreshInFlight ??= withRefreshLock(rotate).finally(() => {
+export function refreshAccessToken(rejectedAccessToken: string): Promise<string> {
+  refreshInFlight ??= withRefreshLock(() => rotate(rejectedAccessToken)).finally(() => {
     refreshInFlight = null;
   });
   return refreshInFlight;
 }
 
-async function rotate(staleAccessToken: string | undefined): Promise<string> {
+async function rotate(rejectedAccessToken: string): Promise<string> {
   const session = getSession();
   if (!session) throw new HttpError(401);
+  if (session.accessToken !== rejectedAccessToken) {
+    return session.accessToken; // already refreshed by another tab or an earlier call
+  }
   if (!session.refreshToken) {
     clearSession();
     throw new HttpError(401);
-  }
-  if (staleAccessToken && session.accessToken !== staleAccessToken) {
-    return session.accessToken; // another tab refreshed while we waited for the lock
   }
   try {
     const rotated = await authApi.refresh(session.refreshToken);
@@ -42,11 +44,9 @@ async function rotate(staleAccessToken: string | undefined): Promise<string> {
   }
 }
 
-function withRefreshLock(task: (staleAccessToken: string | undefined) => Promise<string>): Promise<string> {
-  const staleAccessToken = getSession()?.accessToken;
+function withRefreshLock(task: () => Promise<string>): Promise<string> {
   const locks = typeof navigator !== "undefined" ? navigator.locks : undefined;
-  if (!locks) return task(staleAccessToken);
-  return locks.request(REFRESH_LOCK, () => task(staleAccessToken));
+  return locks ? locks.request(REFRESH_LOCK, task) : task();
 }
 
 export type AuthorizedRequestOptions = Omit<RequestOptions, "accessToken">;
@@ -63,7 +63,7 @@ export async function authorizedRequest<T>(path: string, options: AuthorizedRequ
     return await request<T>(path, { ...options, accessToken: session.accessToken });
   } catch (error) {
     if (!(error instanceof HttpError) || error.status !== 401) throw error;
-    const accessToken = await refreshAccessToken();
+    const accessToken = await refreshAccessToken(session.accessToken);
     return request<T>(path, { ...options, accessToken });
   }
 }
